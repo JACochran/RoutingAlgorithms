@@ -6,7 +6,13 @@
         xmlns:local="clr-namespace:RoutingAlgorithmProject"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+    <Window.DataContext>
+        <local:MainWindowViewModel/>
+    </Window.DataContext>
+    
+    <StackPanel>
+        <TextBlock Text="Welcome to our Routing Application" HorizontalAlignment="Center" FontSize="22"/>
+        <Button Content="Find Route Using A*"  Command="{Binding FindRouteAStarCommand}" />
+        <Button Content="Find Route Using Dijikstras" Command="{Binding FindRouteDijikstraCommand}"/>
+    </StackPanel>
 </Window>
