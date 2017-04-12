@@ -1,9 +1,10 @@
 ﻿using System;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight;
 
 namespace RoutingAlgorithmProject
 {
-     public class MainWindowViewModel
+     public class MainWindowViewModel : ViewModelBase
     {
 
         public MainWindowViewModel()
