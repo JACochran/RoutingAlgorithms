@@ -1,6 +1,7 @@
 ﻿using System;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight;
+using RoutingAlgorithmProject.Utility;
 
 namespace RoutingAlgorithmProject
 {
@@ -20,7 +21,7 @@ namespace RoutingAlgorithmProject
 
         private void AStarCommandExecuted()
         {
-            throw new NotImplementedException();
+            OsmUtility.ReadOsmData();
         }
 
         public RelayCommand FindRouteAStarCommand { get; private set; }
