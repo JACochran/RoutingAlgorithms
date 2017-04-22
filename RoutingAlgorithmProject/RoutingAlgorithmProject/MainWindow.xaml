@@ -19,9 +19,10 @@
             <TextBlock Text="Welcome to our Routing Application" HorizontalAlignment="Center" FontSize="22"/>
             <Button Content="Find Route Using A*"  Command="{Binding FindRouteAStarCommand}" />
             <Button Content="Find Route Using Dijikstras" Command="{Binding FindRouteDijikstraCommand}"/>
+            <ToggleButton Content="{Binding MovingPointText}"  IsChecked="{Binding IsMovingStartPoint}"></ToggleButton>
 
         </StackPanel>
-        <esri:MapView Grid.Row="1" x:Name="MyMapView">
+        <esri:MapView Grid.Row="1" x:Name="MyMapView"  MapViewTapped="MyMapView_MapViewTapped">
             <esri:Map>
                 <esri:Map.Layers>
                     <esri:ArcGISDynamicMapServiceLayer ServiceUri="http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer"/>
