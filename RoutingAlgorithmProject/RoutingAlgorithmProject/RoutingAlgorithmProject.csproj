@@ -124,6 +124,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Routing\AStar\AStarRouter.cs" />
+    <Compile Include="Routing\Models\Node.cs" />
+    <Compile Include="Routing\Models\Route.cs" />
+    <Compile Include="Routing\Models\Vertex.cs" />
     <Compile Include="Utility\OsmUtility.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">
