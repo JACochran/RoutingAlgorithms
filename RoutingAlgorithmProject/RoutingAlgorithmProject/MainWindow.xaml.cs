@@ -3,7 +3,6 @@ using Esri.ArcGISRuntime.Layers;
 using Esri.ArcGISRuntime.Symbology;
 using System.Windows;
 using System.Windows.Media;
-using System;
 
 namespace RoutingAlgorithmProject
 {
@@ -61,14 +60,13 @@ namespace RoutingAlgorithmProject
 
         private Graphic CreateGraphic(bool useStartPointGraphic)
         {
-            return new Graphic()
-            { Symbol = new SimpleMarkerSymbol()
-            {
-                Color =  useStartPointGraphic ? Colors.Green : Colors.Red,
-                Style = SimpleMarkerStyle.Circle,
-                Size = 16
-            }
-            };
+            return new Graphic(){
+                                   Symbol = new SimpleMarkerSymbol(){
+                                                                        Color =  useStartPointGraphic ? Colors.Green : Colors.Red,
+                                                                        Style = SimpleMarkerStyle.Circle,
+                                                                        Size = 16
+                                                                    }
+                                };
         }
     }
 }
