@@ -4,15 +4,30 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RoutingAlgorithmProject"
+        xmlns:esri="http://schemas.esri.com/arcgis/runtime/2013"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Window.DataContext>
         <local:MainWindowViewModel/>
     </Window.DataContext>
-    
-    <StackPanel>
-        <TextBlock Text="Welcome to our Routing Application" HorizontalAlignment="Center" FontSize="22"/>
-        <Button Content="Find Route Using A*"  Command="{Binding FindRouteAStarCommand}" />
-        <Button Content="Find Route Using Dijikstras" Command="{Binding FindRouteDijikstraCommand}"/>
-    </StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="Welcome to our Routing Application" HorizontalAlignment="Center" FontSize="22"/>
+            <Button Content="Find Route Using A*"  Command="{Binding FindRouteAStarCommand}" />
+            <Button Content="Find Route Using Dijikstras" Command="{Binding FindRouteDijikstraCommand}"/>
+
+        </StackPanel>
+        <esri:MapView Grid.Row="1" x:Name="MyMapView">
+            <esri:Map>
+                <esri:Map.Layers>
+                    <esri:ArcGISDynamicMapServiceLayer ServiceUri="http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer"/>
+                </esri:Map.Layers>
+            </esri:Map>
+        
+        </esri:MapView>
+    </Grid>
 </Window>
