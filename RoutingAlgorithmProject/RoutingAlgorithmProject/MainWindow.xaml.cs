@@ -27,20 +27,21 @@ namespace RoutingAlgorithmProject
             {
                 if(viewModel.IsMovingStartPoint)
                 {
-                    StartPointGraphic = UpdatePoint(e.Location, viewModel.StartLocation, StartPointGraphic, true);
+                    StartPointGraphic = UpdatePoint(e.Location, StartPointGraphic, true);
+                    viewModel.StartLocation = e.Location;
                 }
                 else
                 {
-                    EndPointGraphic = UpdatePoint(e.Location, viewModel.EndLocation, EndPointGraphic);
+                    EndPointGraphic = UpdatePoint(e.Location, EndPointGraphic);
+                    viewModel.EndLocation = e.Location;
                 }
             }
         }
 
 
-        private Graphic UpdatePoint(MapPoint newLocation, MapPoint oldLocation, Graphic graphic, bool isMovingStartPoint = false)
+        private Graphic UpdatePoint(MapPoint newLocation, Graphic graphic, bool isMovingStartPoint = false)
         {
             var myGraphicLayer = MyMapView.Map.Layers["MyGraphics"] as GraphicsLayer;
-            oldLocation = newLocation;
             if(graphic == null)
             {
                 graphic = CreateGraphic(isMovingStartPoint);

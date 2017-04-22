@@ -12,8 +12,13 @@ namespace RoutingAlgorithmProject
         public MainWindowViewModel()
         {
             IsMovingStartPoint = true;
-            FindRouteAStarCommand = new RelayCommand(AStarCommandExecuted);
-            FindRouteDijikstraCommand = new RelayCommand(DijikstraCommandExecuted);
+            FindRouteAStarCommand = new RelayCommand(AStarCommandExecuted, CanRouteExecute);
+            FindRouteDijikstraCommand = new RelayCommand(DijikstraCommandExecuted, CanRouteExecute);
+        }
+
+        private bool CanRouteExecute()
+        {
+            return StartLocation != null && EndLocation != null;
         }
 
         private void DijikstraCommandExecuted()
@@ -59,6 +64,8 @@ namespace RoutingAlgorithmProject
             {
                 _startLocation = value;
                 RaisePropertyChanged(() => StartLocation);
+                FindRouteAStarCommand.RaiseCanExecuteChanged();
+                FindRouteDijikstraCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -72,6 +79,8 @@ namespace RoutingAlgorithmProject
             {
                 _endLoaction = value;
                 RaisePropertyChanged(() => EndLocation);
+                FindRouteAStarCommand.RaiseCanExecuteChanged();
+                FindRouteDijikstraCommand.RaiseCanExecuteChanged();
             }
         }
 
