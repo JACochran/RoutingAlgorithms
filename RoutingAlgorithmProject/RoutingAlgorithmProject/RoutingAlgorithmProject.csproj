@@ -118,8 +118,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Routing\AStar\AStarRouter.cs" />
+    <Compile Include="Routing\Models\AttributedEdge.cs" />
+    <Compile Include="Routing\Models\AttributedNode.cs" />
+    <Compile Include="Routing\Models\Memoize2.cs" />
     <Compile Include="Routing\Models\Node.cs" />
+    <Compile Include="Routing\Models\NodeExitGetter.cs" />
     <Compile Include="Routing\Models\Route.cs" />
+    <Compile Include="Routing\Models\Router.cs" />
     <Compile Include="Routing\Models\Vertex.cs" />
     <Compile Include="Utility\OsmUtility.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />

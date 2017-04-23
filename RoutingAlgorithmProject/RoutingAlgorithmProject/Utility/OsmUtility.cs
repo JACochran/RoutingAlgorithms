@@ -1,5 +1,4 @@
-﻿
-using OsmSharp.Streams;
+﻿using OsmSharp.Streams;
 using System.IO;
 
 namespace RoutingAlgorithmProject.Utility

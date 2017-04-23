@@ -5,7 +5,7 @@ namespace RoutingAlgorithmProject.Routing.Models
 {
     public class Route
     {
-        public Route(LinkedList<List<Object>> nodesAttributes, 
+        public Route(LinkedList<IReadOnlyList<Object>> nodesAttributes, 
                      LinkedList<List<Object>> edgesAttributes, 
                      LinkedList<int> edgeIdentifiers, 
                      LinkedList<Double> edgeCosts)
