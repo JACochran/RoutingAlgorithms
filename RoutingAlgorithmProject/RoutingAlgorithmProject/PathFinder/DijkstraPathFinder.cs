@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RoutingAlgorithmProject.Graph;
 
 namespace RoutingAlgorithmProject.PathFinder
 {
-    class DijkstraPathFinder : PathFinder
+    class DijkstraPathFinder : PathFinder<Vertex>
     {
-        public DijkstraPathFinder(Graph.Graph graph) : base(graph) { }
+        private RoutingGraph<Vertex> routingGraph;
 
+        public DijkstraPathFinder(RoutingGraph<Vertex> graph) : base(graph)
+        {
+        }
+        
         public override List<Edge> FindShortestPath(Coordinates start, Coordinates end)
         {
             Vertex startVertex = FindClosestVertex(start);
@@ -61,26 +63,6 @@ namespace RoutingAlgorithmProject.PathFinder
             }
             return path;
 
-        }
-
-        /// <summary>
-        /// Returns the edge from v to u
-        /// </summary>
-        /// <param name="v"></param>
-        /// <param name="u"></param>
-        /// <returns></returns>
-        private Edge FindEdge(Vertex v, Vertex u)
-        {
-            Edge e = null;
-            foreach (var neighbor in v.Neighbors)
-            {
-                if (neighbor.Key.Equals(u))
-                {
-                    e = neighbor.Value;
-                    break;
-                }
-            }
-            return e;
         }
 
         private Vertex MinDist(HashSet<Vertex> q, Dictionary<Vertex, float> dist)

@@ -1,39 +1,38 @@
-﻿using System;
+﻿using Esri.ArcGISRuntime.Geometry;
+using RoutingAlgorithmProject.Graph;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RoutingAlgorithmProject.PathFinder
 {
-    public abstract class PathFinder
+    public abstract class PathFinder<T> where T : Vertex
     {
-        protected Graph.Graph graph;
+        protected RoutingGraph<T> graph;
 
-        public PathFinder(Graph.Graph graph)
+        public PathFinder(RoutingGraph<T> graph)
         {
             this.graph = graph;
         }
+        
         /// <summary>
         /// Finds the shortest path between two coordinates on a graph
         /// </summary>
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns> A list of edges from start to end</returns>
-        public abstract List<Graph.Edge> FindShortestPath(Graph.Coordinates start, Graph.Coordinates end);
+        public abstract List<Graph.Edge> FindShortestPath(Coordinates start, Coordinates end);
 
         /// <summary>
         /// Finds the cloest vertex in the graph to a point
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        protected Graph.Vertex FindClosestVertex(Graph.Coordinates point)
+        protected T FindClosestVertex(Coordinates point)
         {
-            Graph.Vertex closest = null;
-            float minDistance = float.MaxValue;
+            T closest = null;
+            var minDistance = double.MaxValue;
             foreach(var vertex in graph.Verticies)
             {
-                var distance = Graph.Edge.DistanceBetweenPoints(point, vertex.Coordinates);
+                var distance = GetMinimumDistance(point, vertex.Coordinates);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
@@ -41,6 +40,31 @@ namespace RoutingAlgorithmProject.PathFinder
                 }
             }
             return closest;
+        }
+
+        /// <summary>
+        /// Returns the edge from v to u
+        /// </summary>
+        /// <param name="v"></param>
+        /// <param name="u"></param>
+        /// <returns></returns>
+        internal static Edge FindEdge(Vertex v, Vertex u)
+        {
+            Edge e = null;
+            foreach (var neighbor in v.Neighbors)
+            {
+                if (neighbor.Key.Equals(u))
+                {
+                    e = neighbor.Value;
+                    break;
+                }
+            }
+            return e;
+        }
+
+        protected double GetMinimumDistance(Coordinates start, Coordinates end)
+        {
+            return GeometryEngine.GeodesicDistance(new MapPoint(start.Longitude, start.Latitude, SpatialReferences.Wgs84), new MapPoint(end.Longitude, end.Latitude, SpatialReferences.Wgs84), LinearUnits.Meters);
         }
            
     }
