@@ -1,5 +1,4 @@
-﻿using System;
-using GalaSoft.MvvmLight.Command;
+﻿using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight;
 using RoutingAlgorithmProject.Utility;
 using Esri.ArcGISRuntime.Geometry;
@@ -38,10 +37,6 @@ namespace RoutingAlgorithmProject
             RoutingGraph<Vertex> graph = new Graph.Graph();
 
             var dpf = new PathFinder.DijkstraPathFinder(CreateGraph(graph));
-            if(GeometryEngine.Within(StartLocation, Databounds) && GeometryEngine.Within(EndLocation, Databounds))
-            {
-
-            }
             var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
             //TODO display path to user
         }
