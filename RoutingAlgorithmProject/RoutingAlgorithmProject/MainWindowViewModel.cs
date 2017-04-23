@@ -22,31 +22,27 @@ namespace RoutingAlgorithmProject
             return StartLocation != null && EndLocation != null;
         }
 
-        private Graph.Graph CreateGraph(Graph.Coordinates start, Graph.Coordinates end)
+        private Graph.Graph CreateGraph()
         {
+            var start = new MapPoint(38.903671f, -77.000038f, SpatialReferences.Wgs84);
+            var end = new MapPoint(38.902446f, -76.997449f, SpatialReferences.Wgs84);
             // Create graph using start and end locations to build bounding box
             return OsmUtility.ReadOsmData(start, end);
         }
 
         private void DijikstraCommandExecuted()
         {
-            //TODO: pull start and end values from user input on map
-            Graph.Coordinates start = new Graph.Coordinates(38.903671f, -77.000038f);
-            Graph.Coordinates end = new Graph.Coordinates(38.902446f, -76.997449f);
 
-            PathFinder.PathFinder dpf = new PathFinder.DijkstraPathFinder(CreateGraph(start, end));
-            var path = dpf.FindShortestPath(start, end);
+            PathFinder.PathFinder dpf = new PathFinder.DijkstraPathFinder(CreateGraph());
+            var path = dpf.FindShortestPath(StartLocation, EndLocation);
             //TODO display path to user
         }
 
         private void AStarCommandExecuted()
         {
-            //TODO: pull start and end values from user input on map
-            Graph.Coordinates start = new Graph.Coordinates(38.903671f, -77.000038f);
-            Graph.Coordinates end = new Graph.Coordinates(38.902446f, -76.997449f);
 
-            PathFinder.PathFinder dpf = new PathFinder.AStarPathFinder(CreateGraph(start, end));
-            var path = dpf.FindShortestPath(start, end);
+            PathFinder.PathFinder dpf = new PathFinder.AStarPathFinder(CreateGraph());
+            var path = dpf.FindShortestPath(StartLocation, EndLocation);
             //TODO display path to user
         }
 
