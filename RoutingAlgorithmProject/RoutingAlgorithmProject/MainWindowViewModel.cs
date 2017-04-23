@@ -38,8 +38,8 @@ namespace RoutingAlgorithmProject
 
         private Graph.RoutingGraph<T> CreateGraph<T>(RoutingGraph<T> initialGraph) where T : Vertex
         {
-            var start = new Coordinates(38.903671f, -77.000038f);
-            var end = new Coordinates(38.902446f, -76.997449f);
+            //var start = new Coordinates(38.903671f, -77.000038f);
+           // var end = new Coordinates(38.902446f, -76.997449f);
             // Create graph using start and end locations to build bounding box
             var graph = OsmUtility.ReadOsmData(StartLocation.ToCoordinates(), EndLocation.ToCoordinates(), initialGraph);
             graph.CleanGraph();
@@ -52,7 +52,6 @@ namespace RoutingAlgorithmProject
 
             var dpf = new PathFinder.DijkstraPathFinder(CreateGraph(graph));
             var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
-            //TODO display path to user
             if (path != null)
             {
                 DisplayPath(path, mapView);
@@ -63,7 +62,6 @@ namespace RoutingAlgorithmProject
         {
             var dpf = new PathFinder.AStarPathFinder(WholeGraph);
             var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
-            //TODO display path to user
             if (path != null)
             {
                 DisplayPath(path, mapView);
