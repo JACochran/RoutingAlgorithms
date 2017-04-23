@@ -127,6 +127,19 @@ namespace RoutingAlgorithmProject.Utility
 
             var dpf = new PathFinder.DijkstraPathFinder(g);
             var path = dpf.FindShortestPath(new Coordinates(1, 1), new Coordinates(9, 9));
+
+            var astarGraph = new AStarGraph();
+            var vertex1 = astarGraph.AddVertex(new Coordinates(0, 0));
+            var vertex2 = astarGraph.AddVertex(new Coordinates(0, 10));
+            var vertex3 = astarGraph.AddVertex(new Coordinates(5, 5));
+            var vertex4 = astarGraph.AddVertex(new Coordinates(10, 10));
+
+
+            astarGraph.AddEdge(new Graph.Edge(vertex1, vertex3));
+            astarGraph.AddEdge(new Graph.Edge(vertex3, vertex4));
+            astarGraph.AddEdge(new Graph.Edge(vertex1, vertex2));
+            astarGraph.AddEdge(new Graph.Edge(vertex2, vertex4));
+            var path2 = new PathFinder.AStarPathFinder(astarGraph).FindShortestPath(new Coordinates(1, 1), new Coordinates(9, 9));
             var x = 1;
         }
     }
