@@ -27,11 +27,6 @@ namespace RoutingAlgorithmProject.PathFinder
             var startNode = FindClosestVertex(start);
             var endNode   = FindClosestVertex(end);
 
-            // Starting Vertex
-            //startNode.Update(startNode.Coordinates,
-            //                 0.0,
-            //                 GetMinimumDistance(start, end));
-
             startNode.Update(0.0, GetMinimumDistance(startNode.Coordinates, endNode.Coordinates), null, double.MaxValue);
             nodeMap.Add(startNode);
             var currentVertex = startNode;
