@@ -25,8 +25,8 @@
         <esri:MapView Grid.Row="1" x:Name="MyMapView"  MapViewTapped="MyMapView_MapViewTapped">
             <esri:Map>
                 <esri:Map.Layers>
-                    
-                    <esri:ArcGISDynamicMapServiceLayer ServiceUri="http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer"/>
+
+                    <esri:ArcGISDynamicMapServiceLayer ServiceUri="http://server.arcgisonline.com/arcgis/rest/services/ESRI_Imagery_World_2D/MapServer"/>
                     <esri:GraphicsLayer ID="MyGraphics"/>
                 </esri:Map.Layers>
             </esri:Map>
