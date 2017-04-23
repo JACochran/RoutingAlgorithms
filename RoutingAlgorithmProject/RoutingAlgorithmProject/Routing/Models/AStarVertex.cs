@@ -1,5 +1,4 @@
-﻿using Esri.ArcGISRuntime.Geometry;
-using RoutingAlgorithmProject.Graph;
+﻿using RoutingAlgorithmProject.Graph;
 using System;
 using System.Collections.Generic;
 
@@ -24,12 +23,13 @@ namespace RoutingAlgorithmProject.Routing.Models
             return cost.CompareTo(vertex2.EstimatedCostToEnd + vertex2.CostFromStart);
         }
 
-        public AStarVertex(MapPoint  location,
+        public AStarVertex(Coordinates  location,
                            double costFromStart,
                            double estimatedCostToEnd): base(location)
         {
             CostFromStart = costFromStart;
             EstimatedCostToEnd = estimatedCostToEnd;
+            AStarNeighbors = new Dictionary<AStarVertex, Edge>();
         }
 
         public Dictionary<AStarVertex, Edge> AStarNeighbors

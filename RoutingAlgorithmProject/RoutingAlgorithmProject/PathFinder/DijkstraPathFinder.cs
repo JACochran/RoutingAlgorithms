@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using RoutingAlgorithmProject.Graph;
-using Esri.ArcGISRuntime.Geometry;
 
 namespace RoutingAlgorithmProject.PathFinder
 {
-    class DijkstraPathFinder : PathFinder
+    class DijkstraPathFinder : PathFinder<Vertex>
     {
-        public DijkstraPathFinder(Graph.Graph graph) : base(graph) { }
+        private RoutingGraph<Vertex> routingGraph;
 
-        public override List<Edge> FindShortestPath(MapPoint start, MapPoint end)
+        public DijkstraPathFinder(RoutingGraph<Vertex> graph) : base(graph)
+        {
+        }
+        
+        public override List<Edge> FindShortestPath(Coordinates start, Coordinates end)
         {
             Vertex startVertex = FindClosestVertex(start);
             Vertex destinationVertex = FindClosestVertex(end);

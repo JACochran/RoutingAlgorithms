@@ -3,23 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using RoutingAlgorithmProject.Graph;
 using System.Collections.ObjectModel;
-using Esri.ArcGISRuntime.Geometry;
 using RoutingAlgorithmProject.Routing.Models;
 
 namespace RoutingAlgorithmProject.PathFinder
 {
-    class AStarPathFinder : PathFinder
+    class AStarPathFinder : PathFinder<AStarVertex>
     {
-        public AStarPathFinder(Graph.Graph graph) : base(graph)
+        public AStarPathFinder(RoutingGraph<AStarVertex> graph) : base(graph)
         {
         }
 
-        private double GetMinDistance(MapPoint start, MapPoint end)
-        {
-            return GeometryEngine.GeodesicDistance(start, end, LinearUnits.Meters);
-        }
+        //private double GetMinDistance(Coordinates start, Coordinates end)
+        //{
+        //    return GeometryEngine.GeodesicDistance(start.ToMapPoint(), end.ToMapPoint(), LinearUnits.Meters);
+        //}
 
-        public override List<Edge> FindShortestPath(MapPoint start, MapPoint end)
+        public override List<Edge> FindShortestPath(Coordinates start, Coordinates end)
         {
             SortedList<AStarVertex, double> openList = new SortedList<AStarVertex, double>();
             Collection<AStarVertex> closedList = new Collection<AStarVertex>();//new HashSet<>((this.restrictedNodeIdentifiers == null) ? new Collection<int>() : this.restrictedNodeIdentifiers);
@@ -32,14 +31,14 @@ namespace RoutingAlgorithmProject.PathFinder
             // Starting Vertex
             var startVertex = new AStarVertex(startNode.Coordinates,
                                               0.0,
-                                              GetMinDistance(start, end));
+                                              GetMinimumDistance(start, end));
 
             nodeMap.Add(startVertex);
-
-            for (AStarVertex currentVertex = startVertex; currentVertex != null && openList.Keys.Count > 0; currentVertex = openList.Keys[0])
+            var currentVertex = startVertex;
+            while(currentVertex != null)
             {
                 // If current vertex is the target then we are done
-                if (currentVertex.Coordinates.IsEqual(end))
+                if (currentVertex.Coordinates.Equals(end))
                 {
                     return GetAStarPath(end, nodeMap).ToList();
                 }
@@ -76,8 +75,8 @@ namespace RoutingAlgorithmProject.PathFinder
 
                        if (!openList.ContainsKey(reachableVertex) || isShorterPath)
                        {
-                           double estimatedCostFromEnd = exit.Key.Coordinates.IsEqual(endNode.Coordinates) ? 0.0
-                                                                                                           : GetMinimumDistance(reachableVertex.Coordinates, endNode.Coordinates);
+                           double estimatedCostFromEnd = exit.Key.Coordinates.Equals(endNode.Coordinates) ? 0.0
+                                                                                                          : GetMinimumDistance(reachableVertex.Coordinates, endNode.Coordinates);
 
                            reachableVertex.Update(costFromStart,
                                                   estimatedCostFromEnd,
@@ -94,17 +93,26 @@ namespace RoutingAlgorithmProject.PathFinder
                    }
                  
                 }
+
+                if (openList.Count > 0)
+                {
+                    currentVertex = openList.Keys[0];
+                }
+                else
+                {
+                    currentVertex = null;
+                }
             }
 
             return null;    // No path between the start and end nodes
         }
 
-        public static LinkedList<Edge> GetAStarPath(MapPoint endLocation, HashSet<AStarVertex> nodeMap)
+        public static LinkedList<Edge> GetAStarPath(Coordinates endLocation, HashSet<AStarVertex> nodeMap)
         {
             LinkedList<Edge> path = new LinkedList<Edge>();
             LinkedList<Double> edgeCosts = new LinkedList<Double>();
 
-            for (var vertex = nodeMap.First(aStarVertex => aStarVertex.Coordinates.IsEqual(endLocation)); vertex != null; vertex = vertex.Previous)
+            for (var vertex = nodeMap.First(aStarVertex => aStarVertex.Coordinates.Equals(endLocation)); vertex != null; vertex = vertex.Previous)
             {
                 //nodesAttributes.AddFirst(vertex.Node.GetAttributes());
 

@@ -1,31 +1,33 @@
-﻿
-using Esri.ArcGISRuntime.Geometry;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace RoutingAlgorithmProject.Graph
 {
+
     public class Vertex
     {
         // Private member-variables
-        private long? id;
+        private Coordinates coords;
+        private Dictionary<Vertex, Edge> neighbors = null;
 
-        public Vertex(MapPoint coords)
+        public Vertex(Coordinates coords)
         {
-            Coordinates = coords;
-            Neighbors = new Dictionary<Vertex, Edge>();
-        }
-
-        public long? Identifier
-        {
-            get; set;
+            this.coords = coords;
+            this.neighbors = new Dictionary<Vertex, Edge>();
         }
 
         /// <summary>
         /// location of the vertex on the globe
         /// </summary>
-        public MapPoint Coordinates
+        public Coordinates Coordinates
         {
-            get; set;
+            get
+            {
+                return coords;
+            }
+            set
+            {
+                coords = value;
+            }
         }
 
         /// <summary>
@@ -33,7 +35,14 @@ namespace RoutingAlgorithmProject.Graph
         /// </summary>
         public Dictionary<Vertex, Edge> Neighbors
         {
-            get; set;
+            get
+            {
+                return neighbors;
+            }
+            set
+            {
+                neighbors = value;
+            }
         }
 
         public virtual void AddEdge(Vertex to, Edge e)
@@ -51,20 +60,20 @@ namespace RoutingAlgorithmProject.Graph
             var item = obj as Vertex;
             if (item == null)
                 return false;
-            return Coordinates.IsEqual(item.Coordinates);
+            return coords.Equals(item.coords);
         }
 
         public override int GetHashCode()
         {
-            return Coordinates.GetHashCode();
+            return coords.GetHashCode();
         }
 
         public override string ToString()
         {
-            return "(" + Coordinates.Y.ToString() + "," +Coordinates.X.ToString() + ")";
+            return "(" + Coordinates.Latitude.ToString() + "," + Coordinates.Longitude.ToString() + ")";
         }
     }
-       
+
 }
 
 

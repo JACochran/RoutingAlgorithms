@@ -3,6 +3,8 @@ using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight;
 using RoutingAlgorithmProject.Utility;
 using Esri.ArcGISRuntime.Geometry;
+using RoutingAlgorithmProject.Graph;
+using RoutingAlgorithmProject.Routing.Models;
 
 namespace RoutingAlgorithmProject
 {
@@ -13,36 +15,42 @@ namespace RoutingAlgorithmProject
             IsMovingStartPoint = true;
             FindRouteAStarCommand = new RelayCommand(AStarCommandExecuted, CanRouteExecute);
             FindRouteDijikstraCommand = new RelayCommand(DijikstraCommandExecuted, CanRouteExecute);
-            OsmUtility.TestGraph();
-            
+            OsmUtility.TestGraph();            
         }
+
+        public static Envelope Databounds = new Envelope(-77.1201, 38.7913, -76.9091, 38.996);
 
         private bool CanRouteExecute()
         {
             return StartLocation != null && EndLocation != null;
         }
 
-        private Graph.Graph CreateGraph()
+        private Graph.RoutingGraph<T> CreateGraph<T>(RoutingGraph<T> initialGraph) where T : Vertex
         {
-            var start = new MapPoint(38.903671f, -77.000038f, SpatialReferences.Wgs84);
-            var end = new MapPoint(38.902446f, -76.997449f, SpatialReferences.Wgs84);
+            var start = new Coordinates(38.903671f, -77.000038f);
+            var end = new Coordinates(38.902446f, -76.997449f);
             // Create graph using start and end locations to build bounding box
-            return OsmUtility.ReadOsmData(start, end);
+            return OsmUtility.ReadOsmData(start, end, initialGraph);
         }
 
         private void DijikstraCommandExecuted()
         {
+            RoutingGraph<Vertex> graph = new Graph.Graph();
 
-            PathFinder.PathFinder dpf = new PathFinder.DijkstraPathFinder(CreateGraph());
-            var path = dpf.FindShortestPath(StartLocation, EndLocation);
+            var dpf = new PathFinder.DijkstraPathFinder(CreateGraph(graph));
+            if(GeometryEngine.Within(StartLocation, Databounds) && GeometryEngine.Within(EndLocation, Databounds))
+            {
+
+            }
+            var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
             //TODO display path to user
         }
 
         private void AStarCommandExecuted()
         {
-
-            PathFinder.PathFinder dpf = new PathFinder.AStarPathFinder(CreateGraph());
-            var path = dpf.FindShortestPath(StartLocation, EndLocation);
+            RoutingGraph<AStarVertex> graph = new AStarGraph();
+            var dpf = new PathFinder.AStarPathFinder(CreateGraph(graph));
+            var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
             //TODO display path to user
         }
 

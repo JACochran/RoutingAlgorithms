@@ -4,30 +4,31 @@ using System.Collections.Generic;
 
 namespace RoutingAlgorithmProject.PathFinder
 {
-    public abstract class PathFinder
+    public abstract class PathFinder<T> where T : Vertex
     {
-        protected Graph.Graph graph;
+        protected RoutingGraph<T> graph;
 
-        public PathFinder(Graph.Graph graph)
+        public PathFinder(RoutingGraph<T> graph)
         {
             this.graph = graph;
         }
+        
         /// <summary>
         /// Finds the shortest path between two coordinates on a graph
         /// </summary>
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns> A list of edges from start to end</returns>
-        public abstract List<Graph.Edge> FindShortestPath(MapPoint start, MapPoint end);
+        public abstract List<Graph.Edge> FindShortestPath(Coordinates start, Coordinates end);
 
         /// <summary>
         /// Finds the cloest vertex in the graph to a point
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        protected Graph.Vertex FindClosestVertex(MapPoint point)
+        protected T FindClosestVertex(Coordinates point)
         {
-            Graph.Vertex closest = null;
+            T closest = null;
             var minDistance = double.MaxValue;
             foreach(var vertex in graph.Verticies)
             {
@@ -61,9 +62,9 @@ namespace RoutingAlgorithmProject.PathFinder
             return e;
         }
 
-        protected double GetMinimumDistance(MapPoint start, MapPoint end)
+        protected double GetMinimumDistance(Coordinates start, Coordinates end)
         {
-            return GeometryEngine.GeodesicDistance(start, end, LinearUnits.Meters);
+            return GeometryEngine.GeodesicDistance(new MapPoint(start.Longitude, start.Latitude, SpatialReferences.Wgs84), new MapPoint(end.Longitude, end.Latitude, SpatialReferences.Wgs84), LinearUnits.Meters);
         }
            
     }
