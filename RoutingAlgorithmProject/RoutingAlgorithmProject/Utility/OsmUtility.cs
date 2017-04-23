@@ -9,22 +9,23 @@ namespace RoutingAlgorithmProject.Utility
     public static class OsmUtility
     {
 
-        public static void ReadOsmData()
+        public static Graph.Graph ReadOsmData()
         {
+            Graph.Graph g = new Graph.Graph();
             string path = "..\\..\\..\\Resources\\district-of-columbia-latest.osm.pbf"; // path to dc data
             if (File.Exists(path))
             {
                 using (var fileStreamSource = File.OpenRead(path))
                 {
                     var source = new PBFOsmStreamSource(fileStreamSource);
-                    var filtered = source.FilterBox(-80f, 42f, -76f, 38f); // left, top, right, bottom
+                    var filtered = source.FilterBox(-77f, 39f, -76f, 38f); // left, top, right, bottom
                     //var progress = source.ShowProgress();
                     var nodesAndWays = from osmGeo in filtered
                                        where osmGeo.Type == OsmSharp.OsmGeoType.Node || (osmGeo.Type == OsmSharp.OsmGeoType.Way && osmGeo.Tags != null && osmGeo.Tags.ContainsKey("highway"))
                                        select osmGeo;
                     var completed = nodesAndWays.ToComplete();
 
-                    Graph.Graph g = new Graph.Graph();
+                    
                     foreach (var obj in completed)
                     {
                         if (obj.Type == OsmSharp.OsmGeoType.Way)
@@ -32,35 +33,23 @@ namespace RoutingAlgorithmProject.Utility
                             OsmSharp.Complete.CompleteWay way = (OsmSharp.Complete.CompleteWay)obj;
 
                             List<Graph.Vertex> vList = new List<Graph.Vertex>();
-
+                            Graph.Vertex fromVertex = null;
                             foreach (OsmSharp.Node node in way.Nodes)
                             {
-                                Graph.Vertex vertex = g.GetVertex(node.Id);
-                                if (vertex == null)
+                                Graph.Coordinates data = new Graph.Coordinates(node.Latitude, node.Longitude);
+                                Graph.Vertex toVertex = g.AddVertex(data);
+                                if (fromVertex != null)
                                 {
-                                    Graph.VertexData data = new Graph.VertexData(node.Id, node.Latitude, node.Longitude, node.Tags);
-                                    vertex = new Graph.Vertex(data);
-                                    g.AddVertex(vertex);
+                                    Graph.Edge edge = new Graph.Edge(fromVertex, toVertex);
+                                    g.AddEdge(edge);
                                 }
-                                else
-                                {
-                                    var x = 1;
-                                }
-                                vList.Add(vertex);
-                            }
-                            // find end points of edge?
-                            if (vList.Count < 2)
-                            {
-                                Graph.Vertex start = vList[0];
-                                Graph.Vertex end = vList[1];
-                                if (start != null && end != null)
-                                    g.AddEdge(start, end, new Graph.Edge(Graph.Graph.FindWeight(start.Data, end.Data), way.Tags));
-                               
-                            }
+                                fromVertex = toVertex;
+                            }                            
                         }
                     }
                 }
             }
+            return g;
         }
     }
 }

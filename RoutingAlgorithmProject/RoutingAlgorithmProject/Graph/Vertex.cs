@@ -7,14 +7,14 @@ namespace RoutingAlgorithmProject.Graph
     public class Vertex
     {
         // Private member-variables
-        private VertexData data;
-        private Dictionary<Vertex, Edge> neighbors = null; // vertex, edge weight to neighboring vertices
+        private Coordinates data;
+        private Dictionary<Vertex, Edge> neighbors = null; 
 
-        public Vertex(VertexData data) {
+        public Vertex(Coordinates data) {
             this.data = data;
         }
         
-        public VertexData Data
+        public Coordinates Coordinates
         {
             get
             {
@@ -43,6 +43,24 @@ namespace RoutingAlgorithmProject.Graph
         public void AddEdge(Vertex to, Edge e)
         {
             this.Neighbors[to] = e;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var item = obj as Vertex;
+            if (item == null)
+                return false;
+            return data.Equals(item.data);
+        }
+
+        public override int GetHashCode()
+        {
+            return data.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return "(" + Coordinates.Latitude.ToString() + "," +Coordinates.Longitude.ToString() + ")";
         }
     }
        

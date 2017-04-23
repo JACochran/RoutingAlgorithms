@@ -120,7 +120,9 @@
     <Compile Include="Graph\Edge.cs" />
     <Compile Include="Graph\Graph.cs" />
     <Compile Include="Graph\Vertex.cs" />
-    <Compile Include="Graph\VertexData.cs" />
+    <Compile Include="Graph\Coordinates.cs" />
+    <Compile Include="PathFinder\DijkstraPathFinder.cs" />
+    <Compile Include="PathFinder\PathFinder.cs" />
     <Compile Include="Utility\OsmUtility.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">

@@ -8,65 +8,54 @@ namespace RoutingAlgorithmProject.Graph
 {
     public class Graph
     {
-        private List<Vertex> vertices;
+        private Dictionary<Coordinates, Vertex> vertexMap;
 
         public Graph() 
         {
-          this.vertices = new List<Vertex>();
+          this.vertexMap = new Dictionary<Coordinates, Vertex>();
         }
 
-        public void AddVertex(Vertex Vertex)
+        /// <summary>
+        /// if a vertex does not exist at location coords, add to the dictionary
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <returns>reference to vertex at location coords</returns>
+        public Vertex AddVertex(Coordinates coords)
         {
-            // adds a Vertex to the graph
-            Vertices.Add(Vertex);
-        }
-
-        public void AddEdge(Vertex from, Vertex to, Edge e)
-        {
-            from.AddEdge(to, e);
-            to.AddEdge(from, e);
-        }
-
-        public bool Contains(long? id)
-        {
-            foreach (Vertex v in Vertices)
+            var vertex = this.GetVertex(coords);
+            if (vertex == null)
             {
-                if (v.Data.id == id)
-                    return true;
+                vertex = new Vertex(coords);
+                vertexMap.Add(coords, vertex);
             }
-            return false;
+            return vertex;
         }
 
-        public Vertex GetVertex(long? id)
+        /// <summary>
+        /// Adds an edge to the graph
+        /// creates an edge in the neighbor list of each vertex
+        /// </summary>
+        /// <param name="e"></param>
+        public void AddEdge(Edge e)
         {
-            return Vertices.FirstOrDefault(x => x.Data.id == id);
+            e.From.AddEdge(e.To, e);
+            e.To.AddEdge(e.From, e);
         }
-        public List<Vertex> Vertices
+
+        public Vertex GetVertex(Coordinates coords)
+        {
+            if (vertexMap.ContainsKey(coords))
+                return vertexMap[coords];
+            else
+                return null;
+        }
+
+        public List<Vertex> Verticies
         {
             get
             {
-                return vertices;
+                return vertexMap.Values.ToList();
             }
         }
-
-        public static float FindWeight(VertexData v1, VertexData v2)
-        {
-            var R = 6371; // Radius of the earth in km
-            var dLat = deg2rad(v2.latitude - v1.latitude);  // deg2rad below
-            var dLon = deg2rad(v2.longitude - v1.longitude);
-            var a =
-              Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-              Math.Cos(deg2rad(v1.latitude)) * Math.Cos(deg2rad(v2.latitude)) *
-              Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-            var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-            var d = R * c; // Distance in km
-            return (float)d;
-        }
-
-        private static float deg2rad(float? deg)
-        {
-            return (float) (deg * (Math.PI / 180));
-        }
-
     }
 }

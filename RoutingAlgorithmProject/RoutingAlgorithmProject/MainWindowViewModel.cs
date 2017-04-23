@@ -8,12 +8,13 @@ namespace RoutingAlgorithmProject
 {
     public class MainWindowViewModel : ViewModelBase
     {
-
+        private static Graph.Graph g;
         public MainWindowViewModel()
         {
             IsMovingStartPoint = true;
             FindRouteAStarCommand = new RelayCommand(AStarCommandExecuted, CanRouteExecute);
             FindRouteDijikstraCommand = new RelayCommand(DijikstraCommandExecuted, CanRouteExecute);
+            g = OsmUtility.ReadOsmData();
         }
 
         private bool CanRouteExecute()
@@ -23,12 +24,15 @@ namespace RoutingAlgorithmProject
 
         private void DijikstraCommandExecuted()
         {
-            throw new NotImplementedException();
+            PathFinder.PathFinder dpf = new PathFinder.DijkstraPathFinder(g);
+            Graph.Coordinates start = new Graph.Coordinates(38.8f, -76.8f);
+            Graph.Coordinates end = new Graph.Coordinates(38.2f, -76.2f);
+            var path = dpf.FindShortestPath(start, end);
         }
 
         private void AStarCommandExecuted()
         {
-            OsmUtility.ReadOsmData();
+           
         }
 
         public string MovingPointText
