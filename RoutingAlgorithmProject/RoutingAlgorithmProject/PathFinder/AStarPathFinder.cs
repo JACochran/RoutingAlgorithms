@@ -13,13 +13,10 @@ namespace RoutingAlgorithmProject.PathFinder
         {
         }
 
-        //private double GetMinDistance(Coordinates start, Coordinates end)
-        //{
-        //    return GeometryEngine.GeodesicDistance(start.ToMapPoint(), end.ToMapPoint(), LinearUnits.Meters);
-        //}
-
         public override List<Edge> FindShortestPath(Coordinates start, Coordinates end)
         {
+            //start = new Graph.Coordinates(38.903671f, -77.000038f);
+            //end = new Graph.Coordinates(38.902446f, -76.997449f);
             SortedList<AStarVertex, double> openList = new SortedList<AStarVertex, double>();
             Collection<AStarVertex> closedList = new Collection<AStarVertex>();
             var nodeMap = new HashSet<AStarVertex>();
@@ -42,55 +39,53 @@ namespace RoutingAlgorithmProject.PathFinder
 
                 foreach (var exit in  currentVertex.AStarNeighbors) // For each node adjacent to the current node
                 {
-                    // Ignore restricted edges
-                    //if (!this.restrictedEdgeIdentifiers.Contains(exit.EdgeIdentifier))
-                    AStarVertex reachableVertex = null;
-                   var hasBeenVisited = nodeMap.Contains(exit.Key);
-
-                   if (hasBeenVisited == false)
-                   {
-                       reachableVertex = exit.Key;
-                       nodeMap.Add(reachableVertex);
-                   }
-                    else
+                    var reachableVertex = nodeMap.FirstOrDefault(vertex => vertex.Equals(exit.Value.To));
+                    
+                    if (reachableVertex == null)
                     {
-                        reachableVertex = nodeMap.First(vertex => vertex.Equals(exit.Key));
+                        reachableVertex = (AStarVertex) exit.Value.To;
+                        nodeMap.Add(reachableVertex);
                     }
 
-                   // If the closed list already searched this vertex, skip it
-                   if (!closedList.Contains(exit.Key))
-                   {
+                    // If the closed list already searched this vertex, skip it
+                    if (!closedList.Contains(reachableVertex))
+                    {
                         //double edgeCost = this.edgeCostEvaluator.Apply(exit);
                         double edgeCost = GetMinimumDistance(exit.Value.To.Coordinates, exit.Value.From.Coordinates);
 
-                       if (edgeCost <= 0.0)    // Are positive values that are extremely close to 0 going to be a problem?
-                       {
-                           throw new ArgumentException("The A* algorithm is only valid for edge costs greater than 0");
-                       }
+                        if (edgeCost <= 0.0)    // Are positive values that are extremely close to 0 going to be a problem?
+                        {
+                            throw new ArgumentException("The A* algorithm is only valid for edge costs greater than 0");
+                        }
 
-                       double costFromStart = currentVertex.CostFromStart + edgeCost;
+                        double costFromStart = currentVertex.CostFromStart + edgeCost;
 
-                       bool isShorterPath = costFromStart < reachableVertex.CostFromStart;
+                        bool isShorterPath = costFromStart < reachableVertex.CostFromStart;
 
-                       if (!openList.ContainsKey(reachableVertex) || isShorterPath)
-                       {
-                           double estimatedCostFromEnd = exit.Key.Coordinates.Equals(endNode.Coordinates) ? 0.0
-                                                                                                          : GetMinimumDistance(reachableVertex.Coordinates, endNode.Coordinates);
+                        if (!openList.ContainsKey(reachableVertex) || isShorterPath)
+                        {
+                            double estimatedCostFromEnd = exit.Key.Coordinates.Equals(endNode.Coordinates) ? 0.0
+                                                                                                           : GetMinimumDistance(reachableVertex.Coordinates, endNode.Coordinates);
 
-                           reachableVertex.Update(costFromStart,
-                                                  estimatedCostFromEnd,
-                                                  currentVertex,
-                                                  edgeCost);
+                            reachableVertex.Update(costFromStart,
+                                                   estimatedCostFromEnd,
+                                                   currentVertex,
+                                                   edgeCost);
 
-                           if (isShorterPath)
-                           {
-                               openList.Remove(reachableVertex);   // Re-add to trigger the reprioritization of this vertex
-                           }
+                            if (isShorterPath)
+                            {
+                                openList.Remove(reachableVertex);   // Re-add to trigger the reprioritization of this vertex
+                            }
 
-                           openList.Add(reachableVertex, costFromStart + estimatedCostFromEnd);
-                       }
-                   }
-                 
+                            if(openList.ContainsKey(reachableVertex))
+                            {
+                                openList.Remove(reachableVertex); //SHould never hit but keeping for break point
+                            }
+
+                            openList.Add(reachableVertex, costFromStart + estimatedCostFromEnd);
+                        }
+                    }
+
                 }
 
                 if (openList.Count > 0)
@@ -111,11 +106,8 @@ namespace RoutingAlgorithmProject.PathFinder
         {
             LinkedList<Edge> path = new LinkedList<Edge>();
             LinkedList<Double> edgeCosts = new LinkedList<Double>();
-            //path.AddLast(endLocation);
             for (var vertex = nodeMap.First(aStarVertex => aStarVertex.Coordinates.Equals(endLocation)); vertex != null; vertex = vertex.Previous)
             {
-                //nodesAttributes.AddFirst(vertex.Node.GetAttributes());
-
                 if (vertex.Previous != null)
                 {
                     path.AddFirst(FindEdge(vertex, vertex.Previous));
@@ -124,7 +116,6 @@ namespace RoutingAlgorithmProject.PathFinder
             }
 
             return path;
-
         }
     }
 }
