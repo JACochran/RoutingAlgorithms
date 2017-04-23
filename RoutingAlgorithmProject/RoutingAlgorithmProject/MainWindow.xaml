@@ -17,8 +17,8 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
             <TextBlock Text="Welcome to our Routing Application" HorizontalAlignment="Center" FontSize="22"/>
-            <Button Content="Find Route Using A*"  Command="{Binding FindRouteAStarCommand}" />
-            <Button Content="Find Route Using Dijikstras" Command="{Binding FindRouteDijikstraCommand}"/>
+            <Button Content="Find Route Using A*"  Command="{Binding FindRouteAStarCommand}" CommandParameter="{Binding ElementName=MyMapView}"/>
+            <Button Content="Find Route Using Dijikstras" Command="{Binding FindRouteDijikstraCommand}"  CommandParameter="{Binding ElementName=MyMapView}"/>
             <ToggleButton Content="{Binding MovingPointText}"  IsChecked="{Binding IsMovingStartPoint}"></ToggleButton>
 
         </StackPanel>

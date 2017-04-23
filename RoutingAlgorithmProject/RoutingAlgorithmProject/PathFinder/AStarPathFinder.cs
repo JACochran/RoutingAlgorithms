@@ -15,6 +15,8 @@ namespace RoutingAlgorithmProject.PathFinder
 
         public override List<Edge> FindShortestPath(Coordinates start, Coordinates end)
         {
+            //start = new Graph.Coordinates(38.903671f, -77.000038f);
+            //end = new Graph.Coordinates(38.902446f, -76.997449f);
             SortedList<AStarVertex, double> openList = new SortedList<AStarVertex, double>();
             Collection<AStarVertex> closedList = new Collection<AStarVertex>();
             var nodeMap = new HashSet<AStarVertex>();
