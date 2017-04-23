@@ -67,5 +67,61 @@ namespace RoutingAlgorithmProject.Graph
                 return vertexMap.Values.ToList();
             }
         }
+
+        public override void CleanGraph()
+        {
+            // use DFS to remove unneeded verticies
+            var start = this.vertexMap.Values.First();
+
+            var visited = new HashSet<Vertex>();
+                       
+            var stack = new Stack<Vertex>();
+            stack.Push(start);
+
+            while (stack.Count > 0)
+            {
+                var vertex = stack.Pop();
+
+                if (visited.Contains(vertex))
+                    continue;
+
+                CleanVertex(vertex);
+                visited.Add(vertex);
+
+                var neighborList = vertex.Neighbors.Keys.ToList();
+                foreach (var neighbor in neighborList)
+                    if (!visited.Contains(neighbor))
+                        stack.Push(neighbor);
+            }
+
+            return ;
+        }
+
+        private void CleanVertex(Vertex middleNode)
+        {
+            var neighborList = middleNode.Neighbors.ToArray();
+            if (middleNode.Neighbors.Count == 2)
+            {
+                var startEdge = neighborList[0].Value;
+                var endEdge = neighborList[1].Value;
+
+                var startNode = neighborList[0].Key;
+                var endNode = neighborList[1].Key;
+
+                float totalDistance = startEdge.Weight + endEdge.Weight;
+
+                // new edge from startEdge to endEdge
+                Edge newEdge = new Edge(startNode, endNode, totalDistance);
+
+                //remove edges to middle node
+                startNode.Neighbors.Remove(middleNode);
+                endNode.Neighbors.Remove(middleNode);
+                // remove middle node from graph;
+                this.vertexMap.Remove(middleNode.Coordinates);
+
+                // add new edge 
+                AddEdge(newEdge);
+            }
+        }
     }
 }

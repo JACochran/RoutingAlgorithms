@@ -1,6 +1,7 @@
 ﻿using RoutingAlgorithmProject.Routing.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace RoutingAlgorithmProject.Graph
 {
@@ -52,6 +53,11 @@ namespace RoutingAlgorithmProject.Graph
                 return vertexMap[coords];
             else
                 return null;
+        }
+
+        public override void CleanGraph()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

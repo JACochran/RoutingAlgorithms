@@ -26,10 +26,12 @@ namespace RoutingAlgorithmProject
 
         private Graph.RoutingGraph<T> CreateGraph<T>(RoutingGraph<T> initialGraph) where T : Vertex
         {
-            //var start = new Coordinates(38.903671f, -77.000038f);
-            //var end = new Coordinates(38.902446f, -76.997449f);
+            var start = new Coordinates(38.903671f, -77.000038f);
+            var end = new Coordinates(38.902446f, -76.997449f);
             // Create graph using start and end locations to build bounding box
-            return OsmUtility.ReadOsmData(StartLocation.ToCoordinates(), EndLocation.ToCoordinates(), initialGraph);
+            var graph = OsmUtility.ReadOsmData(StartLocation.ToCoordinates(), EndLocation.ToCoordinates(), initialGraph);
+            graph.CleanGraph();
+            return graph;
         }
 
         private void DijikstraCommandExecuted()

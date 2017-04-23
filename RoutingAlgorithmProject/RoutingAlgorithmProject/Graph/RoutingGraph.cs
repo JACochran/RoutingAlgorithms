@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace RoutingAlgorithmProject.Graph
 {
@@ -30,5 +31,7 @@ namespace RoutingAlgorithmProject.Graph
         /// Returns all Verticies in the graph
         /// </summary>
         public virtual List<T> Verticies { get; internal set; }
+
+        public abstract void CleanGraph();
     }
 }

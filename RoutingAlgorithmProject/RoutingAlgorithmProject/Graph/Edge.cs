@@ -15,6 +15,13 @@ namespace RoutingAlgorithmProject.Graph
             this.weight = DistanceBetweenPoints(fromVertex.Coordinates, toVertex.Coordinates);
         }
 
+        public Edge(Vertex fromVertex, Vertex toVertex, float weight)
+        {
+            this.fromVertex = fromVertex;
+            this.toVertex = toVertex;
+            this.weight = weight;
+        }
+
         public float Weight
         {
             get
