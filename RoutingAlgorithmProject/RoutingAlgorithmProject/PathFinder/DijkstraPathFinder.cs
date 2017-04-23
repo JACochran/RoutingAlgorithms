@@ -38,7 +38,7 @@ namespace RoutingAlgorithmProject.PathFinder
                 q.Remove(u);
                 foreach (var neighbor in u.Neighbors)
                 {
-                    var alt = dist[u] + neighbor.Value.weight;
+                    var alt = dist[u] + neighbor.Value.Weight;
                     if (alt < dist[neighbor.Key])
                     {
                         dist[neighbor.Key] = alt;
@@ -56,20 +56,25 @@ namespace RoutingAlgorithmProject.PathFinder
             Edge e = null;
             while (prev[u] != null)
             {
-                path.Insert(0, FindEdge(u));
+                path.Insert(0, FindEdge(prev[u], u));
                 u = prev[u];
             }
-            path.Insert(0, FindEdge(u));
             return path;
 
         }
 
-        private Edge FindEdge(Vertex v)
+        /// <summary>
+        /// Returns the edge from v to u
+        /// </summary>
+        /// <param name="v"></param>
+        /// <param name="u"></param>
+        /// <returns></returns>
+        private Edge FindEdge(Vertex v, Vertex u)
         {
             Edge e = null;
             foreach (var neighbor in v.Neighbors)
             {
-                if (neighbor.Key.Equals(v))
+                if (neighbor.Key.Equals(u))
                 {
                     e = neighbor.Value;
                     break;

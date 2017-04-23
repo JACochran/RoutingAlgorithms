@@ -7,11 +7,15 @@ using OsmSharp.Tags;
 
 namespace RoutingAlgorithmProject.Graph
 {
+    /// <summary>
+    /// Stored Latitude and longitude for a point on the globe
+    /// Stores values as integers internally. This is to get around floating point issues. 
+    /// </summary>
     public class Coordinates
     {
         private int latitude;
         private int longitude;
-        
+
         public Coordinates(float? latitude, float? longitude)
         {
             if (latitude == null || longitude == null)

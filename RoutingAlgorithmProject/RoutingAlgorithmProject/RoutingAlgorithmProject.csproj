@@ -121,6 +121,7 @@
     <Compile Include="Graph\Graph.cs" />
     <Compile Include="Graph\Vertex.cs" />
     <Compile Include="Graph\Coordinates.cs" />
+    <Compile Include="PathFinder\AStarPathFinder.cs" />
     <Compile Include="PathFinder\DijkstraPathFinder.cs" />
     <Compile Include="PathFinder\PathFinder.cs" />
     <Compile Include="Utility\OsmUtility.cs" />

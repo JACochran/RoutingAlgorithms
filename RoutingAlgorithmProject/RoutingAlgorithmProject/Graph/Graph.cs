@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace RoutingAlgorithmProject.Graph
 {
+    /// <summary>
+    /// Graph implementation
+    /// stores vertices internally using a map of coordinate location to vertex.
+    /// </summary>
     public class Graph
     {
         private Dictionary<Coordinates, Vertex> vertexMap;
@@ -42,6 +46,12 @@ namespace RoutingAlgorithmProject.Graph
             e.To.AddEdge(e.From, e);
         }
 
+        /// <summary>
+        /// Checks if the graph contains a vertex at location coords
+        /// returns null if not found
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <returns></returns>
         public Vertex GetVertex(Coordinates coords)
         {
             if (vertexMap.ContainsKey(coords))
@@ -50,6 +60,9 @@ namespace RoutingAlgorithmProject.Graph
                 return null;
         }
 
+        /// <summary>
+        /// Returns all Verticies in the graph
+        /// </summary>
         public List<Vertex> Verticies
         {
             get

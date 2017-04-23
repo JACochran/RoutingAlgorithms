@@ -14,9 +14,19 @@ namespace RoutingAlgorithmProject.PathFinder
         {
             this.graph = graph;
         }
-
+        /// <summary>
+        /// Finds the shortest path between two coordinates on a graph
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns> A list of edges from start to end</returns>
         public abstract List<Graph.Edge> FindShortestPath(Graph.Coordinates start, Graph.Coordinates end);
 
+        /// <summary>
+        /// Finds the cloest vertex in the graph to a point
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
         protected Graph.Vertex FindClosestVertex(Graph.Coordinates point)
         {
             Graph.Vertex closest = null;

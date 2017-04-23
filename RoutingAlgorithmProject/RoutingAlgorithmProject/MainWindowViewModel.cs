@@ -8,13 +8,13 @@ namespace RoutingAlgorithmProject
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private static Graph.Graph g;
         public MainWindowViewModel()
         {
             IsMovingStartPoint = true;
             FindRouteAStarCommand = new RelayCommand(AStarCommandExecuted, CanRouteExecute);
             FindRouteDijikstraCommand = new RelayCommand(DijikstraCommandExecuted, CanRouteExecute);
-            g = OsmUtility.ReadOsmData();
+            OsmUtility.TestGraph();
+            
         }
 
         private bool CanRouteExecute()
@@ -22,17 +22,32 @@ namespace RoutingAlgorithmProject
             return StartLocation != null && EndLocation != null;
         }
 
+        private Graph.Graph CreateGraph(Graph.Coordinates start, Graph.Coordinates end)
+        {
+            // Create graph using start and end locations to build bounding box
+            return OsmUtility.ReadOsmData(start, end);
+        }
+
         private void DijikstraCommandExecuted()
         {
-            PathFinder.PathFinder dpf = new PathFinder.DijkstraPathFinder(g);
-            Graph.Coordinates start = new Graph.Coordinates(38.8f, -76.8f);
-            Graph.Coordinates end = new Graph.Coordinates(38.2f, -76.2f);
+            //TODO: pull start and end values from user input on map
+            Graph.Coordinates start = new Graph.Coordinates(38.903671f, -77.000038f);
+            Graph.Coordinates end = new Graph.Coordinates(38.902446f, -76.997449f);
+
+            PathFinder.PathFinder dpf = new PathFinder.DijkstraPathFinder(CreateGraph(start, end));
             var path = dpf.FindShortestPath(start, end);
+            //TODO display path to user
         }
 
         private void AStarCommandExecuted()
         {
-           
+            //TODO: pull start and end values from user input on map
+            Graph.Coordinates start = new Graph.Coordinates(38.903671f, -77.000038f);
+            Graph.Coordinates end = new Graph.Coordinates(38.902446f, -76.997449f);
+
+            PathFinder.PathFinder dpf = new PathFinder.AStarPathFinder(CreateGraph(start, end));
+            var path = dpf.FindShortestPath(start, end);
+            //TODO display path to user
         }
 
         public string MovingPointText

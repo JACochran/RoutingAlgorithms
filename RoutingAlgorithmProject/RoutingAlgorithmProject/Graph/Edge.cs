@@ -5,8 +5,7 @@ namespace RoutingAlgorithmProject.Graph
 {
     public class Edge
     {
-        public float weight;
-        public TagsCollectionBase tags;
+        private float weight;
         private Vertex fromVertex;
         private Vertex toVertex;
 
@@ -16,6 +15,14 @@ namespace RoutingAlgorithmProject.Graph
             this.toVertex = toVertex;
             this.weight = DistanceBetweenPoints(fromVertex.Coordinates, toVertex.Coordinates);
         }
+
+        public float Weight
+        {
+            get
+            {
+                return weight;
+            }
+        } 
 
         public Vertex From
         {
@@ -33,6 +40,12 @@ namespace RoutingAlgorithmProject.Graph
             }
         }
 
+        /// <summary>
+        /// Implementation of Haversine formula to find distance between two points on a globe
+        /// </summary>
+        /// <param name="v1"></param>
+        /// <param name="v2"></param>
+        /// <returns>distance in kilometers</returns>
         public static float DistanceBetweenPoints(Coordinates v1, Coordinates v2)
         {
             var R = 6371; // Radius of the earth in km
@@ -50,6 +63,11 @@ namespace RoutingAlgorithmProject.Graph
         private static float deg2rad(float? deg)
         {
             return (float)(deg * (Math.PI / 180));
+        }
+
+        public override string ToString()
+        {
+            return fromVertex.ToString() + "->" + toVertex.ToString();
         }
     }
 }
