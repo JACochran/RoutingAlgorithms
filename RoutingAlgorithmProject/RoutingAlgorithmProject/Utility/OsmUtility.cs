@@ -76,7 +76,6 @@ namespace RoutingAlgorithmProject.Utility
 
             PathFinder.PathFinder dpf = new PathFinder.DijkstraPathFinder(g);
             var path = dpf.FindShortestPath(new Graph.Coordinates(1, 1), new Graph.Coordinates(9, 9));
-            var x = 1;
         }
     }
 

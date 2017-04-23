@@ -13,8 +13,7 @@ namespace RoutingAlgorithmProject
             IsMovingStartPoint = true;
             FindRouteAStarCommand = new RelayCommand(AStarCommandExecuted, CanRouteExecute);
             FindRouteDijikstraCommand = new RelayCommand(DijikstraCommandExecuted, CanRouteExecute);
-            OsmUtility.TestGraph();
-            
+           // OsmUtility.TestGraph();
         }
 
         private bool CanRouteExecute()
