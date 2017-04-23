@@ -21,26 +21,26 @@ namespace RoutingAlgorithmProject.PathFinder
         public override List<Edge> FindShortestPath(Coordinates start, Coordinates end)
         {
             SortedList<AStarVertex, double> openList = new SortedList<AStarVertex, double>();
-            Collection<AStarVertex> closedList = new Collection<AStarVertex>();//new HashSet<>((this.restrictedNodeIdentifiers == null) ? new Collection<int>() : this.restrictedNodeIdentifiers);
+            Collection<AStarVertex> closedList = new Collection<AStarVertex>();
             var nodeMap = new HashSet<AStarVertex>();
             
             var startNode = FindClosestVertex(start);
             var endNode   = FindClosestVertex(end);
-           
 
             // Starting Vertex
-            var startVertex = new AStarVertex(startNode.Coordinates,
-                                              0.0,
-                                              GetMinimumDistance(start, end));
+            //startNode.Update(startNode.Coordinates,
+            //                 0.0,
+            //                 GetMinimumDistance(start, end));
 
-            nodeMap.Add(startVertex);
-            var currentVertex = startVertex;
+            startNode.Update(0.0, GetMinimumDistance(startNode.Coordinates, endNode.Coordinates), null, double.MaxValue);
+            nodeMap.Add(startNode);
+            var currentVertex = startNode;
             while(currentVertex != null)
             {
                 // If current vertex is the target then we are done
-                if (currentVertex.Coordinates.Equals(end))
+                if (currentVertex.Coordinates.Equals(endNode.Coordinates))
                 {
-                    return GetAStarPath(end, nodeMap).ToList();
+                    return GetAStarPath(endNode.Coordinates, nodeMap).ToList();
                 }
 
                 closedList.Add(currentVertex); // Put it in "done" pile
@@ -54,9 +54,13 @@ namespace RoutingAlgorithmProject.PathFinder
 
                    if (hasBeenVisited == false)
                    {
-                       reachableVertex = new AStarVertex(exit.Key.Coordinates, double.MaxValue, double.MaxValue);
+                       reachableVertex = exit.Key;
                        nodeMap.Add(reachableVertex);
                    }
+                    else
+                    {
+                        reachableVertex = nodeMap.First(vertex => vertex.Equals(exit.Key));
+                    }
 
                    // If the closed list already searched this vertex, skip it
                    if (!closedList.Contains(exit.Key))
@@ -97,6 +101,7 @@ namespace RoutingAlgorithmProject.PathFinder
                 if (openList.Count > 0)
                 {
                     currentVertex = openList.Keys[0];
+                    openList.RemoveAt(0);
                 }
                 else
                 {
@@ -111,7 +116,7 @@ namespace RoutingAlgorithmProject.PathFinder
         {
             LinkedList<Edge> path = new LinkedList<Edge>();
             LinkedList<Double> edgeCosts = new LinkedList<Double>();
-
+            //path.AddLast(endLocation);
             for (var vertex = nodeMap.First(aStarVertex => aStarVertex.Coordinates.Equals(endLocation)); vertex != null; vertex = vertex.Previous)
             {
                 //nodesAttributes.AddFirst(vertex.Node.GetAttributes());
