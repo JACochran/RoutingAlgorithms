@@ -4,6 +4,7 @@ using System.Linq;
 using RoutingAlgorithmProject.Graph;
 using System.Collections.ObjectModel;
 using Esri.ArcGISRuntime.Geometry;
+using RoutingAlgorithmProject.Routing.Models;
 
 namespace RoutingAlgorithmProject.PathFinder
 {
@@ -20,104 +21,102 @@ namespace RoutingAlgorithmProject.PathFinder
 
         public override List<Edge> FindShortestPath(MapPoint start, MapPoint end)
         {
-            SortedList<Vertex, double> openList = new SortedList<Vertex, double>();
-            Collection<int> closedList = new Collection<int>();//new HashSet<>((this.restrictedNodeIdentifiers == null) ? new Collection<int>() : this.restrictedNodeIdentifiers);
-            Dictionary<int, Vertex> nodeMap = new Dictionary<int, Vertex>();
-
-            var startNode = GetClosestVertex(start);
-            var endNode = GetClosestVertex(end);
+            SortedList<AStarVertex, double> openList = new SortedList<AStarVertex, double>();
+            Collection<AStarVertex> closedList = new Collection<AStarVertex>();//new HashSet<>((this.restrictedNodeIdentifiers == null) ? new Collection<int>() : this.restrictedNodeIdentifiers);
+            var nodeMap = new HashSet<AStarVertex>();
+            
+            var startNode = FindClosestVertex(start);
+            var endNode   = FindClosestVertex(end);
            
 
             // Starting Vertex
-            Vertex startVertex = new Vertex(startNode,
-                                            0.0,
-                                            GetMinDistance(start, end));
+            var startVertex = new AStarVertex(startNode.Coordinates,
+                                              0.0,
+                                              GetMinDistance(start, end));
 
-            nodeMap.Add(startNodeIdentifier, startVertex);
+            nodeMap.Add(startVertex);
 
-            for (Vertex currentVertex = startVertex; currentVertex != null && openList.Keys.Count > 0; currentVertex = openList.Keys[0])
+            for (AStarVertex currentVertex = startVertex; currentVertex != null && openList.Keys.Count > 0; currentVertex = openList.Keys[0])
             {
                 // If current vertex is the target then we are done
-                if (currentVertex.Node.Identifier == endNodeIdentifier)
+                if (currentVertex.Coordinates.IsEqual(end))
                 {
-                    return GetAStarPath(endNodeIdentifier, nodeMap);
+                    return GetAStarPath(end, nodeMap).ToList();
                 }
 
-                closedList.Add(currentVertex.Node.Identifier); // Put it in "done" pile
+                closedList.Add(currentVertex); // Put it in "done" pile
 
-                foreach (AttributedEdge exit in this.edgeGetter.getExits(currentVertex.Node.Identifier)) // For each node adjacent to the current node
+                foreach (var exit in  currentVertex.AStarNeighbors) // For each node adjacent to the current node
                 {
                     // Ignore restricted edges
-                    if (!this.restrictedEdgeIdentifiers.Contains(exit.EdgeIdentifier))
-                    {
-                        Vertex reachableVertex = nodeMap[exit.ToNode.Identifier];
+                    //if (!this.restrictedEdgeIdentifiers.Contains(exit.EdgeIdentifier))
+                    AStarVertex reachableVertex = null;
+                   var hasBeenVisited = nodeMap.Contains(exit.Key);
 
-                        if (reachableVertex == null)
-                        {
-                            reachableVertex = new Vertex(exit.ToNode);
-                            nodeMap.Add(exit.ToNode.Identifier, reachableVertex);
-                        }
+                   if (hasBeenVisited == false)
+                   {
+                       reachableVertex = new AStarVertex(exit.Key.Coordinates, double.MaxValue, double.MaxValue);
+                       nodeMap.Add(reachableVertex);
+                   }
 
-                        // If the closed list already searched this vertex, skip it
-                        if (!closedList.Contains(exit.ToNode.Identifier))
-                        {
-                            double edgeCost = this.edgeCostEvaluator.Apply(exit);
+                   // If the closed list already searched this vertex, skip it
+                   if (!closedList.Contains(exit.Key))
+                   {
+                        //double edgeCost = this.edgeCostEvaluator.Apply(exit);
+                        double edgeCost = GetMinimumDistance(exit.Value.To.Coordinates, exit.Value.From.Coordinates);
 
-                            if (edgeCost <= 0.0)    // Are positive values that are extremely close to 0 going to be a problem?
-                            {
-                                throw new ArgumentException("The A* algorithm is only valid for edge costs greater than 0");
-                            }
+                       if (edgeCost <= 0.0)    // Are positive values that are extremely close to 0 going to be a problem?
+                       {
+                           throw new ArgumentException("The A* algorithm is only valid for edge costs greater than 0");
+                       }
 
-                            double costFromStart = currentVertex.CostFromStart + edgeCost;
+                       double costFromStart = currentVertex.CostFromStart + edgeCost;
 
-                            bool isShorterPath = costFromStart < reachableVertex.CostFromStart;
+                       bool isShorterPath = costFromStart < reachableVertex.CostFromStart;
 
-                            if (!openList.ContainsKey(reachableVertex) || isShorterPath)
-                            {
-                                double estimatedCostFromEnd = exit.ToNode.Identifier == endNode.Identifier ? 0.0
-                                                                                                           : cachedHeuristic.Get(reachableVertex.Node, endNode);
+                       if (!openList.ContainsKey(reachableVertex) || isShorterPath)
+                       {
+                           double estimatedCostFromEnd = exit.Key.Coordinates.IsEqual(endNode.Coordinates) ? 0.0
+                                                                                                           : GetMinimumDistance(reachableVertex.Coordinates, endNode.Coordinates);
 
-                                reachableVertex.Update(costFromStart,
-                                                       estimatedCostFromEnd,
-                                                       currentVertex,
-                                                       exit.EdgeIdentifier,
-                                                       exit.getEdgeAttributes(),
-                                                       edgeCost);
+                           reachableVertex.Update(costFromStart,
+                                                  estimatedCostFromEnd,
+                                                  currentVertex,
+                                                  edgeCost);
 
-                                if (isShorterPath)
-                                {
-                                    openList.Remove(reachableVertex);   // Re-add to trigger the reprioritization of this vertex
-                                }
+                           if (isShorterPath)
+                           {
+                               openList.Remove(reachableVertex);   // Re-add to trigger the reprioritization of this vertex
+                           }
 
-                                openList.Add(reachableVertex, costFromStart + estimatedCostFromEnd);
-                            }
-                        }
-                    }
+                           openList.Add(reachableVertex, costFromStart + estimatedCostFromEnd);
+                       }
+                   }
+                 
                 }
             }
 
             return null;    // No path between the start and end nodes
         }
 
-        /// <summary>
-        /// Finds the cloest vertex in the graph to a point
-        /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        protected Vertex GetClosestVertex(MapPoint point)
+        public static LinkedList<Edge> GetAStarPath(MapPoint endLocation, HashSet<AStarVertex> nodeMap)
         {
-            Vertex closest = null;
-            float minDistance = float.MaxValue;
-            foreach (var vertex in graph.Verticies)
+            LinkedList<Edge> path = new LinkedList<Edge>();
+            LinkedList<Double> edgeCosts = new LinkedList<Double>();
+
+            for (var vertex = nodeMap.First(aStarVertex => aStarVertex.Coordinates.IsEqual(endLocation)); vertex != null; vertex = vertex.Previous)
             {
-                var distance = GeometryEngine.GeodesicDistance(point, vertex.Coordinates);
-                if (distance < minDistance)
+                //nodesAttributes.AddFirst(vertex.Node.GetAttributes());
+
+                if (vertex.Previous != null)
                 {
-                    minDistance = distance;
-                    closest = vertex;
+                    path.AddFirst(FindEdge(vertex, vertex.Previous));
+                    edgeCosts.AddFirst(vertex.EdgeCost);
                 }
             }
-            return closest;
+
+            return path;
+
         }
     }
 }

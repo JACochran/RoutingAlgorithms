@@ -10,11 +10,11 @@ namespace RoutingAlgorithmProject.Graph
     /// </summary>
     public class Graph
     {
-        private Dictionary<MapPoint, Vertex> vertexMap;
+        private HashSet<Vertex> vertexMap;
 
         public Graph() 
         {
-          this.vertexMap = new Dictionary<MapPoint, Vertex>();
+          this.vertexMap = new HashSet<Vertex>();
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace RoutingAlgorithmProject.Graph
             if (vertex == null)
             {
                 vertex = new Vertex(coords);
-                vertexMap.Add(coords, vertex);
+                vertexMap.Add(vertex);
             }
             return vertex;
         }
@@ -52,10 +52,7 @@ namespace RoutingAlgorithmProject.Graph
         /// <returns></returns>
         public Vertex GetVertex(MapPoint coordinate)
         {
-            if (vertexMap.ContainsKey(coordinate))
-                return vertexMap[coordinate];
-            else
-                return null;
+            return vertexMap.FirstOrDefault(vertex => vertex.Coordinates.IsEqual(coordinate));
         }
 
         /// <summary>
@@ -65,7 +62,7 @@ namespace RoutingAlgorithmProject.Graph
         {
             get
             {
-                return vertexMap.Values.ToList();
+                return vertexMap.ToList();
             }
         }
     }

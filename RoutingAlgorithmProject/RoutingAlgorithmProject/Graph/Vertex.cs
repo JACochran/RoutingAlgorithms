@@ -36,7 +36,7 @@ namespace RoutingAlgorithmProject.Graph
             get; set;
         }
 
-        public void AddEdge(Vertex to, Edge e)
+        public virtual void AddEdge(Vertex to, Edge e)
         {
             this.Neighbors[to] = e;
         }

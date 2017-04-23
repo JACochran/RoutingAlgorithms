@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RoutingAlgorithmProject.Graph;
+using Esri.ArcGISRuntime.Geometry;
 
 namespace RoutingAlgorithmProject.PathFinder
 {
@@ -11,7 +10,7 @@ namespace RoutingAlgorithmProject.PathFinder
     {
         public DijkstraPathFinder(Graph.Graph graph) : base(graph) { }
 
-        public override List<Edge> FindShortestPath(Coordinates start, Coordinates end)
+        public override List<Edge> FindShortestPath(MapPoint start, MapPoint end)
         {
             Vertex startVertex = FindClosestVertex(start);
             Vertex destinationVertex = FindClosestVertex(end);
@@ -61,26 +60,6 @@ namespace RoutingAlgorithmProject.PathFinder
             }
             return path;
 
-        }
-
-        /// <summary>
-        /// Returns the edge from v to u
-        /// </summary>
-        /// <param name="v"></param>
-        /// <param name="u"></param>
-        /// <returns></returns>
-        private Edge FindEdge(Vertex v, Vertex u)
-        {
-            Edge e = null;
-            foreach (var neighbor in v.Neighbors)
-            {
-                if (neighbor.Key.Equals(u))
-                {
-                    e = neighbor.Value;
-                    break;
-                }
-            }
-            return e;
         }
 
         private Vertex MinDist(HashSet<Vertex> q, Dictionary<Vertex, float> dist)

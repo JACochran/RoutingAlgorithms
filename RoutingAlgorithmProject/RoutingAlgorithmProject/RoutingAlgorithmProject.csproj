@@ -123,15 +123,6 @@
     <Compile Include="PathFinder\AStarPathFinder.cs" />
     <Compile Include="PathFinder\DijkstraPathFinder.cs" />
     <Compile Include="PathFinder\PathFinder.cs" />
-    <Compile Include="Routing\AStar\AStarRouter.cs" />
-    <Compile Include="Routing\Models\AttributedEdge.cs" />
-    <Compile Include="Routing\Models\AttributeDescription.cs" />
-    <Compile Include="Routing\Models\AttributedNode.cs" />
-    <Compile Include="Routing\Models\Memoize2.cs" />
-    <Compile Include="Routing\Models\Node.cs" />
-    <Compile Include="Routing\Models\NodeExitGetter.cs" />
-    <Compile Include="Routing\Models\Route.cs" />
-    <Compile Include="Routing\Models\Router.cs" />
     <Compile Include="Routing\Models\AStarVertex.cs" />
     <Compile Include="Utility\OsmUtility.cs" />
     <Compile Include="Graph\Vertex.cs" />
