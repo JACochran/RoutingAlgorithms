@@ -14,9 +14,13 @@ namespace RoutingAlgorithmProject
             IsMovingStartPoint = true;
             FindRouteAStarCommand = new RelayCommand(AStarCommandExecuted, CanRouteExecute);
             FindRouteDijikstraCommand = new RelayCommand(DijikstraCommandExecuted, CanRouteExecute);
-            OsmUtility.TestGraph();            
-        }
+            OsmUtility.TestGraph();
+            var topLeftCorner = new MapPoint(Databounds.XMin, Databounds.Extent.YMax, SpatialReferences.Wgs84);
+            var bottomRightCorner = new MapPoint(Databounds.XMax, Databounds.YMin, SpatialReferences.Wgs84);
 
+            WholeGraph = OsmUtility.ReadOsmData(topLeftCorner.ToCoordinates(), bottomRightCorner.ToCoordinates(), new AStarGraph());
+        }
+        public RoutingGraph<AStarVertex> WholeGraph;
         public static Envelope Databounds = new Envelope(-77.1201, 38.7913, -76.9091, 38.996);
 
         private bool CanRouteExecute()
@@ -43,8 +47,7 @@ namespace RoutingAlgorithmProject
 
         private void AStarCommandExecuted()
         {
-            RoutingGraph<AStarVertex> graph = new AStarGraph();
-            var dpf = new PathFinder.AStarPathFinder(CreateGraph(graph));
+            var dpf = new PathFinder.AStarPathFinder(WholeGraph);
             var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
             //TODO display path to user
         }

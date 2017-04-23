@@ -13,11 +13,6 @@ namespace RoutingAlgorithmProject.PathFinder
         {
         }
 
-        //private double GetMinDistance(Coordinates start, Coordinates end)
-        //{
-        //    return GeometryEngine.GeodesicDistance(start.ToMapPoint(), end.ToMapPoint(), LinearUnits.Meters);
-        //}
-
         public override List<Edge> FindShortestPath(Coordinates start, Coordinates end)
         {
             SortedList<AStarVertex, double> openList = new SortedList<AStarVertex, double>();
@@ -80,6 +75,10 @@ namespace RoutingAlgorithmProject.PathFinder
                                 openList.Remove(reachableVertex);   // Re-add to trigger the reprioritization of this vertex
                             }
 
+                            if(openList.ContainsKey(reachableVertex))
+                            {
+                            }
+
                             openList.Add(reachableVertex, costFromStart + estimatedCostFromEnd);
                         }
                     }
@@ -104,11 +103,8 @@ namespace RoutingAlgorithmProject.PathFinder
         {
             LinkedList<Edge> path = new LinkedList<Edge>();
             LinkedList<Double> edgeCosts = new LinkedList<Double>();
-            //path.AddLast(endLocation);
             for (var vertex = nodeMap.First(aStarVertex => aStarVertex.Coordinates.Equals(endLocation)); vertex != null; vertex = vertex.Previous)
             {
-                //nodesAttributes.AddFirst(vertex.Node.GetAttributes());
-
                 if (vertex.Previous != null)
                 {
                     path.AddFirst(FindEdge(vertex, vertex.Previous));
@@ -117,7 +113,6 @@ namespace RoutingAlgorithmProject.PathFinder
             }
 
             return path;
-
         }
     }
 }
