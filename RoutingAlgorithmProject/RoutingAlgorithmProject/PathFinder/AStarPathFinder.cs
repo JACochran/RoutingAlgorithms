@@ -77,6 +77,7 @@ namespace RoutingAlgorithmProject.PathFinder
 
                             if(openList.ContainsKey(reachableVertex))
                             {
+                                openList.Remove(reachableVertex); //SHould never hit but keeping for break point
                             }
 
                             openList.Add(reachableVertex, costFromStart + estimatedCostFromEnd);
