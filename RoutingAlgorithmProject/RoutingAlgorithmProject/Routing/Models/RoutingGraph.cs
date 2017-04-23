@@ -1,23 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RoutingAlgorithmProject.Graph
 {
-    public abstract class RoutingGraph<T> where T : Vertex
+    public class RoutingGraph<T> where T : Vertex
     {
+        private Dictionary<Coordinates, T> vertexMap;
+
+        public RoutingGraph()
+        {
+            this.vertexMap = new Dictionary<Coordinates, T>();
+        }
+
         // <summary>
         /// if a vertex does not exist at location coords, add to the dictionary
         /// </summary>
         /// <param name="coords"></param>
         /// <returns>reference to vertex at location coords</returns>
-        public abstract T AddVertex(Coordinates coords);
+        public T AddVertex(Coordinates coords)
+        {
+            var vertex = this.GetVertex(coords);
+            if (vertex == null)
+            {
+                vertex = (T)Activator.CreateInstance(typeof(T), coords);
+                vertexMap.Add(coords, vertex);
+            }
+            return vertex;
+        }
 
         /// <summary>
         /// Adds an edge to the graph
         /// creates an edge in the neighbor list of each vertex
         /// </summary>
         /// <param name="e"></param>
-        public abstract void AddEdge(Edge e);
+        public void AddEdge(Edge e)
+        {
+            e.From.AddEdge(e.To, e);
+            e.To.AddEdge(e.From, e);
+        }
 
         /// <summary>
         /// Checks if the graph contains a vertex at location coords
@@ -25,13 +46,79 @@ namespace RoutingAlgorithmProject.Graph
         /// </summary>
         /// <param name="coords"></param>
         /// <returns></returns>
-        public abstract T GetVertex(Coordinates coords);
+        public T GetVertex(Coordinates coords)
+        {
+            if (vertexMap.ContainsKey(coords))
+                return vertexMap[coords];
+            else
+                return null;
+        }
 
         /// <summary>
         /// Returns all Verticies in the graph
         /// </summary>
-        public virtual List<T> Verticies { get; internal set; }
+        public List<T> Verticies
+        {
+            get
+            {
+                return vertexMap.Values.ToList();
+            }
+        }
 
-        public abstract void CleanGraph();
+        public void CleanGraph()
+        {
+            // use DFS to remove unneeded verticies
+            var start = this.vertexMap.Values.First();
+
+            var visited = new HashSet<Vertex>();
+
+            var stack = new Stack<Vertex>();
+            stack.Push(start);
+
+            while (stack.Count > 0)
+            {
+                var vertex = stack.Pop();
+
+                if (visited.Contains(vertex))
+                    continue;
+
+                CleanVertex(vertex);
+                visited.Add(vertex);
+
+                var neighborList = vertex.Neighbors.Keys.ToList();
+                foreach (var neighbor in neighborList)
+                    if (!visited.Contains(neighbor))
+                        stack.Push(neighbor);
+            }
+
+            return;
+        }
+
+        private void CleanVertex(Vertex middleNode)
+        {
+            var neighborList = middleNode.Neighbors.ToArray();
+            if (middleNode.Neighbors.Count == 2)
+            {
+                var startEdge = neighborList[0].Value;
+                var endEdge = neighborList[1].Value;
+
+                var startNode = neighborList[0].Key;
+                var endNode = neighborList[1].Key;
+
+                float totalDistance = startEdge.Weight + endEdge.Weight;
+
+                // new edge from startEdge to endEdge
+                Edge newEdge = new Edge(startNode, endNode, totalDistance);
+
+                //remove edges to middle node
+                startNode.Neighbors.Remove(middleNode);
+                endNode.Neighbors.Remove(middleNode);
+                // remove middle node from graph;
+                this.vertexMap.Remove(middleNode.Coordinates);
+
+                // add new edge 
+                AddEdge(newEdge);
+            }
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace RoutingAlgorithmProject.PathFinder
         {
         }
         
-        public override List<Edge> FindShortestPath(Coordinates start, Coordinates end)
+        public override List<Vertex> FindShortestPath(Coordinates start, Coordinates end)
         {
             Vertex startVertex = FindClosestVertex(start);
             Vertex destinationVertex = FindClosestVertex(end);
@@ -51,14 +51,13 @@ namespace RoutingAlgorithmProject.PathFinder
             return GetPathResult(prev, destinationVertex);
         }
 
-        private List<Edge> GetPathResult(Dictionary<Vertex, Vertex> prev, Vertex target)
+        private List<Vertex> GetPathResult(Dictionary<Vertex, Vertex> prev, Vertex target)
         {
-            List<Edge> path = new List<Edge>();
+            List<Vertex> path = new List<Vertex>();
             Vertex u = target;
-            Edge e = null;
             while (prev[u] != null)
             {
-                path.Insert(0, FindEdge(prev[u], u));
+                path.Insert(0, u);
                 u = prev[u];
             }
             return path;

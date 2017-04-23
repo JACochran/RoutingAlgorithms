@@ -20,15 +20,19 @@ namespace RoutingAlgorithmProject
             FindRouteAStarCommand = new RelayCommand<MapView>(AStarCommandExecuted, CanRouteExecute);
             FindRouteDijikstraCommand = new RelayCommand<MapView>(DijikstraCommandExecuted, CanRouteExecute);
 
-
             OsmUtility.TestGraph();
             //load up entire osm data
             var topLeftCorner = new MapPoint(Databounds.XMin, Databounds.Extent.YMax, SpatialReferences.Wgs84);
             var bottomRightCorner = new MapPoint(Databounds.XMax, Databounds.YMin, SpatialReferences.Wgs84);
 
-            WholeGraph = OsmUtility.ReadOsmData(topLeftCorner.ToCoordinates(), bottomRightCorner.ToCoordinates(), new AStarGraph());
+            WholeGraph = OsmUtility.ReadOsmData<AStarVertex>(topLeftCorner.ToCoordinates(), bottomRightCorner.ToCoordinates());
+            WholeGraph.CleanGraph();
+
+            WholeGraph2 = OsmUtility.ReadOsmData<Vertex>(topLeftCorner.ToCoordinates(), bottomRightCorner.ToCoordinates());
+            WholeGraph2.CleanGraph();
         }
         public RoutingGraph<AStarVertex> WholeGraph;
+        public RoutingGraph<Vertex> WholeGraph2;
         public static Envelope Databounds = new Envelope(-77.1201, 38.7913, -76.9091, 38.996);
 
         private bool CanRouteExecute(MapView mapView)
@@ -36,21 +40,9 @@ namespace RoutingAlgorithmProject
             return StartLocation != null && EndLocation != null;
         }
 
-        private Graph.RoutingGraph<T> CreateGraph<T>(RoutingGraph<T> initialGraph) where T : Vertex
-        {
-            //var start = new Coordinates(38.903671f, -77.000038f);
-           // var end = new Coordinates(38.902446f, -76.997449f);
-            // Create graph using start and end locations to build bounding box
-            var graph = OsmUtility.ReadOsmData(StartLocation.ToCoordinates(), EndLocation.ToCoordinates(), initialGraph);
-            graph.CleanGraph();
-            return graph;
-        }
-
         private void DijikstraCommandExecuted(MapView mapView)
         {
-            RoutingGraph<Vertex> graph = new Graph.Graph();
-
-            var dpf = new PathFinder.DijkstraPathFinder(CreateGraph(graph));
+            var dpf = new PathFinder.DijkstraPathFinder(WholeGraph2);
             var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
             if (path != null)
             {
@@ -68,9 +60,10 @@ namespace RoutingAlgorithmProject
             }
         }
 
-        private void DisplayPath(List<Edge> path, MapView mapView)
+        private void DisplayPath(List<Vertex> path, MapView mapView)
         {
-            var location = path.ToPolyline();
+             
+           var location = path.ToPolyline(StartLocation, EndLocation);
             //get the graphics layer
             var graphicsLayer = mapView.Map.Layers["MyGraphics"] as GraphicsLayer;
             if (graphicsLayer != null)
@@ -144,6 +137,7 @@ namespace RoutingAlgorithmProject
             {
                 _startLocation = value;
                 RaisePropertyChanged(() => StartLocation);
+                IsMovingStartPoint = !IsMovingStartPoint;
                 FindRouteAStarCommand.RaiseCanExecuteChanged();
                 FindRouteDijikstraCommand.RaiseCanExecuteChanged();
             }

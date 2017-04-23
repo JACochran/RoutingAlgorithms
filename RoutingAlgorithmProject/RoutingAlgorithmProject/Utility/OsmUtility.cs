@@ -1,5 +1,6 @@
 ﻿using OsmSharp.Streams;
 using RoutingAlgorithmProject.Graph;
+using RoutingAlgorithmProject.Routing.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,8 +11,9 @@ namespace RoutingAlgorithmProject.Utility
     public static class OsmUtility
     {
 
-        public static RoutingGraph<T> ReadOsmData<T>(Coordinates start, Coordinates end, RoutingGraph<T> graph) where T : Vertex
+        public static RoutingGraph<T> ReadOsmData<T>(Coordinates start, Coordinates end) where T : Vertex
         {
+            RoutingGraph<T> graph = new RoutingGraph<T>();
             string path = @"..\..\Resources\district-of-columbia-latest.osm.pbf"; // path to dc data
             if (File.Exists(path))
             {
@@ -60,61 +62,9 @@ namespace RoutingAlgorithmProject.Utility
             return graph;
         }
 
-
-        public static Graph.AStarGraph ReadOsmDataAsAStar(Coordinates start, Coordinates end)
-        {
-            var graph = new Graph.AStarGraph();
-            string path = @"..\..\Resources\district-of-columbia-latest.osm.pbf"; // path to dc data
-            if (File.Exists(path))
-            {
-                using (var fileStreamSource = File.OpenRead(path))
-                {
-                    var source = new PBFOsmStreamSource(fileStreamSource);
-
-                    float buffer = 0.2f;
-                    var maxLat = Math.Max(start.Latitude, end.Latitude) + buffer;
-                    var maxLon = Math.Max(start.Longitude, end.Longitude) + buffer;
-                    var minLat = Math.Min(start.Latitude, end.Latitude) - buffer;
-                    var minLon = Math.Min(start.Longitude, end.Longitude) - buffer;
-
-
-                    var filtered = source.FilterBox(minLon, maxLat, maxLon, minLat); // left, top, right, bottom
-                    //var progress = source.ShowProgress();
-                    var nodesAndWays = from osmGeo in filtered
-                                       where osmGeo.Type == OsmSharp.OsmGeoType.Node || (osmGeo.Type == OsmSharp.OsmGeoType.Way && osmGeo.Tags != null && osmGeo.Tags.ContainsKey("highway"))
-                                       select osmGeo;
-                    var completed = nodesAndWays.ToComplete();
-
-
-                    foreach (var obj in completed)
-                    {
-                        if (obj.Type == OsmSharp.OsmGeoType.Way)
-                        {
-                            OsmSharp.Complete.CompleteWay way = (OsmSharp.Complete.CompleteWay)obj;
-
-                            List<Graph.Vertex> vList = new List<Graph.Vertex>();
-                            Graph.Vertex fromVertex = null;
-                            foreach (OsmSharp.Node node in way.Nodes)
-                            {
-                                var location = new Coordinates(node.Latitude, node.Longitude);
-                                Graph.Vertex toVertex = graph.AddVertex(location);
-                                if (fromVertex != null)
-                                {
-                                    Graph.Edge edge = new Graph.Edge(fromVertex, toVertex);
-                                    graph.AddEdge(edge);
-                                }
-                                fromVertex = toVertex;
-                            }
-                        }
-                    }
-                }
-            }
-            return graph;
-        }
-
         public static void TestGraph()
         {
-            Graph.Graph g = new Graph.Graph();
+            Graph.RoutingGraph<Vertex> g = new Graph.RoutingGraph<Vertex>();
             Graph.Vertex a = g.AddVertex(new Coordinates(0, 0));
             Graph.Vertex b = g.AddVertex(new Coordinates(0, 10));
             Graph.Vertex c = g.AddVertex(new Coordinates(5, 5));
@@ -128,7 +78,7 @@ namespace RoutingAlgorithmProject.Utility
             var dpf = new PathFinder.DijkstraPathFinder(g);
             var path = dpf.FindShortestPath(new Coordinates(1, 1), new Coordinates(9, 9));
 
-            var astarGraph = new AStarGraph();
+            var astarGraph = new Graph.RoutingGraph<AStarVertex>();
             var vertex1 = astarGraph.AddVertex(new Coordinates(0, 0));
             var vertex2 = astarGraph.AddVertex(new Coordinates(0, 10));
             var vertex3 = astarGraph.AddVertex(new Coordinates(5, 5));
@@ -140,7 +90,6 @@ namespace RoutingAlgorithmProject.Utility
             astarGraph.AddEdge(new Graph.Edge(vertex1, vertex2));
             astarGraph.AddEdge(new Graph.Edge(vertex2, vertex4));
             var path2 = new PathFinder.AStarPathFinder(astarGraph).FindShortestPath(new Coordinates(1, 1), new Coordinates(9, 9));
-            var x = 1;
         }
     }
 

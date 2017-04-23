@@ -13,7 +13,7 @@ namespace RoutingAlgorithmProject.PathFinder
         {
         }
 
-        public override List<Edge> FindShortestPath(Coordinates start, Coordinates end)
+        public override List<Vertex> FindShortestPath(Coordinates start, Coordinates end)
         {
             //start = new Graph.Coordinates(38.903671f, -77.000038f);
             //end = new Graph.Coordinates(38.902446f, -76.997449f);
@@ -102,15 +102,15 @@ namespace RoutingAlgorithmProject.PathFinder
             return null;    // No path between the start and end nodes
         }
 
-        public static LinkedList<Edge> GetAStarPath(Coordinates endLocation, HashSet<AStarVertex> nodeMap)
+        public static LinkedList<Vertex> GetAStarPath(Coordinates endLocation, HashSet<AStarVertex> nodeMap)
         {
-            LinkedList<Edge> path = new LinkedList<Edge>();
+            LinkedList<Vertex> path = new LinkedList<Vertex>();
             LinkedList<Double> edgeCosts = new LinkedList<Double>();
             for (var vertex = nodeMap.First(aStarVertex => aStarVertex.Coordinates.Equals(endLocation)); vertex != null; vertex = vertex.Previous)
             {
                 if (vertex.Previous != null)
                 {
-                    path.AddFirst(FindEdge(vertex, vertex.Previous));
+                    path.AddFirst(vertex);
                     edgeCosts.AddFirst(vertex.EdgeCost);
                 }
             }

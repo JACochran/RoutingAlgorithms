@@ -23,12 +23,10 @@ namespace RoutingAlgorithmProject.Routing.Models
             return cost.CompareTo(vertex2.EstimatedCostToEnd + vertex2.CostFromStart);
         }
 
-        public AStarVertex(Coordinates  location,
-                           double costFromStart,
-                           double estimatedCostToEnd): base(location)
+        public AStarVertex(Coordinates  location): base(location)
         {
-            CostFromStart = costFromStart;
-            EstimatedCostToEnd = estimatedCostToEnd;
+            CostFromStart = double.MaxValue;
+            EstimatedCostToEnd = double.MaxValue;
             AStarNeighbors = new Dictionary<AStarVertex, Edge>();
         }
 
@@ -40,7 +38,7 @@ namespace RoutingAlgorithmProject.Routing.Models
         public override void AddEdge(Vertex to, Edge edge)
         {
             base.AddEdge(to, edge);
-            AStarNeighbors[ new AStarVertex(to.Coordinates, double.MaxValue, double.MaxValue)] = edge;
+            AStarNeighbors[ new AStarVertex(to.Coordinates)] = edge;
         }
 
         public void Update(double costFromStart,

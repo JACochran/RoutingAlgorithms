@@ -19,7 +19,7 @@ namespace RoutingAlgorithmProject.PathFinder
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns> A list of edges from start to end</returns>
-        public abstract List<Graph.Edge> FindShortestPath(Coordinates start, Coordinates end);
+        public abstract List<Graph.Vertex> FindShortestPath(Coordinates start, Coordinates end);
 
         /// <summary>
         /// Finds the cloest vertex in the graph to a point

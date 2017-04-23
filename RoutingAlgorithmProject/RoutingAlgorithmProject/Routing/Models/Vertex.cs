@@ -8,6 +8,7 @@ namespace RoutingAlgorithmProject.Graph
         // Private member-variables
         private Coordinates coords;
         private Dictionary<Vertex, Edge> neighbors = null;
+        private System.Guid guid = System.Guid.NewGuid();
 
         public Vertex(Coordinates coords)
         {
@@ -70,7 +71,7 @@ namespace RoutingAlgorithmProject.Graph
 
         public override string ToString()
         {
-            return "(" + Coordinates.Latitude.ToString() + "," + Coordinates.Longitude.ToString() + ")";
+            return "(" + Coordinates.Latitude.ToString() + "," + Coordinates.Longitude.ToString() + ") " + guid;
         }
     }
 

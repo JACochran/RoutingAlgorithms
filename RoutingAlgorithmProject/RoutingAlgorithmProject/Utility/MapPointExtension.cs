@@ -17,16 +17,16 @@ namespace RoutingAlgorithmProject.Utility
             return new MapPoint(location.Longitude, location.Latitude, SpatialReferences.Wgs84);
         }
 
-        public static Polyline ToPolyline(this List<Edge> edges)
+        public static Polyline ToPolyline(this List<Vertex> path, MapPoint start, MapPoint end)
         {
             var polyline = new PolylineBuilder(SpatialReferences.Wgs84);
-            foreach (var edge in edges)
+            polyline.AddPoint(start);
+            foreach (var v in path)
             {
-                var startPoint = edge.To.Coordinates.ToMapPoint();
-                var endPoint = edge.From.Coordinates.ToMapPoint();
-                polyline.AddPoint(startPoint);
-                polyline.AddPoint(endPoint);
+                var mapPoint = v.Coordinates.ToMapPoint();
+                polyline.AddPoint(mapPoint);
             }
+            polyline.AddPoint(end);
             return polyline.ToGeometry();
         }
     }
