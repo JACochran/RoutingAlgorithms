@@ -3,7 +3,6 @@ using GalaSoft.MvvmLight;
 using RoutingAlgorithmProject.Utility;
 using Esri.ArcGISRuntime.Geometry;
 using RoutingAlgorithmProject.Graph;
-using RoutingAlgorithmProject.Routing.Models;
 using System.Collections.Generic;
 using Esri.ArcGISRuntime.Controls;
 using Esri.ArcGISRuntime.Layers;
@@ -25,14 +24,20 @@ namespace RoutingAlgorithmProject
             var topLeftCorner = new MapPoint(Databounds.XMin, Databounds.Extent.YMax, SpatialReferences.Wgs84);
             var bottomRightCorner = new MapPoint(Databounds.XMax, Databounds.YMin, SpatialReferences.Wgs84);
 
-            WholeGraph = OsmUtility.ReadOsmData<AStarVertex>(topLeftCorner.ToCoordinates(), bottomRightCorner.ToCoordinates());
+            WholeGraph = OsmUtility.ReadOsmData(topLeftCorner.ToCoordinates(), bottomRightCorner.ToCoordinates());
             WholeGraph.CleanGraph();
 
-            WholeGraph2 = OsmUtility.ReadOsmData<Vertex>(topLeftCorner.ToCoordinates(), bottomRightCorner.ToCoordinates());
-            WholeGraph2.CleanGraph();
+            //WholeGraph2 = OsmUtility.ReadOsmData<Vertex>(topLeftCorner.ToCoordinates(), bottomRightCorner.ToCoordinates());
+            //WholeGraph2.CleanGraph();
+
+            var start = new Coordinates(38.8929634f, -77.02602f);
+            var end = new Coordinates(38.8966866f, -77.01893f);
+
+            StartLocation = start.ToMapPoint();
+            EndLocation = end.ToMapPoint();
         }
-        public RoutingGraph<AStarVertex> WholeGraph;
-        public RoutingGraph<Vertex> WholeGraph2;
+        public RoutingGraph<Vertex> WholeGraph;
+        //public RoutingGraph<Vertex> WholeGraph2;
         public static Envelope Databounds = new Envelope(-77.1201, 38.7913, -76.9091, 38.996);
 
         private bool CanRouteExecute(MapView mapView)
@@ -42,12 +47,12 @@ namespace RoutingAlgorithmProject
 
         private void DijikstraCommandExecuted(MapView mapView)
         {
-            var dpf = new PathFinder.DijkstraPathFinder(WholeGraph2);
+            var dpf = new PathFinder.DijkstraPathFinder(WholeGraph);
             var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
             if (path != null)
             {
                 DisplayPath(path, mapView);
-            }
+            }          
         }
 
         private void AStarCommandExecuted(MapView mapView)
@@ -86,7 +91,7 @@ namespace RoutingAlgorithmProject
                 CurrentRoute = routeGraphic;
             }
             //zoom to route location
-            mapView.SetViewAsync(location);
+            mapView.SetViewAsync(location, new System.TimeSpan(0,0,1), new System.Windows.Thickness(100));
         }
 
         private Graphic _currentRoute;

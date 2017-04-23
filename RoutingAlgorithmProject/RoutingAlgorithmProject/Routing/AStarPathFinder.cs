@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using RoutingAlgorithmProject.Graph;
 using System.Collections.ObjectModel;
-using RoutingAlgorithmProject.Routing.Models;
 
 namespace RoutingAlgorithmProject.PathFinder
 {
-    class AStarPathFinder : PathFinder<AStarVertex>
+    class AStarPathFinder : PathFinder<Vertex>
     {
-        public AStarPathFinder(RoutingGraph<AStarVertex> graph) : base(graph)
+        public AStarPathFinder(RoutingGraph<Vertex> graph) : base(graph)
         {
         }
 
@@ -17,9 +16,9 @@ namespace RoutingAlgorithmProject.PathFinder
         {
             //start = new Graph.Coordinates(38.903671f, -77.000038f);
             //end = new Graph.Coordinates(38.902446f, -76.997449f);
-            SortedList<AStarVertex, double> openList = new SortedList<AStarVertex, double>();
-            Collection<AStarVertex> closedList = new Collection<AStarVertex>();
-            var nodeMap = new HashSet<AStarVertex>();
+            SortedList<Vertex, double> openList = new SortedList<Vertex, double>();
+            Collection<Vertex> closedList = new Collection<Vertex>();
+            var nodeMap = new HashSet<Vertex>();
             
             var startNode = FindClosestVertex(start);
             var endNode   = FindClosestVertex(end);
@@ -37,13 +36,13 @@ namespace RoutingAlgorithmProject.PathFinder
 
                 closedList.Add(currentVertex); // Put it in "done" pile
 
-                foreach (var exit in  currentVertex.AStarNeighbors) // For each node adjacent to the current node
+                foreach (var exit in  currentVertex.Neighbors) // For each node adjacent to the current node
                 {
                     var reachableVertex = nodeMap.FirstOrDefault(vertex => vertex.Equals(exit.Value.To));
                     
                     if (reachableVertex == null)
                     {
-                        reachableVertex = (AStarVertex) exit.Value.To;
+                        reachableVertex = exit.Value.To;
                         nodeMap.Add(reachableVertex);
                     }
 
@@ -102,7 +101,7 @@ namespace RoutingAlgorithmProject.PathFinder
             return null;    // No path between the start and end nodes
         }
 
-        public static LinkedList<Vertex> GetAStarPath(Coordinates endLocation, HashSet<AStarVertex> nodeMap)
+        public static LinkedList<Vertex> GetAStarPath(Coordinates endLocation, HashSet<Vertex> nodeMap)
         {
             LinkedList<Vertex> path = new LinkedList<Vertex>();
             LinkedList<Double> edgeCosts = new LinkedList<Double>();

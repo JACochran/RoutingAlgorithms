@@ -1,19 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace RoutingAlgorithmProject.Graph
 {
 
-    public class Vertex
+    public class Vertex: IComparable
     {
         // Private member-variables
         private Coordinates coords;
         private Dictionary<Vertex, Edge> neighbors = null;
-        private System.Guid guid = System.Guid.NewGuid();
+
+        // AStar variables
+        public Vertex Previous { get; internal set; }
+        public double EdgeCost { get; internal set; }
+        public double EstimatedCostToEnd { get; set; }
+        public double CostFromStart { get; set; }
 
         public Vertex(Coordinates coords)
         {
             this.coords = coords;
             this.neighbors = new Dictionary<Vertex, Edge>();
+            this.CostFromStart = double.MaxValue;
+            this.EstimatedCostToEnd = double.MaxValue;
         }
 
         /// <summary>
@@ -71,7 +79,40 @@ namespace RoutingAlgorithmProject.Graph
 
         public override string ToString()
         {
-            return "(" + Coordinates.Latitude.ToString() + "," + Coordinates.Longitude.ToString() + ") " + guid;
+            return "(" + Coordinates.Latitude.ToString() + "," + Coordinates.Longitude.ToString() + ") " ;
+        }
+
+        public void Update(double costFromStart,
+                           double estimatedCostToEnd,
+                           Vertex previous,
+                           double edgeCost)
+        {
+            if (costFromStart < 0.0)
+            {
+                throw new ArgumentException("Distance from start may not be less than 0");
+            }
+
+            if (estimatedCostToEnd < 0.0)
+            {
+                throw new ArgumentException("Distance from end may not be less than 0");
+            }
+
+            CostFromStart = costFromStart;
+            EstimatedCostToEnd = estimatedCostToEnd;
+            Previous = previous;
+            EdgeCost = edgeCost;
+        }
+
+        public int CompareTo(object obj)
+        {
+            var vertex2 = obj as Vertex;
+            if (obj == null)
+            {
+                throw new ArgumentException("cannot compare these two types");
+            }
+
+            Double cost = EstimatedCostToEnd + CostFromStart;
+            return cost.CompareTo(vertex2.EstimatedCostToEnd + vertex2.CostFromStart);
         }
     }
 
