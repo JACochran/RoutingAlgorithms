@@ -5,11 +5,11 @@ using RoutingAlgorithmProject.Graph;
 
 namespace RoutingAlgorithmProject.PathFinder
 {
-    class DijkstraPathFinder : PathFinder<Vertex>
+    class DijkstraPathFinder : PathFinder
     {
-        private RoutingGraph<Vertex> routingGraph;
+        private RoutingGraph routingGraph;
 
-        public DijkstraPathFinder(RoutingGraph<Vertex> graph) : base(graph)
+        public DijkstraPathFinder(RoutingGraph graph) : base(graph)
         {
         }
         

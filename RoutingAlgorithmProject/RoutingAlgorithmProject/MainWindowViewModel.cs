@@ -27,17 +27,14 @@ namespace RoutingAlgorithmProject
             WholeGraph = OsmUtility.ReadOsmData(topLeftCorner.ToCoordinates(), bottomRightCorner.ToCoordinates());
             WholeGraph.CleanGraph();
 
-            //WholeGraph2 = OsmUtility.ReadOsmData<Vertex>(topLeftCorner.ToCoordinates(), bottomRightCorner.ToCoordinates());
-            //WholeGraph2.CleanGraph();
 
-            var start = new Coordinates(38.8929634f, -77.02602f);
-            var end = new Coordinates(38.8966866f, -77.01893f);
-
-            StartLocation = start.ToMapPoint();
-            EndLocation = end.ToMapPoint();
+            // uncomment to default start and end points
+            //var start = new Coordinates(38.8929634f, -77.02602f);
+            //var end = new Coordinates(38.8966866f, -77.01893f);
+            //StartLocation = start.ToMapPoint();
+            //EndLocation = end.ToMapPoint();
         }
-        public RoutingGraph<Vertex> WholeGraph;
-        //public RoutingGraph<Vertex> WholeGraph2;
+        public RoutingGraph WholeGraph;
         public static Envelope Databounds = new Envelope(-77.1201, 38.7913, -76.9091, 38.996);
 
         private bool CanRouteExecute(MapView mapView)

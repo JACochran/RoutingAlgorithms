@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace RoutingAlgorithmProject.PathFinder
 {
-    public abstract class PathFinder<T> where T : Vertex
+    public abstract class PathFinder 
     {
-        protected RoutingGraph<T> graph;
+        protected RoutingGraph graph;
 
-        public PathFinder(RoutingGraph<T> graph)
+        public PathFinder(RoutingGraph graph)
         {
             this.graph = graph;
         }
@@ -26,9 +26,9 @@ namespace RoutingAlgorithmProject.PathFinder
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        protected T FindClosestVertex(Coordinates point)
+        protected Vertex FindClosestVertex(Coordinates point)
         {
-            T closest = null;
+            Vertex closest = null;
             var minDistance = float.MaxValue;
             foreach(var vertex in graph.Verticies)
             {

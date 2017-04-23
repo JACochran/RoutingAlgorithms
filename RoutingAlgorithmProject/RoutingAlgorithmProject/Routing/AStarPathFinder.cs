@@ -6,9 +6,9 @@ using System.Collections.ObjectModel;
 
 namespace RoutingAlgorithmProject.PathFinder
 {
-    class AStarPathFinder : PathFinder<Vertex>
+    class AStarPathFinder : PathFinder
     {
-        public AStarPathFinder(RoutingGraph<Vertex> graph) : base(graph)
+        public AStarPathFinder(RoutingGraph graph) : base(graph)
         {
         }
 
@@ -36,11 +36,10 @@ namespace RoutingAlgorithmProject.PathFinder
 
                 foreach (var exit in  currentVertex.Neighbors) // For each node adjacent to the current node
                 {
-                    var reachableVertex = nodeMap.FirstOrDefault(vertex => vertex.Equals(exit.Value.To));
-                    
-                    if (reachableVertex == null)
+                    Vertex reachableVertex = null;
+                    reachableVertex = exit.Key;
+                    if (!nodeMap.Contains(reachableVertex))
                     {
-                        reachableVertex = exit.Value.To;
                         nodeMap.Add(reachableVertex);
                     }
 
@@ -48,7 +47,7 @@ namespace RoutingAlgorithmProject.PathFinder
                     if (!closedList.Contains(reachableVertex))
                     {
                         //double edgeCost = this.edgeCostEvaluator.Apply(exit);
-                        float edgeCost = Graph.Edge.GetMinimumDistance(exit.Value.To.Coordinates, exit.Value.From.Coordinates);
+                        float edgeCost = exit.Value.Weight;
 
                         if (edgeCost <= 0.0)    // Are positive values that are extremely close to 0 going to be a problem?
                         {

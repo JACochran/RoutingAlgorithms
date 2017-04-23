@@ -10,9 +10,9 @@ namespace RoutingAlgorithmProject.Utility
     public static class OsmUtility
     {
 
-        public static Graph.RoutingGraph<Vertex> ReadOsmData(Coordinates start, Coordinates end) 
+        public static Graph.RoutingGraph ReadOsmData(Coordinates start, Coordinates end) 
         {
-            RoutingGraph<Vertex> graph = new RoutingGraph<Vertex>();
+            RoutingGraph graph = new RoutingGraph();
             string path = @"..\..\Resources\district-of-columbia-latest.osm.pbf"; // path to dc data
             if (File.Exists(path))
             {
@@ -63,7 +63,7 @@ namespace RoutingAlgorithmProject.Utility
 
         public static void TestGraph()
         {
-            Graph.RoutingGraph<Vertex> g = new Graph.RoutingGraph<Vertex>();
+            Graph.RoutingGraph g = new Graph.RoutingGraph();
             Graph.Vertex a = g.AddVertex(new Coordinates(0, 0));
             Graph.Vertex b = g.AddVertex(new Coordinates(0, 10));
             Graph.Vertex c = g.AddVertex(new Coordinates(5, 5));
@@ -77,7 +77,7 @@ namespace RoutingAlgorithmProject.Utility
             var dpf = new PathFinder.DijkstraPathFinder(g);
             var path = dpf.FindShortestPath(new Coordinates(1, 1), new Coordinates(9, 9));
 
-            var astarGraph = new Graph.RoutingGraph<Vertex>();
+            var astarGraph = new Graph.RoutingGraph();
             var vertex1 = astarGraph.AddVertex(new Coordinates(0, 0));
             var vertex2 = astarGraph.AddVertex(new Coordinates(0, 10));
             var vertex3 = astarGraph.AddVertex(new Coordinates(5, 5));

@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+
 
 namespace RoutingAlgorithmProject.Graph
 {
-    public class RoutingGraph<T> where T : Vertex
+    public class RoutingGraph 
     {
-        private Dictionary<Coordinates, T> vertexMap;
+        private Dictionary<Coordinates, Vertex> vertexMap;
 
         public RoutingGraph()
         {
-            this.vertexMap = new Dictionary<Coordinates, T>();
+            this.vertexMap = new Dictionary<Coordinates, Vertex>();
         }
 
         // <summary>
@@ -18,12 +18,12 @@ namespace RoutingAlgorithmProject.Graph
         /// </summary>
         /// <param name="coords"></param>
         /// <returns>reference to vertex at location coords</returns>
-        public T AddVertex(Coordinates coords)
+        public Vertex AddVertex(Coordinates coords)
         {
             var vertex = this.GetVertex(coords);
             if (vertex == null)
             {
-                vertex = (T)Activator.CreateInstance(typeof(T), coords);
+                vertex = new Graph.Vertex(coords);
                 vertexMap.Add(coords, vertex);
             }
             return vertex;
@@ -46,7 +46,7 @@ namespace RoutingAlgorithmProject.Graph
         /// </summary>
         /// <param name="coords"></param>
         /// <returns></returns>
-        public T GetVertex(Coordinates coords)
+        public Vertex GetVertex(Coordinates coords)
         {
             if (vertexMap.ContainsKey(coords))
                 return vertexMap[coords];
@@ -57,7 +57,7 @@ namespace RoutingAlgorithmProject.Graph
         /// <summary>
         /// Returns all Verticies in the graph
         /// </summary>
-        public List<T> Verticies
+        public List<Graph.Vertex> Verticies
         {
             get
             {
