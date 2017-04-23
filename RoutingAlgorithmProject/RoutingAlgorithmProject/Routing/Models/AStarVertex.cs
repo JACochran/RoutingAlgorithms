@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace RoutingAlgorithmProject.Routing.Models
 {
-    public class Vertex : IComparable
+    public class AStarVertex : IComparable
     {
-        public Vertex Previous { get; internal set; }
+        public AStarVertex Previous { get; internal set; }
         public List<object> EdgeAttributes { get; internal set; }
         public int EdgeIdentifier { get; internal set; }
         public double EdgeCost { get; internal set; }
@@ -15,7 +15,7 @@ namespace RoutingAlgorithmProject.Routing.Models
 
         public int CompareTo(object obj)
         {
-            var vertex2 = obj as Vertex;
+            var vertex2 = obj as AStarVertex;
             if (obj == null)
             {
                 throw new ArgumentException("cannot compare these two types");
@@ -26,12 +26,12 @@ namespace RoutingAlgorithmProject.Routing.Models
         }
 
 
-        public Vertex(AttributedNode node)
+        public AStarVertex(AttributedNode node)
         {
             this.node = node;
         }
 
-        public Vertex(AttributedNode node,
+        public AStarVertex(AttributedNode node,
                      double costFromStart,
                      double estimatedCostToEnd)
         {
@@ -43,7 +43,7 @@ namespace RoutingAlgorithmProject.Routing.Models
         public override bool Equals(Object obj)
         {
             return obj == this ||
-                   !(obj == null || GetType() != obj.GetType()) && node == ((Vertex)obj).node;
+                   !(obj == null || GetType() != obj.GetType()) && node == ((AStarVertex)obj).node;
 
         }
 
@@ -79,7 +79,7 @@ namespace RoutingAlgorithmProject.Routing.Models
         /**
          * @return the previous
          */
-        Vertex getPrevious()
+        AStarVertex getPrevious()
         {
             return previous;
         }
@@ -102,7 +102,7 @@ namespace RoutingAlgorithmProject.Routing.Models
 
         public void Update(double costFromStart,
                      double estimatedCostToEnd,
-                     Vertex previous,
+                     AStarVertex previous,
                      int edgeIdentifier,
                      IReadOnlyList<Object> edgeAttributes,
                      double edgeCost)
@@ -129,7 +129,7 @@ namespace RoutingAlgorithmProject.Routing.Models
 
         private double costFromStart = Double.MaxValue;
         private double estimatedCostToEnd = Double.MaxValue;
-        private Vertex previous;                              // Parent node
+        private AStarVertex previous;                              // Parent node
         private int edgeIdentifier;                        // Unique identifier of the edge taken to get to this node
         private List<Object> edgeAttributes;                        // Attributes of edge with the edge being parent to this one
         private double edgeCost;                              // Calculated cost of parent node to this one

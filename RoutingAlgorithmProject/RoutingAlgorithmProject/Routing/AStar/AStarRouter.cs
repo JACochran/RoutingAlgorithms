@@ -38,20 +38,16 @@ namespace RoutingAlgorithmProject.Routing.AStar
      * @throws SQLException
      *            if there is a database error
      */
-    public AStarRouter( GeoPackageRoutingExtension                         routingExtension,
-                  RoutingNetworkDescription                          routingNetwork,
-                  Collection<AttributeDescription> nodeAttributeDescriptions,
-                  Collection<AttributeDescription> edgeAttributeDescriptions,
-                  Func<AttributedEdge, Double>                   edgeCostEvaluator,
-                  Func<AttributedNode, AttributedNode, Double> heuristic,
-                  Collection<int> restrictedNodeIdentifiers = null,
-                  Collection<int> restrictedEdgeIdentifiers = null) : base(routingExtension,
-              routingNetwork,
-              nodeAttributeDescriptions,
-              edgeAttributeDescriptions,
-              edgeCostEvaluator,
-              restrictedNodeIdentifiers,
-              restrictedEdgeIdentifiers)
+    public AStarRouter(Collection<AttributeDescription> nodeAttributeDescriptions,
+                       Collection<AttributeDescription> edgeAttributeDescriptions,
+                       Func<AttributedEdge, Double>                   edgeCostEvaluator,
+                       Func<AttributedNode, AttributedNode, Double> heuristic,
+                       Collection<int> restrictedNodeIdentifiers = null,
+                       Collection<int> restrictedEdgeIdentifiers = null) : base(nodeAttributeDescriptions,
+                                                                                edgeAttributeDescriptions,
+                                                                                edgeCostEvaluator,
+                                                                                restrictedNodeIdentifiers,
+                                                                                restrictedEdgeIdentifiers)
     {
 
         if(heuristic == null)
@@ -61,9 +57,6 @@ namespace RoutingAlgorithmProject.Routing.AStar
 
         this.cachedHeuristic = new Memoize2<AttributedNode, AttributedNode, double>(heuristic);
 
-        this.edgeGetter = this.networkExtension.getNodeExitGetter(routingNetwork.getNetwork(),
-                                                                  this.nodeAttributeDescriptions,
-                                                                  this.edgeAttributeDescriptions);
     }
 
 
@@ -76,21 +69,21 @@ namespace RoutingAlgorithmProject.Routing.AStar
                            int endNodeIdentifier)
         {
            
-            SortedList<Vertex, double> openList = new SortedList<Vertex, double>();
+            SortedList<AStarVertex, double> openList = new SortedList<AStarVertex, double>();
             Collection<int> closedList = new Collection<int>();//new HashSet<>((this.restrictedNodeIdentifiers == null) ? new Collection<int>() : this.restrictedNodeIdentifiers);
-            Dictionary<int, Vertex> nodeMap = new Dictionary<int, Vertex>();
+            Dictionary<int, AStarVertex> nodeMap = new Dictionary<int, AStarVertex>();
 
             AttributedNode startNode = this.networkExtension.getAttributedNode(startNodeIdentifier, this.nodeAttributeDescriptions);
             AttributedNode endNode = this.networkExtension.getAttributedNode(endNodeIdentifier, this.nodeAttributeDescriptions);
 
             // Starting Vertex
-            Vertex startVertex = new Vertex(startNode,
+            AStarVertex startVertex = new AStarVertex(startNode,
                                             0.0,
                                             this.cachedHeuristic.Get(startNode, endNode));
 
             nodeMap.Add(startNodeIdentifier, startVertex);
 
-            for (Vertex currentVertex = startVertex; currentVertex != null && openList.Keys.Count > 0; currentVertex = openList.Keys[0])
+            for (AStarVertex currentVertex = startVertex; currentVertex != null && openList.Keys.Count > 0; currentVertex = openList.Keys[0])
             {
                 // If current vertex is the target then we are done
                 if (currentVertex.Node.Identifier == endNodeIdentifier)
@@ -105,18 +98,19 @@ namespace RoutingAlgorithmProject.Routing.AStar
                     // Ignore restricted edges
                     if (!this.restrictedEdgeIdentifiers.Contains(exit.EdgeIdentifier))
                     {
-                        Vertex reachableVertex = nodeMap[exit.ToNode.Identifier];
+                        AStarVertex reachableVertex = nodeMap[exit.ToNode.Identifier];
 
                         if (reachableVertex == null)
                         {
-                            reachableVertex = new Vertex(exit.ToNode);
+                            reachableVertex = new AStarVertex(exit.ToNode);
                             nodeMap.Add(exit.ToNode.Identifier, reachableVertex);
                         }
 
                         // If the closed list already searched this vertex, skip it
                         if (!closedList.Contains(exit.ToNode.Identifier))
                         {
-                            double edgeCost = this.edgeCostEvaluator.Apply(exit);
+                            //double edgeCost = this.edgeCostEvaluator.Apply(exit);
+                            double edgeCost = 
 
                             if (edgeCost <= 0.0)    // Are positive values that are extremely close to 0 going to be a problem?
                             {
@@ -155,14 +149,14 @@ namespace RoutingAlgorithmProject.Routing.AStar
         }
 
 
-        public static Route GetAStarPath(int endIdentifier, Dictionary<int, Vertex> nodeMap)
+        public static Route GetAStarPath(int endIdentifier, Dictionary<int, AStarVertex> nodeMap)
         {
             LinkedList<IReadOnlyList<Object>> nodesAttributes = new LinkedList<IReadOnlyList<Object>>();
             LinkedList<List<Object>> edgesAttributes = new LinkedList<List<Object>>();
             LinkedList<int> edgeIdentifiers = new LinkedList<int>();
             LinkedList<Double> edgeCosts = new LinkedList<Double>();
 
-            for (Vertex vertex = nodeMap[endIdentifier]; vertex != null; vertex = vertex.Previous)
+            for (AStarVertex vertex = nodeMap[endIdentifier]; vertex != null; vertex = vertex.Previous)
             {
                 nodesAttributes.AddFirst(vertex.Node.GetAttributes());
 
