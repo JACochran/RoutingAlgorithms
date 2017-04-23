@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Esri.ArcGISRuntime.Geometry;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RoutingAlgorithmProject.Graph
 {
@@ -12,11 +10,11 @@ namespace RoutingAlgorithmProject.Graph
     /// </summary>
     public class Graph
     {
-        private Dictionary<Coordinates, Vertex> vertexMap;
+        private Dictionary<MapPoint, Vertex> vertexMap;
 
         public Graph() 
         {
-          this.vertexMap = new Dictionary<Coordinates, Vertex>();
+          this.vertexMap = new Dictionary<MapPoint, Vertex>();
         }
 
         /// <summary>
@@ -24,7 +22,7 @@ namespace RoutingAlgorithmProject.Graph
         /// </summary>
         /// <param name="coords"></param>
         /// <returns>reference to vertex at location coords</returns>
-        public Vertex AddVertex(Coordinates coords)
+        public Vertex AddVertex(MapPoint coords)
         {
             var vertex = this.GetVertex(coords);
             if (vertex == null)
@@ -52,10 +50,10 @@ namespace RoutingAlgorithmProject.Graph
         /// </summary>
         /// <param name="coords"></param>
         /// <returns></returns>
-        public Vertex GetVertex(Coordinates coords)
+        public Vertex GetVertex(MapPoint coordinate)
         {
-            if (vertexMap.ContainsKey(coords))
-                return vertexMap[coords];
+            if (vertexMap.ContainsKey(coordinate))
+                return vertexMap[coordinate];
             else
                 return null;
         }
