@@ -14,16 +14,14 @@ namespace RoutingAlgorithmProject.PathFinder
 
         public override List<Vertex> FindShortestPath(Coordinates start, Coordinates end)
         {
-            //start = new Graph.Coordinates(38.903671f, -77.000038f);
-            //end = new Graph.Coordinates(38.902446f, -76.997449f);
-            SortedList<Vertex, double> openList = new SortedList<Vertex, double>();
+            SortedList<Vertex, float> openList = new SortedList<Vertex, float>();
             Collection<Vertex> closedList = new Collection<Vertex>();
             var nodeMap = new HashSet<Vertex>();
             
             var startNode = FindClosestVertex(start);
             var endNode   = FindClosestVertex(end);
 
-            startNode.Update(0.0, GetMinimumDistance(startNode.Coordinates, endNode.Coordinates), null, double.MaxValue);
+            startNode.Update(0.0f, Graph.Edge.GetMinimumDistance(startNode.Coordinates, endNode.Coordinates), null, float.MaxValue);
             nodeMap.Add(startNode);
             var currentVertex = startNode;
             while(currentVertex != null)
@@ -50,21 +48,21 @@ namespace RoutingAlgorithmProject.PathFinder
                     if (!closedList.Contains(reachableVertex))
                     {
                         //double edgeCost = this.edgeCostEvaluator.Apply(exit);
-                        double edgeCost = GetMinimumDistance(exit.Value.To.Coordinates, exit.Value.From.Coordinates);
+                        float edgeCost = Graph.Edge.GetMinimumDistance(exit.Value.To.Coordinates, exit.Value.From.Coordinates);
 
                         if (edgeCost <= 0.0)    // Are positive values that are extremely close to 0 going to be a problem?
                         {
                             throw new ArgumentException("The A* algorithm is only valid for edge costs greater than 0");
                         }
 
-                        double costFromStart = currentVertex.CostFromStart + edgeCost;
+                        float costFromStart = currentVertex.CostFromStart + edgeCost;
 
                         bool isShorterPath = costFromStart < reachableVertex.CostFromStart;
 
                         if (!openList.ContainsKey(reachableVertex) || isShorterPath)
                         {
-                            double estimatedCostFromEnd = exit.Key.Coordinates.Equals(endNode.Coordinates) ? 0.0
-                                                                                                           : GetMinimumDistance(reachableVertex.Coordinates, endNode.Coordinates);
+                            float estimatedCostFromEnd = exit.Key.Coordinates.Equals(endNode.Coordinates) ? 0.0f
+                                                                                                           : Graph.Edge.GetMinimumDistance(reachableVertex.Coordinates, endNode.Coordinates);
 
                             reachableVertex.Update(costFromStart,
                                                    estimatedCostFromEnd,
@@ -104,7 +102,7 @@ namespace RoutingAlgorithmProject.PathFinder
         public static LinkedList<Vertex> GetAStarPath(Coordinates endLocation, HashSet<Vertex> nodeMap)
         {
             LinkedList<Vertex> path = new LinkedList<Vertex>();
-            LinkedList<Double> edgeCosts = new LinkedList<Double>();
+            LinkedList<float> edgeCosts = new LinkedList<float>();
             for (var vertex = nodeMap.First(aStarVertex => aStarVertex.Coordinates.Equals(endLocation)); vertex != null; vertex = vertex.Previous)
             {
                 if (vertex.Previous != null)

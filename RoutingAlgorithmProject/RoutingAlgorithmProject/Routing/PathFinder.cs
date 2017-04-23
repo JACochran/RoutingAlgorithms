@@ -29,10 +29,10 @@ namespace RoutingAlgorithmProject.PathFinder
         protected T FindClosestVertex(Coordinates point)
         {
             T closest = null;
-            var minDistance = double.MaxValue;
+            var minDistance = float.MaxValue;
             foreach(var vertex in graph.Verticies)
             {
-                var distance = GetMinimumDistance(point, vertex.Coordinates);
+                var distance = Graph.Edge.GetMinimumDistance(point, vertex.Coordinates);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
@@ -62,11 +62,8 @@ namespace RoutingAlgorithmProject.PathFinder
             return e;
         }
 
-        protected double GetMinimumDistance(Coordinates start, Coordinates end)
-        {
-            return GeometryEngine.GeodesicDistance(new MapPoint(start.Longitude, start.Latitude, SpatialReferences.Wgs84), new MapPoint(end.Longitude, end.Latitude, SpatialReferences.Wgs84), LinearUnits.Meters);
-        }
-           
+        
+
     }
 
 

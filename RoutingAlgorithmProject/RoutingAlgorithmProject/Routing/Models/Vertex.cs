@@ -12,16 +12,16 @@ namespace RoutingAlgorithmProject.Graph
 
         // AStar variables
         public Vertex Previous { get; internal set; }
-        public double EdgeCost { get; internal set; }
-        public double EstimatedCostToEnd { get; set; }
-        public double CostFromStart { get; set; }
+        public float EdgeCost { get; internal set; }
+        public float EstimatedCostToEnd { get; set; }
+        public float CostFromStart { get; set; }
 
         public Vertex(Coordinates coords)
         {
             this.coords = coords;
             this.neighbors = new Dictionary<Vertex, Edge>();
-            this.CostFromStart = double.MaxValue;
-            this.EstimatedCostToEnd = double.MaxValue;
+            this.CostFromStart = float.MaxValue;
+            this.EstimatedCostToEnd = float.MaxValue;
         }
 
         /// <summary>
@@ -82,10 +82,10 @@ namespace RoutingAlgorithmProject.Graph
             return "(" + Coordinates.Latitude.ToString() + "," + Coordinates.Longitude.ToString() + ") " ;
         }
 
-        public void Update(double costFromStart,
-                           double estimatedCostToEnd,
+        public void Update(float costFromStart,
+                           float estimatedCostToEnd,
                            Vertex previous,
-                           double edgeCost)
+                           float edgeCost)
         {
             if (costFromStart < 0.0)
             {
@@ -111,7 +111,7 @@ namespace RoutingAlgorithmProject.Graph
                 throw new ArgumentException("cannot compare these two types");
             }
 
-            Double cost = EstimatedCostToEnd + CostFromStart;
+            float cost = EstimatedCostToEnd + CostFromStart;
             return cost.CompareTo(vertex2.EstimatedCostToEnd + vertex2.CostFromStart);
         }
     }
