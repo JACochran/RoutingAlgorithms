@@ -1,5 +1,4 @@
-﻿using OsmSharp.Tags;
-using System;
+﻿using System;
 
 namespace RoutingAlgorithmProject.Graph
 {
@@ -60,7 +59,7 @@ namespace RoutingAlgorithmProject.Graph
             return (float)d;
         }
 
-        private static float deg2rad(float? deg)
+        private static float deg2rad(double deg)
         {
             return (float)(deg * (Math.PI / 180));
         }

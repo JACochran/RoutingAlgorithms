@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:RoutingAlgorithmProject"
         xmlns:esri="http://schemas.esri.com/arcgis/runtime/2013"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="525" WindowState="Maximized">
     <Window.DataContext>
         <local:MainWindowViewModel/>
     </Window.DataContext>
@@ -23,14 +23,20 @@
 
         </StackPanel>
         <esri:MapView Grid.Row="1" x:Name="MyMapView"  MapViewTapped="MyMapView_MapViewTapped">
-            <esri:Map>
-                <esri:Map.Layers>
 
-                    <esri:ArcGISDynamicMapServiceLayer ServiceUri="http://server.arcgisonline.com/arcgis/rest/services/ESRI_Imagery_World_2D/MapServer"/>
+            <esri:Map>
+                <esri:Map.InitialViewpoint>
+                    <esri:ViewpointExtent XMin="-77.2302" 
+                                          YMin="38.7913" 
+                                          XMax="-76.9091" 
+                                          YMax="38.996"/>
+                </esri:Map.InitialViewpoint>
+                <esri:Map.Layers>
+                    <esri:ArcGISDynamicMapServiceLayer ServiceUri="http://services.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer"/>
                     <esri:GraphicsLayer ID="MyGraphics"/>
                 </esri:Map.Layers>
             </esri:Map>
-        
+
         </esri:MapView>
     </Grid>
 </Window>

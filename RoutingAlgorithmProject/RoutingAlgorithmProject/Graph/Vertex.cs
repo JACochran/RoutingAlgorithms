@@ -1,20 +1,20 @@
-﻿
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 
 namespace RoutingAlgorithmProject.Graph
 {
+
     public class Vertex
     {
         // Private member-variables
         private Coordinates coords;
-        private Dictionary<Vertex, Edge> neighbors = null; 
+        private Dictionary<Vertex, Edge> neighbors = null;
 
-        public Vertex(Coordinates coords) {
+        public Vertex(Coordinates coords)
+        {
             this.coords = coords;
             this.neighbors = new Dictionary<Vertex, Edge>();
         }
-        
+
         /// <summary>
         /// location of the vertex on the globe
         /// </summary>
@@ -45,7 +45,7 @@ namespace RoutingAlgorithmProject.Graph
             }
         }
 
-        public void AddEdge(Vertex to, Edge e)
+        public virtual void AddEdge(Vertex to, Edge e)
         {
             this.Neighbors[to] = e;
         }
@@ -70,10 +70,10 @@ namespace RoutingAlgorithmProject.Graph
 
         public override string ToString()
         {
-            return "(" + Coordinates.Latitude.ToString() + "," +Coordinates.Longitude.ToString() + ")";
+            return "(" + Coordinates.Latitude.ToString() + "," + Coordinates.Longitude.ToString() + ")";
         }
     }
-       
+
 }
 
 

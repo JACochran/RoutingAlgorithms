@@ -1,19 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using RoutingAlgorithmProject.Routing.Models;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RoutingAlgorithmProject.Graph
 {
-    /// <summary>
-    /// Graph implementation
-    /// stores vertices internally using a map of coordinate location to vertex.
-    /// </summary>
-    public class Graph : RoutingGraph<Vertex>
-    {
-        private Dictionary<Coordinates, Vertex> vertexMap;
+    public class AStarGraph : RoutingGraph<AStarVertex>
+    { 
+        private Dictionary<Coordinates, AStarVertex> vertexMap;
 
-        public Graph()
+        public AStarGraph()
         {
-            this.vertexMap = new Dictionary<Coordinates, Vertex>();
+            this.vertexMap = new Dictionary<Coordinates, AStarVertex>();
         }
 
         /// <summary>
@@ -21,12 +18,12 @@ namespace RoutingAlgorithmProject.Graph
         /// </summary>
         /// <param name="coords"></param>
         /// <returns>reference to vertex at location coords</returns>
-        public override Vertex AddVertex(Coordinates coords)
+        public override AStarVertex AddVertex(Coordinates coords)
         {
             var vertex = this.GetVertex(coords);
             if (vertex == null)
             {
-                vertex = new Vertex(coords);
+                vertex = new AStarVertex(coords, double.MaxValue, double.MaxValue);
                 vertexMap.Add(coords, vertex);
             }
             return vertex;
@@ -49,7 +46,7 @@ namespace RoutingAlgorithmProject.Graph
         /// </summary>
         /// <param name="coords"></param>
         /// <returns></returns>
-        public override Vertex GetVertex(Coordinates coords)
+        public override AStarVertex GetVertex(Coordinates coords)
         {
             if (vertexMap.ContainsKey(coords))
                 return vertexMap[coords];
@@ -60,7 +57,7 @@ namespace RoutingAlgorithmProject.Graph
         /// <summary>
         /// Returns all Verticies in the graph
         /// </summary>
-        public override List<Vertex> Verticies
+        public override List<AStarVertex> Verticies
         {
             get
             {
