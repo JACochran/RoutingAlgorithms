@@ -8,6 +8,7 @@ using Esri.ArcGISRuntime.Controls;
 using Esri.ArcGISRuntime.Layers;
 using Esri.ArcGISRuntime.Symbology;
 using System.Windows.Media;
+using System.Windows;
 
 namespace RoutingAlgorithmProject
 {
@@ -46,19 +47,27 @@ namespace RoutingAlgorithmProject
         {
             var dpf = new PathFinder.DijkstraPathFinder(WholeGraph);
             var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
-            if (path != null)
+            if (path != null && path.Count > 0)
             {
                 DisplayPath(path, mapView);
-            }          
+            }
+            else
+            {
+                MessageBox.Show("No Route Found!");
+            }
         }
 
         private void AStarCommandExecuted(MapView mapView)
         {
             var dpf = new PathFinder.AStarPathFinder(WholeGraph);
             var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
-            if (path != null)
+            if (path != null && path.Count > 0)
             {
                 DisplayPath(path, mapView);
+            }
+            else
+            {
+                MessageBox.Show("No Route Found!");
             }
         }
 
