@@ -20,7 +20,6 @@ namespace RoutingAlgorithmProject.Routing
             List<Vertex> vertexList = this.graph.Verticies;
             int size = vertexList.Count();
             //Dictionary<Vertex, float> dist = new Dictionary<Vertex, float>();
-            Dictionary<Vertex, float> dist = new Dictionary<Vertex, float>();
             Dictionary<Vertex, VertexNode> heapNodeIndex = new Dictionary<Vertex, VertexNode>(); // need to keep track of node index
             Models.PriorityQueues.MinKHeap<VertexNode> q = new Models.PriorityQueues.MinKHeap<VertexNode>(this.graph.Verticies.Count);
             for (int i = 0; i < size; i++)
@@ -29,7 +28,7 @@ namespace RoutingAlgorithmProject.Routing
                 float distance = 0;
                 if (!vertexList[i].Equals(startVertex))
                    distance = Int32.MaxValue;
-                dist[node.Vertex] = distance;
+                node.Vertex.CostFromStart = distance;
                 heapNodeIndex[node.Vertex] = node;
                 vertexList[i].Previous = null;
                 q.Enqueue(node, distance);
@@ -38,20 +37,20 @@ namespace RoutingAlgorithmProject.Routing
             while (q.Count > 0)
             {
                 VertexNode node = q.Dequeue(); //MinDist(q, dist);
-                if (node.Equals(destinationVertex))
-                    break;
+                if (node.Vertex.Equals(destinationVertex))
+                    return GetPathResult(destinationVertex);
                 foreach (var neighbor in node.Vertex.Neighbors)
                 {
-                    float newDistance = neighbor.Value.Weight + dist[node.Vertex];
-                    if (q.Contains(heapNodeIndex[neighbor.Key]) && newDistance < dist[neighbor.Key])
+                    float newDistance = neighbor.Value.Weight + node.Vertex.CostFromStart;
+                    if (q.Contains(heapNodeIndex[neighbor.Key]) && newDistance < neighbor.Key.CostFromStart)
                     {
-                        dist[neighbor.Key] = newDistance;
+                        neighbor.Key.CostFromStart = newDistance;
                         neighbor.Key.Previous = node.Vertex;
                         q.UpdatePriority(heapNodeIndex[neighbor.Key], newDistance);
                     }
                 }
             }
-            return GetPathResult(destinationVertex);
+            return null;
         }
 
         private class VertexNode : Models.PriorityQueues.MinKHeapNode

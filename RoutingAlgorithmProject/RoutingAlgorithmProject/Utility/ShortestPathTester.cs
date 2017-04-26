@@ -61,7 +61,7 @@ namespace RoutingAlgorithmProject.Utility
                         }
                         tw.WriteLine(pf.GetType().Name + " " + msg );
                     }
-                    tw.WriteLine("Average Runtime(sec) = " + totalRunTime / successfullPathsFound + "Failed Paths = " + (testPoints.Count-successfullPathsFound));
+                    tw.WriteLine("Average Runtime(sec) = " + totalRunTime / successfullPathsFound + " Failed Paths = " + (testPoints.Count-successfullPathsFound));
                 }
             }
             catch (Exception ex)

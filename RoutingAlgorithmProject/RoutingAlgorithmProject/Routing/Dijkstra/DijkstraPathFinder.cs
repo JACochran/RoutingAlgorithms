@@ -16,9 +16,8 @@ namespace RoutingAlgorithmProject.Routing
             Vertex startVertex = FindClosestVertex(start);
             Vertex destinationVertex = FindClosestVertex(end);
             List<Vertex> vertexList = this.graph.Verticies;
-            int size = vertexList.Count();
             HashSet<Vertex> q = new HashSet<Vertex>();
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < vertexList.Count(); i++)
             {
                 if (vertexList[i].Equals(startVertex))
                     vertexList[i].CostFromStart = 0;
@@ -32,7 +31,7 @@ namespace RoutingAlgorithmProject.Routing
             {
                 Vertex u = MinDist(q);
                 if (u.Equals(destinationVertex))
-                    break;
+                    return GetPathResult(destinationVertex);
                 q.Remove(u);
                 foreach (var neighbor in u.Neighbors)
                 {
@@ -44,7 +43,7 @@ namespace RoutingAlgorithmProject.Routing
                     }
                 }
             }
-            return GetPathResult(destinationVertex);
+            return null;
         }
 
 
