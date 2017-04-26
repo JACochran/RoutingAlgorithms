@@ -32,32 +32,44 @@ namespace RoutingAlgorithmProject.Utility
         /// <param name="pf"></param>
         private static void TestPathFinder(PathFinder pf)
         {
-            List<StartDestinationPair> testPoints = ReadPointFile(@"..\..\Resources\dcTestPoints.csv");
-            string outputPath = System.IO.Path.Combine("output",DateTime.Now.ToString("yyyyMMdd_hhmmss") + pf.GetType().Name + ".txt");
-            if (!System.IO.Directory.Exists("output"))
-                System.IO.Directory.CreateDirectory("output");
-            using (System.IO.TextWriter tw = new System.IO.StreamWriter(outputPath, false))
-            {
-                double totalRunTime = 0;
-                int successfullPathsFound = 0;
-                foreach (var startDestinationPair in testPoints)
+            try {
+                List<StartDestinationPair> testPoints = ReadPointFile(@"..\..\Resources\dcTestPoints.csv");
+                string outputPath = System.IO.Path.Combine("output", DateTime.Now.ToString("yyyyMMdd_hhmmss") + pf.GetType().Name + ".txt");
+                if (!System.IO.Directory.Exists("output"))
+                    System.IO.Directory.CreateDirectory("output");
+                using (System.IO.TextWriter tw = new System.IO.StreamWriter(outputPath, false))
                 {
-                    var sw = new Stopwatch();
-                    sw.Start();
-                    var path = pf.FindShortestPath(startDestinationPair.Start, startDestinationPair.Destination);
-                    sw.Stop();
-                    if (path != null && path.Count > 0)
-                        startDestinationPair.ElapsedTimeSec = sw.Elapsed.TotalSeconds;
-                    tw.WriteLine(pf.GetType().Name + " " + startDestinationPair.OutputString() + " with path length = " + path.Count);
-                    if (startDestinationPair.ElapsedTimeSec != null)
+                    double totalRunTime = 0;
+                    int successfullPathsFound = 0;
+                    foreach (var startDestinationPair in testPoints)
                     {
-                        totalRunTime += (double)startDestinationPair.ElapsedTimeSec;
-                        successfullPathsFound++;
+                        var sw = new Stopwatch();
+                        sw.Start();
+                        var path = pf.FindShortestPath(startDestinationPair.Start, startDestinationPair.Destination);
+                        sw.Stop();
+                        string msg = null;
+                        double elapsedTime = sw.Elapsed.TotalSeconds;
+                        if (path != null && path.Count > 0)
+                        {
+                            totalRunTime += elapsedTime;
+                            successfullPathsFound++;
+                            msg = startDestinationPair.ToString() + "Completed in " + elapsedTime.ToString() + " seconds." + " with path length = " + path.Count;
+                        }
+                        else
+                        {
+                            msg = startDestinationPair.ToString() + "Failed to find path in " + elapsedTime.ToString() + " seconds.";
+                        }
+                        tw.WriteLine(pf.GetType().Name + " " + msg );
                     }
+                    tw.WriteLine("Average Runtime(sec) = " + totalRunTime / successfullPathsFound + "Failed Paths = " + (testPoints.Count-successfullPathsFound));
                 }
-                tw.WriteLine("Average Runtime(sec) = " + totalRunTime / successfullPathsFound);
+            }
+            catch (Exception ex)
+            {
+                var x = 1;
             }
         }
+
 
         private static char[] coordsSplitChar = { ',' };
 
@@ -98,7 +110,6 @@ namespace RoutingAlgorithmProject.Utility
         {
             public readonly Coordinates Start;
             public readonly Coordinates Destination;
-            public double? ElapsedTimeSec;
 
             public StartDestinationPair(Coordinates start, Coordinates destination)
             {
@@ -111,13 +122,7 @@ namespace RoutingAlgorithmProject.Utility
                 return Start.ToString() + "->" + Destination.ToString();
             }
 
-            public  string OutputString()
-            {
-                if (ElapsedTimeSec == null)
-                    return this.ToString() + "Failed to find path in " + ElapsedTimeSec + " seconds.";
-                else
-                    return this.ToString() + "Completed in " + ElapsedTimeSec + " seconds.";
-            }
+            
         }
     }
 }
