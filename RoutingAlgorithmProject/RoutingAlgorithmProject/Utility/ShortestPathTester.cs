@@ -11,19 +11,28 @@ namespace RoutingAlgorithmProject.Utility
 {
     class ShortestPathTester
     {
-
+        /// <summary>
+        /// runs path shortest path algorithm on each implementation
+        /// </summary>
+        /// <param name="graph"></param>
         internal static void TestPathFinders(RoutingGraph graph)
         {
             //OsmUtility.TestGraph();
-            TestPathFinder(new DijkstraMinHeapPathFinder(graph));
-            TestPathFinder(new DijkstraPathFinder(graph));
             TestPathFinder(new AStarPathFinder(graph));
             TestPathFinder(new AStarMinHeapPathFinder(graph));
+            TestPathFinder(new DijkstraMinHeapPathFinder(graph));
+            TestPathFinder(new DijkstraPathFinder(graph));
         }
 
+        /// <summary>
+        /// reads from a file then finds a path between every point in the file
+        /// k points in file = k(k-1)/2 paths
+        /// Creates output file for each implementation with the average time for each path
+        /// </summary>
+        /// <param name="pf"></param>
         private static void TestPathFinder(PathFinder pf)
         {
-            List<StartDestinationPair> testPoints = ReadPointFile(@"..\..\Resources\dcTestPointsSmall.csv");
+            List<StartDestinationPair> testPoints = ReadPointFile(@"..\..\Resources\dcTestPoints.csv");
             string outputPath = System.IO.Path.Combine("output",DateTime.Now.ToString("yyyyMMdd_hhmmss") + pf.GetType().Name + ".txt");
             if (!System.IO.Directory.Exists("output"))
                 System.IO.Directory.CreateDirectory("output");
@@ -39,7 +48,7 @@ namespace RoutingAlgorithmProject.Utility
                     sw.Stop();
                     if (path != null && path.Count > 0)
                         startDestinationPair.ElapsedTimeSec = sw.Elapsed.TotalSeconds;
-                    tw.WriteLine(pf.GetType().Name + " " + startDestinationPair.OutputString());
+                    tw.WriteLine(pf.GetType().Name + " " + startDestinationPair.OutputString() + " with path length = " + path.Count);
                     if (startDestinationPair.ElapsedTimeSec != null)
                     {
                         totalRunTime += (double)startDestinationPair.ElapsedTimeSec;
@@ -85,13 +94,6 @@ namespace RoutingAlgorithmProject.Utility
             return coordinate;
         }
 
-        //private static StartDestinationPair parseStartDestinationPair(string line)
-        //{
-        //    var coordPairStrings =line.Split(pairSplitChar);
-        //    Coordinates start = parseCoordinate(coordPairStrings[0]);
-        //    Coordinates destination = parseCoordinate(coordPairStrings[1]);
-        //    return new StartDestinationPair(start, destination);
-        //}
         public class StartDestinationPair
         {
             public readonly Coordinates Start;
