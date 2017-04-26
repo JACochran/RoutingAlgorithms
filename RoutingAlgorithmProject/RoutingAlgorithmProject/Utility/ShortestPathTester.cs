@@ -18,10 +18,26 @@ namespace RoutingAlgorithmProject.Utility
         internal static void TestPathFinders(RoutingGraph graph)
         {
             //OsmUtility.TestGraph();
-            TestPathFinder(new AStarPathFinder(graph));
-            TestPathFinder(new AStarMinHeapPathFinder(graph));
-            TestPathFinder(new DijkstraMinHeapPathFinder(graph));
-            TestPathFinder(new DijkstraPathFinder(graph));
+            var cores = Environment.ProcessorCount;
+            // get all types that inherit PathFinder
+            var pathFinders = typeof(PathFinder).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(PathFinder)));
+            foreach (Type t in pathFinders)
+            {
+                // run TestPathFinder on each type
+                PathFinder pf = (PathFinder)Activator.CreateInstance(t, graph);
+                TestPathFinder(pf);
+            }
+
+            //TestPathFinder(new AStarMinHeapPathFinder(graph));
+            //TestPathFinder(new AStarPathFinder(graph));
+            //TestPathFinder(new DijkstraMinHeapPathFinder(graph));
+            //TestPathFinder(new DijkstraPathFinder(graph));
+        }
+
+        static void runTest(Object stateInfo)
+        {
+            PathFinder pf = (PathFinder)stateInfo;
+            TestPathFinder(pf);
         }
 
         /// <summary>
