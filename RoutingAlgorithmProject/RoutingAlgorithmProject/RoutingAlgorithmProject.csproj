@@ -44,7 +44,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>bin\x86\Release\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -117,18 +117,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Routing\AStar\AStarMinHeapPathFinder.cs" />
+    <Compile Include="Routing\Dijkstra\DijkstraMinHeapPathFinder.cs" />
     <Compile Include="Routing\Models\AStarGraph.cs" />
     <Compile Include="Routing\Models\Coordinates.cs" />
     <Compile Include="Routing\Models\Edge.cs" />
     <Compile Include="Routing\Models\Graph.cs" />
+    <Compile Include="Routing\Models\PriorityQueues\MinKHeap.cs" />
+    <Compile Include="Routing\Models\PriorityQueues\MinKHeapNode.cs" />
     <Compile Include="Routing\Models\RoutingGraph.cs" />
-    <Compile Include="Routing\AStarPathFinder.cs" />
-    <Compile Include="Routing\DijkstraPathFinder.cs" />
+    <Compile Include="Routing\AStar\AStarPathFinder.cs" />
+    <Compile Include="Routing\Dijkstra\DijkstraPathFinder.cs" />
     <Compile Include="Routing\PathFinder.cs" />
     <Compile Include="Routing\Models\AStarVertex.cs" />
     <Compile Include="Utility\MapPointExtension.cs" />
     <Compile Include="Utility\OsmUtility.cs" />
     <Compile Include="Routing\Models\Vertex.cs" />
+    <Compile Include="Utility\ShortestPathTester.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

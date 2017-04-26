@@ -4,7 +4,7 @@ using System.Linq;
 using RoutingAlgorithmProject.Graph;
 using System.Collections.ObjectModel;
 
-namespace RoutingAlgorithmProject.PathFinder
+namespace RoutingAlgorithmProject.Routing
 {
     class AStarPathFinder : PathFinder
     {
@@ -17,24 +17,23 @@ namespace RoutingAlgorithmProject.PathFinder
             try
             {
                 List<Vertex> openList = new List<Vertex>();
-                Collection<Vertex> closedList = new Collection<Vertex>();
+                HashSet<Vertex> closedList = new HashSet<Vertex>();
                 var nodeMap = new HashSet<Vertex>();
 
                 var startNode = FindClosestVertex(start);
                 var endNode = FindClosestVertex(end);
 
-                startNode.Update(0.0f, Graph.Edge.GetMinimumDistance(startNode.Coordinates, endNode.Coordinates), null, float.MaxValue);
+                startNode.Update(0.0f, Graph.Edge.GetMinimumDistance(startNode.Coordinates, endNode.Coordinates), null);
                 nodeMap.Add(startNode);
                 var currentVertex = startNode;
                 while (currentVertex != null)
                 {
+                    closedList.Add(currentVertex); // Put it in "done" pile
                     // If current vertex is the target then we are done
                     if (currentVertex.Coordinates.Equals(endNode.Coordinates))
                     {
-                        return GetAStarPath(endNode.Coordinates, nodeMap).ToList();
+                        return GetPathResult(endNode);
                     }
-
-                    closedList.Add(currentVertex); // Put it in "done" pile
 
                     foreach (var exit in currentVertex.Neighbors) // For each node adjacent to the current node
                     {
@@ -48,7 +47,6 @@ namespace RoutingAlgorithmProject.PathFinder
                         // If the closed list already searched this vertex, skip it
                         if (!closedList.Contains(reachableVertex))
                         {
-                            //double edgeCost = this.edgeCostEvaluator.Apply(exit);
                             float edgeCost = exit.Value.Weight;
 
                             if (edgeCost <= 0.0)    // Are positive values that are extremely close to 0 going to be a problem?
@@ -65,10 +63,7 @@ namespace RoutingAlgorithmProject.PathFinder
                                 float estimatedCostFromEnd = exit.Key.Coordinates.Equals(endNode.Coordinates) ? 0.0f
                                                                                                                : Graph.Edge.GetMinimumDistance(reachableVertex.Coordinates, endNode.Coordinates);
 
-                                reachableVertex.Update(costFromStart,
-                                                       estimatedCostFromEnd,
-                                                       currentVertex,
-                                                       edgeCost);
+                                reachableVertex.Update(costFromStart,estimatedCostFromEnd,currentVertex);
 
                                 if(!openList.Contains(reachableVertex))
                                     openList.Add(reachableVertex);
@@ -96,20 +91,6 @@ namespace RoutingAlgorithmProject.PathFinder
             return null;    // No path between the start and end nodes
         }
 
-        public static LinkedList<Vertex> GetAStarPath(Coordinates endLocation, HashSet<Vertex> nodeMap)
-        {
-            LinkedList<Vertex> path = new LinkedList<Vertex>();
-            LinkedList<float> edgeCosts = new LinkedList<float>();
-            for (var vertex = nodeMap.First(aStarVertex => aStarVertex.Coordinates.Equals(endLocation)); vertex != null; vertex = vertex.Previous)
-            {
-                if (vertex.Previous != null)
-                {
-                    path.AddFirst(vertex);
-                    edgeCosts.AddFirst(vertex.EdgeCost);
-                }
-            }
-
-            return path;
-        }
+        
     }
 }

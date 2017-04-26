@@ -2,7 +2,7 @@
 using RoutingAlgorithmProject.Graph;
 using System.Collections.Generic;
 
-namespace RoutingAlgorithmProject.PathFinder
+namespace RoutingAlgorithmProject.Routing
 {
     public abstract class PathFinder 
     {
@@ -62,7 +62,15 @@ namespace RoutingAlgorithmProject.PathFinder
             return e;
         }
 
-        
+        protected List<Vertex> GetPathResult(Vertex destination)
+        {
+            List<Vertex> path = new List<Vertex>();
+            for (var vertex = destination; vertex != null; vertex = vertex.Previous)
+            {
+                path.Insert(0,vertex);
+            }
+            return path;
+        }
 
     }
 

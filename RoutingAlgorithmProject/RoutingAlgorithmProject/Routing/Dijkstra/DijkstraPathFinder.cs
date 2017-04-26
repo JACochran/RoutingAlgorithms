@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using RoutingAlgorithmProject.Graph;
 
-namespace RoutingAlgorithmProject.PathFinder
+namespace RoutingAlgorithmProject.Routing
 {
     class DijkstraPathFinder : PathFinder
     {
-        private RoutingGraph routingGraph;
-
         public DijkstraPathFinder(RoutingGraph graph) : base(graph)
         {
         }
@@ -19,60 +17,46 @@ namespace RoutingAlgorithmProject.PathFinder
             Vertex destinationVertex = FindClosestVertex(end);
             List<Vertex> vertexList = this.graph.Verticies;
             int size = vertexList.Count();
-            Dictionary<Vertex, float> dist = new Dictionary<Vertex, float>();
-            Dictionary<Vertex, Graph.Vertex> prev = new Dictionary<Vertex, Vertex>();
             HashSet<Vertex> q = new HashSet<Vertex>();
             for (int i = 0; i < size; i++)
             {
                 if (vertexList[i].Equals(startVertex))
-                    dist[vertexList[i]] = 0;
+                    vertexList[i].CostFromStart = 0;
                 else
-                    dist[vertexList[i]] = Int32.MaxValue;
-                prev[vertexList[i]] = null;
+                    vertexList[i].CostFromStart = Int32.MaxValue;
+                vertexList[i].Previous = null;
                 q.Add(vertexList[i]);
             }
 
             while (q.Count > 0)
             {
-                Vertex u = MinDist(q, dist);
+                Vertex u = MinDist(q);
                 if (u.Equals(destinationVertex))
                     break;
                 q.Remove(u);
                 foreach (var neighbor in u.Neighbors)
                 {
-                    var alt = dist[u] + neighbor.Value.Weight;
-                    if (alt < dist[neighbor.Key])
+                    var newDistance = u.CostFromStart + neighbor.Value.Weight;
+                    if (newDistance < neighbor.Key.CostFromStart)
                     {
-                        dist[neighbor.Key] = alt;
-                        prev[neighbor.Key] = u;
+                        neighbor.Key.CostFromStart = newDistance;
+                        neighbor.Key.Previous = u;
                     }
                 }
             }
-            return GetPathResult(prev, destinationVertex);
+            return GetPathResult(destinationVertex);
         }
 
-        private List<Vertex> GetPathResult(Dictionary<Vertex, Vertex> prev, Vertex target)
-        {
-            List<Vertex> path = new List<Vertex>();
-            Vertex u = target;
-            while (prev[u] != null)
-            {
-                path.Insert(0, u);
-                u = prev[u];
-            }
-            return path;
 
-        }
-
-        private Vertex MinDist(HashSet<Vertex> q, Dictionary<Vertex, float> dist)
+        private Vertex MinDist(HashSet<Vertex> q)
         {
             Graph.Vertex closest = null;
             float minDistance = float.MaxValue;
             foreach (var vertex in q)
             {
-                if (dist[vertex] < minDistance)
+                if (vertex.CostFromStart < minDistance)
                 {
-                    minDistance = dist[vertex];
+                    minDistance = vertex.CostFromStart;
                     closest = vertex;
                 }
             }

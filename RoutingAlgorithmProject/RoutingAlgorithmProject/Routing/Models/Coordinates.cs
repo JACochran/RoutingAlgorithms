@@ -56,5 +56,10 @@ namespace RoutingAlgorithmProject.Graph
                 return (float)(longitude / 10000000.0);
             }
         }
+
+        public override string ToString()
+        {
+            return "(" + this.Latitude.ToString() + "," + this.Longitude.ToString() + ") ";
+        }
     }
 }

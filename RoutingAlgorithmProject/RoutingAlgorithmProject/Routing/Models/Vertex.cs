@@ -12,7 +12,6 @@ namespace RoutingAlgorithmProject.Graph
 
         // AStar variables
         public Vertex Previous { get; internal set; }
-        public float EdgeCost { get; internal set; }
         public float EstimatedCostToEnd { get; set; }
         public float CostFromStart { get; set; }
 
@@ -79,13 +78,12 @@ namespace RoutingAlgorithmProject.Graph
 
         public override string ToString()
         {
-            return "(" + Coordinates.Latitude.ToString() + "," + Coordinates.Longitude.ToString() + ") " ;
+            return coords.ToString() ;
         }
 
         public void Update(float costFromStart,
                            float estimatedCostToEnd,
-                           Vertex previous,
-                           float edgeCost)
+                           Vertex previous)
         {
             if (costFromStart < 0.0)
             {
@@ -100,7 +98,6 @@ namespace RoutingAlgorithmProject.Graph
             CostFromStart = costFromStart;
             EstimatedCostToEnd = estimatedCostToEnd;
             Previous = previous;
-            EdgeCost = edgeCost;
         }
 
         public int CompareTo(object obj)

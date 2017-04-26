@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight;
 using RoutingAlgorithmProject.Utility;
 using Esri.ArcGISRuntime.Geometry;
 using RoutingAlgorithmProject.Graph;
+using RoutingAlgorithmProject.Routing;
 using System.Collections.Generic;
 using Esri.ArcGISRuntime.Controls;
 using Esri.ArcGISRuntime.Layers;
@@ -16,26 +17,19 @@ namespace RoutingAlgorithmProject
     {
         public MainWindowViewModel()
         {
+            DCGraph = OsmUtility.ReadOsmData(@"..\..\Resources\district-of-columbia-latest.osm.pbf");
+            var runTest = true;
+            if (runTest)
+            {
+                ShortestPathTester.TestPathFinders(DCGraph);
+                //var VAGraph = OsmUtility.ReadOsmData(@"..\..\Resources\Virginia.osm.pbf");
+                //ShortestPathTester.TestPathFinders(VAGraph);
+            }
             IsMovingStartPoint = true;
             FindRouteAStarCommand = new RelayCommand<MapView>(AStarCommandExecuted, CanRouteExecute);
             FindRouteDijikstraCommand = new RelayCommand<MapView>(DijikstraCommandExecuted, CanRouteExecute);
-
-            //OsmUtility.TestGraph();
-            //load up entire osm data
-            var topLeftCorner = new MapPoint(Databounds.XMin, Databounds.Extent.YMax, SpatialReferences.Wgs84);
-            var bottomRightCorner = new MapPoint(Databounds.XMax, Databounds.YMin, SpatialReferences.Wgs84);
-
-            WholeGraph = OsmUtility.ReadOsmData(topLeftCorner.ToCoordinates(), bottomRightCorner.ToCoordinates());
-            WholeGraph.CleanGraph();
-
-
-            // uncomment to default start and end points
-            //var start = new Coordinates(38.8929634f, -77.02602f);
-            //var end = new Coordinates(38.8966866f, -77.01893f);
-            //StartLocation = start.ToMapPoint();
-            //EndLocation = end.ToMapPoint();
         }
-        public RoutingGraph WholeGraph;
+        public RoutingGraph DCGraph;
         public static Envelope Databounds = new Envelope(-77.1201, 38.7913, -76.9091, 38.996);
 
         private bool CanRouteExecute(MapView mapView)
@@ -45,7 +39,7 @@ namespace RoutingAlgorithmProject
 
         private void DijikstraCommandExecuted(MapView mapView)
         {
-            var dpf = new PathFinder.DijkstraPathFinder(WholeGraph);
+            var dpf = new DijkstraPathFinder(DCGraph);
             var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
             if (path != null && path.Count > 0)
             {
@@ -59,7 +53,7 @@ namespace RoutingAlgorithmProject
 
         private void AStarCommandExecuted(MapView mapView)
         {
-            var dpf = new PathFinder.AStarPathFinder(WholeGraph);
+            var dpf = new AStarPathFinder(DCGraph);
             var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
             if (path != null && path.Count > 0)
             {
