@@ -7,26 +7,25 @@ using RoutingAlgorithmProject.Graph;
 
 namespace RoutingAlgorithmProject.Routing
 {
-    class DijkstraMinHeapPathFinder : DijkstraPathFinder
+    class DijkstraApproximateBucketPathFinder : DijkstraPathFinder
     {
-        public DijkstraMinHeapPathFinder(RoutingGraph graph) : base(graph)
+        public DijkstraApproximateBucketPathFinder(RoutingGraph graph) : base(graph)
         {
         }
-
-        public override List<Vertex> FindShortestPath(Coordinates start, Coordinates end)
+            public override List<Vertex> FindShortestPath(Coordinates start, Coordinates end)
         {
             Vertex startVertex = FindClosestVertex(start);
             Vertex destinationVertex = FindClosestVertex(end);
             List<Vertex> vertexList = this.graph.Verticies;
             int size = vertexList.Count();
             //Dictionary<Vertex, float> dist = new Dictionary<Vertex, float>();
-            Models.PriorityQueues.MinKHeap<Vertex> q = new Models.PriorityQueues.MinKHeap<Vertex>(this.graph.Verticies.Count);
+            Models.PriorityQueues.ApproximateBucketQueue<Vertex> q = new Models.PriorityQueues.ApproximateBucketQueue<Vertex>();
             for (int i = 0; i < size; i++)
             {
                 Vertex node = vertexList[i];
                 float distance = 0;
                 if (!vertexList[i].Equals(startVertex))
-                   distance = Int32.MaxValue;
+                    distance = Models.PriorityQueues.ApproximateBucketQueue<Vertex>.MaxDistance;
                 node.CostFromStart = distance;
                 vertexList[i].Previous = null;
                 q.Enqueue(node, distance);
@@ -34,7 +33,7 @@ namespace RoutingAlgorithmProject.Routing
 
             while (q.Count > 0)
             {
-                Vertex node = q.Dequeue(); 
+                Vertex node = q.Dequeue();
                 if (node.Equals(destinationVertex))
                     return GetPathResult(destinationVertex);
                 foreach (var neighbor in node.Neighbors)
@@ -50,8 +49,6 @@ namespace RoutingAlgorithmProject.Routing
             }
             return null;
         }
-               
+              
     }
-
-
 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
 {
-    class MinKHeapNode
+    public class PriorityQueueNode
     {
         public float Priority;
-        public int QueueIndex;
+        public int QueueIndex =-1;
     }
 }

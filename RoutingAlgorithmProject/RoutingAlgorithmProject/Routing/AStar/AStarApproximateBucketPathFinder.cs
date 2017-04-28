@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RoutingAlgorithmProject.Graph;
-using System.Collections.ObjectModel;
 
 namespace RoutingAlgorithmProject.Routing
 {
-    class AStarMinHeapPathFinder: AStarPathFinder
+    class AStarApproximateBucketPathFinder : AStarPathFinder
     {
-        public AStarMinHeapPathFinder(RoutingGraph graph) : base(graph)
+        public AStarApproximateBucketPathFinder(RoutingGraph graph) : base(graph)
         {
         }
 
@@ -18,16 +17,16 @@ namespace RoutingAlgorithmProject.Routing
         {
             try
             {
-                Models.PriorityQueues.MinKHeap<Vertex> openList = new Models.PriorityQueues.MinKHeap<Vertex>(this.graph.Verticies.Count);
+                Models.PriorityQueues.ApproximateBucketQueue<Vertex> openList = new Models.PriorityQueues.ApproximateBucketQueue<Vertex>();
                 HashSet<Vertex> closedList = new HashSet<Vertex>();
 
-               // var nodeMap = new HashSet<Vertex>();
+                // var nodeMap = new HashSet<Vertex>();
 
                 var startNode = FindClosestVertex(start);
                 var endNode = FindClosestVertex(end);
 
                 startNode.Update(0.0f, Graph.Edge.GetMinimumDistance(startNode.Coordinates, endNode.Coordinates), null);
-               // nodeMap.Add(startNode);
+                // nodeMap.Add(startNode);
                 var currentVertex = startNode;
                 while (currentVertex != null)
                 {
@@ -38,7 +37,7 @@ namespace RoutingAlgorithmProject.Routing
                         return GetPathResult(endNode);
                     }
 
-                    
+
 
                     foreach (var exit in currentVertex.Neighbors) // For each node adjacent to the current node
                     {
@@ -63,7 +62,7 @@ namespace RoutingAlgorithmProject.Routing
                                 float estimatedCostFromEnd = exit.Key.Coordinates.Equals(endNode.Coordinates) ? 0.0f
                                                                                                                : Graph.Edge.GetMinimumDistance(reachableVertex.Coordinates, endNode.Coordinates);
 
-                                reachableVertex.Update(costFromStart,estimatedCostFromEnd,currentVertex);
+                                reachableVertex.Update(costFromStart, estimatedCostFromEnd, currentVertex);
 
                                 if (!openList.Contains(reachableVertex))
                                     openList.Enqueue(reachableVertex, estimatedCostFromEnd + costFromStart);
@@ -76,7 +75,7 @@ namespace RoutingAlgorithmProject.Routing
 
                     if (openList.Count > 0)
                     {
-                        currentVertex = openList.Dequeue();                        
+                        currentVertex = openList.Dequeue();
                     }
                     else
                     {
@@ -91,6 +90,5 @@ namespace RoutingAlgorithmProject.Routing
             }
             return null;    // No path between the start and end nodes
         }
-
     }
 }

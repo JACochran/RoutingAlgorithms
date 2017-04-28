@@ -53,19 +53,33 @@ namespace RoutingAlgorithmProject.Utility
 
         public static void TestGraph()
         {
-            Graph.RoutingGraph g = new Graph.RoutingGraph();
-            Graph.Vertex a = g.AddVertex(new Coordinates(0, 0));
-            Graph.Vertex b = g.AddVertex(new Coordinates(0, 10));
-            Graph.Vertex c = g.AddVertex(new Coordinates(5, 5));
-            Graph.Vertex d = g.AddVertex(new Coordinates(10, 10));
+            Graph.RoutingGraph graph = new Graph.RoutingGraph();
+            Graph.Vertex a = graph.AddVertex(new Coordinates(0, 0));
+            Graph.Vertex b = graph.AddVertex(new Coordinates(0, 1));
+            Graph.Vertex c = graph.AddVertex(new Coordinates(0.5f, 0.5f));
+            Graph.Vertex d = graph.AddVertex(new Coordinates(1, 1));
+            Graph.Vertex e = graph.AddVertex(new Coordinates(0.2f, 0.5f));
+            Graph.Vertex f = graph.AddVertex(new Coordinates(0.3f, 0.7f));
+            Graph.Vertex g = graph.AddVertex(new Coordinates(0.6f, 0.7f));
 
-            g.AddEdge(new Graph.Edge(a, c));
-            g.AddEdge(new Graph.Edge(c, d));
-            g.AddEdge(new Graph.Edge(a, b));
-            g.AddEdge(new Graph.Edge(b, d));
+            graph.AddEdge(new Graph.Edge(a, b));
+            graph.AddEdge(new Graph.Edge(a, c));
+            graph.AddEdge(new Graph.Edge(a, e));
+            graph.AddEdge(new Graph.Edge(b, d));
+            graph.AddEdge(new Graph.Edge(b, e));
+            graph.AddEdge(new Graph.Edge(b, g));
+            graph.AddEdge(new Graph.Edge(c, d));
+            graph.AddEdge(new Graph.Edge(c, e));
+            graph.AddEdge(new Graph.Edge(c, g));
+            graph.AddEdge(new Graph.Edge(d, g));
+            graph.AddEdge(new Graph.Edge(e, f));
+            graph.AddEdge(new Graph.Edge(f, g));
 
-            var dpf = new AStarMinHeapPathFinder(g);
-            var path = dpf.FindShortestPath(new Coordinates(1, 1), new Coordinates(9, 9));
+
+
+
+            var dpf = new DijkstraApproximateBucketPathFinder(graph);
+            var path = dpf.FindShortestPath(new Coordinates(0.1f, 0.1f), new Coordinates(0.9f, 0.9f));
         }
     }
 

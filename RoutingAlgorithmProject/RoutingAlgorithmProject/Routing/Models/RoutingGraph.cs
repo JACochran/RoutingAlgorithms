@@ -65,6 +65,19 @@ namespace RoutingAlgorithmProject.Graph
             }
         }
 
+        public void ResetGraph()
+        {
+            foreach(var v in this.vertexMap.Values)
+            {
+                v.CostFromStart = float.MaxValue;
+                v.EstimatedCostToEnd = float.MaxValue;
+                v.Priority = -1;
+                v.QueueIndex = -1;
+                v.FIFOnext = null;
+                v.FIFOprev = null;
+            }
+        }
+
         public void CleanGraph()
         {
             // use DFS to remove unneeded verticies

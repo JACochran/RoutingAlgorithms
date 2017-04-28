@@ -1,10 +1,11 @@
-﻿using System;
+﻿using RoutingAlgorithmProject.Routing.Models.PriorityQueues;
+using System;
 using System.Collections.Generic;
 
 namespace RoutingAlgorithmProject.Graph
 {
 
-    public class Vertex: IComparable
+    public class Vertex : PriorityQueueNode, IComparable
     {
         // Private member-variables
         private Coordinates coords;
@@ -15,12 +16,17 @@ namespace RoutingAlgorithmProject.Graph
         public float EstimatedCostToEnd { get; set; }
         public float CostFromStart { get; set; }
 
+
+        private static int ID = 0;
+        public int myID;
+
         public Vertex(Coordinates coords)
         {
             this.coords = coords;
             this.neighbors = new Dictionary<Vertex, Edge>();
             this.CostFromStart = float.MaxValue;
             this.EstimatedCostToEnd = float.MaxValue;
+            myID = ID++;
         }
 
         /// <summary>
@@ -78,7 +84,7 @@ namespace RoutingAlgorithmProject.Graph
 
         public override string ToString()
         {
-            return coords.ToString() ;
+            return coords.ToString();
         }
 
         public void Update(float costFromStart,
@@ -111,8 +117,12 @@ namespace RoutingAlgorithmProject.Graph
             float cost = EstimatedCostToEnd + CostFromStart;
             return cost.CompareTo(vertex2.EstimatedCostToEnd + vertex2.CostFromStart);
         }
-    }
 
+        public bool inQueue = false;
+        public Vertex FIFOnext;
+        public Vertex FIFOprev;
+
+    }
 }
 
 

@@ -18,7 +18,8 @@ namespace RoutingAlgorithmProject.Utility
         internal static void TestPathFinders(RoutingGraph graph)
         {
             //OsmUtility.TestGraph();
-            var cores = Environment.ProcessorCount;
+            PathFinder lkj =  new AStarApproximateBucketPathFinder(graph);
+            lkj.FindShortestPath(new Coordinates(38.89394f, -76.97941f), new Coordinates(38.89462f, -76.97774f));
             // get all types that inherit PathFinder
             var pathFinders = typeof(PathFinder).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(PathFinder)));
             foreach (Type t in pathFinders)
@@ -26,6 +27,7 @@ namespace RoutingAlgorithmProject.Utility
                 // run TestPathFinder on each type
                 PathFinder pf = (PathFinder)Activator.CreateInstance(t, graph);
                 TestPathFinder(pf);
+                graph.ResetGraph();
             }
 
             //TestPathFinder(new AStarMinHeapPathFinder(graph));
@@ -49,7 +51,7 @@ namespace RoutingAlgorithmProject.Utility
         private static void TestPathFinder(PathFinder pf)
         {
             try {
-                List<StartDestinationPair> testPoints = ReadPointFile(@"..\..\Resources\dcTestPoints.csv");
+                List<StartDestinationPair> testPoints = ReadPointFile(@"..\..\Resources\dcTestPointssmall.csv");
                 string outputPath = System.IO.Path.Combine("output", DateTime.Now.ToString("yyyyMMdd_hhmmss") + pf.GetType().Name + ".txt");
                 if (!System.IO.Directory.Exists("output"))
                     System.IO.Directory.CreateDirectory("output");

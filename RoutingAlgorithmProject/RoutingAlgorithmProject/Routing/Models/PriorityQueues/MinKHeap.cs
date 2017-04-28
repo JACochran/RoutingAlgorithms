@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
 {
-    class MinKHeap<T> where T : MinKHeapNode
+    class MinKHeap<T> where T : PriorityQueueNode
     {
         private int _numNodes;
         private T[] _nodes;
@@ -131,9 +131,9 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
         /// </summary>
         public T Dequeue()
         {
-            T returnMe = _nodes[1];
-            Remove(returnMe);
-            return returnMe;
+            T result = _nodes[1];
+            Remove(result);
+            return result;
         }
 
         /// <summary>
