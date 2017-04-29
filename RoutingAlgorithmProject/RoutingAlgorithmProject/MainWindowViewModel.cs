@@ -41,14 +41,14 @@ namespace RoutingAlgorithmProject
 
         private void DijikstraCommandExecuted(MapView mapView)
         {
-            var dpf = new DijkstraPathFinder(DCGraph);
+            var dpf = new DijkstraApproximateBucketPathFinder(DCGraph);
             //var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
 
-            Coordinates a = new Coordinates(38.89394f, -76.97941f);
+            Coordinates a = new Coordinates(38.93764f, -76.99521f);
             Coordinates b = new Coordinates(38.89585f, -76.97469f);
 
             float pathLength = 0;
-            var path = dpf.FindShortestPath(a, b, ref pathLength);
+            var path = dpf.FindShortestPath(b, a, ref pathLength);
             if (path != null && path.Count > 0)
             {
                 DisplayPath(path, mapView);

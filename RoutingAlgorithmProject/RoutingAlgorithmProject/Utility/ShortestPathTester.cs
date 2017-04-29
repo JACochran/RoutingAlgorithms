@@ -38,9 +38,9 @@ namespace RoutingAlgorithmProject.Utility
                 TestPathFinder(pf);
             }
 
-            //TestPathFinder(new AStarMinHeapPathFinder(graph));
+            // TestPathFinder(new AStarApproximateBucketPathFinder(graph));
             //graph.ResetGraph();
-        //    TestPathFinder(new DijkstraApproximateBucketPathFinder(graph));
+           // TestPathFinder(new DijkstraApproximateBucketPathFinder(graph));
         //    TestPathFinder(new AStarPathFinder(graph));
         //    TestPathFinder(new DijkstraMinHeapPathFinder(graph));
         //    TestPathFinder(new DijkstraPathFinder(graph));

@@ -23,12 +23,10 @@ namespace RoutingAlgorithmProject.Routing
             for (int i = 0; i < size; i++)
             {
                 Vertex node = vertexList[i];
-                float distance = 0;
-                if (!vertexList[i].Equals(startVertex))
-                    distance = Models.PriorityQueues.ApproximateBucketQueue<Vertex>.MaxDistance;
-                node.CostFromStart = distance;
+                if (vertexList[i].Equals(startVertex))
+                    node.CostFromStart = 0;
                 vertexList[i].Previous = null;
-                q.Enqueue(node, distance);
+                q.Enqueue(node, node.CostFromStart);
             }
 
             while (q.Count > 0)

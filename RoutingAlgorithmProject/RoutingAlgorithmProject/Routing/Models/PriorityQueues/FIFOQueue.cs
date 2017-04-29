@@ -34,7 +34,7 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
             }
             node.InQueue = true;
             size++;
-            IsValid();
+         //   IsValid();
         }
 
         public Vertex Dequeue()
@@ -42,28 +42,29 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
             try
             {
                 Vertex node = entry;
-                if (node.FIFOnext == node)
-                {
-                    entry = null;
+                if (node.FIFOnext != node && node.Priority!= float.MaxValue)
+                { 
+                    // find min node
+                    float min = entry.Priority;
+                    var curr = entry.FIFOnext;
+                    while (curr != entry)
+                    {
+                        if (curr.Priority < min)
+                        {
+                            min = curr.Priority;
+                            node = curr;
+                        }
+                        curr = curr.FIFOnext;
+                    }
                 }
-                else
-                {
-                    node.FIFOprev.FIFOnext = node.FIFOnext;
-                    node.FIFOnext.FIFOprev = node.FIFOprev;
-                    entry = node.FIFOnext;
-                }
-                size--;
-                node.InQueue = false;
-                node.QueueIndex = -1;
-                node.FIFOnext = null;
-                node.FIFOprev = null;
-                IsValid();
+                Remove(node);
+             //   IsValid();
                 return node;
             }catch(Exception ex)
             {
                 var x = 1;
             }
-            IsValid();
+          //  IsValid();
             return null;
         }
 
@@ -85,7 +86,7 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
             size--;
             v.FIFOnext = null;
             v.FIFOprev = null;
-            IsValid();
+           // IsValid();
         }
 
         internal bool findNode<T>(T node) where T : Vertex
