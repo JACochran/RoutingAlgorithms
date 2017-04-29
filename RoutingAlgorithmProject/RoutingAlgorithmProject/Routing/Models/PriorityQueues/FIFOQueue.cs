@@ -34,7 +34,7 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
             }
             node.InQueue = true;
             size++;
-         //   IsValid();
+            IsValid();
         }
 
         public Vertex Dequeue()
@@ -58,13 +58,13 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
                     }
                 }
                 Remove(node);
-             //   IsValid();
+                IsValid();
                 return node;
             }catch(Exception ex)
             {
                 var x = 1;
             }
-          //  IsValid();
+            IsValid();
             return null;
         }
 
@@ -86,7 +86,7 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
             size--;
             v.FIFOnext = null;
             v.FIFOprev = null;
-           // IsValid();
+            IsValid();
         }
 
         internal bool findNode<T>(T node) where T : Vertex
@@ -109,6 +109,7 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
                     return true;
                 curr = curr.FIFOnext;
             }
+            IsValid();
             return false;
         }
 

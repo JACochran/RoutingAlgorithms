@@ -68,18 +68,21 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
 
         public T Dequeue()
         {
-            //foreach (var q in buckets)
-            //{
-            //    if (q.Count > 0)
-            //    {
             _numNodes--;
             T node = (T)buckets[minBucketIndex].Dequeue();
-            for (; buckets[minBucketIndex].Count == 0 && (minBucketIndex < numberOfBuckets + 1); ++minBucketIndex) ;
-            
+
+            while(minBucketIndex < buckets.Length)
+            {
+                if(buckets[minBucketIndex].Count != 0)
+                {
+                    break;
+                }
+                else
+                {
+                    minBucketIndex++;
+                }
+            }
             return node;
-            //    }
-            //}
-            //return null;
         }
 
         public bool Contains(T node)

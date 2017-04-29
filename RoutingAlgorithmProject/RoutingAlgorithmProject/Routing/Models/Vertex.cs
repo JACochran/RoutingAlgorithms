@@ -72,14 +72,24 @@ namespace RoutingAlgorithmProject.Graph
         /// <returns></returns>
         public override bool Equals(object obj)
         {
+           
             var item = obj as Vertex;
             if (item == null)
                 return false;
+
+            if (UseId)
+            {
+                return item.myID.Equals(myID);
+            }
             return coords.Equals(item.coords);
         }
 
         public override int GetHashCode()
         {
+            if(UseId)
+            {
+                return myID;
+            }
             return coords.GetHashCode();
         }
 
@@ -130,6 +140,7 @@ namespace RoutingAlgorithmProject.Graph
             }
         }
 
+        public bool UseId { get; internal set; }
 
         public Vertex FIFOnext;
         public Vertex FIFOprev;

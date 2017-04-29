@@ -19,8 +19,10 @@ namespace RoutingAlgorithmProject.Utility
         {
             //OsmUtility.TestGraph();
 
-            var a = new Coordinates(38.89394f, -76.97941f);
-            var b = new Coordinates(38.89585f, -76.97469f);
+            //(38.90147, -76.97354)->)
+            //(38.90147,-76.97354) ->(38.91833,-76.99895)
+            var a = new Coordinates(38.90147f, -76.97354f);
+            var b = new Coordinates(38.91833f, -76.99895f);
 
             //PathFinder lkj =  new AStarMinHeapPathFinder(graph);
             //var a1 = lkj.FindShortestPath(a, b);
@@ -28,24 +30,36 @@ namespace RoutingAlgorithmProject.Utility
             //PathFinder fff = new DijkstraApproximateBucketPathFinder(graph);
             //var a2 = fff.FindShortestPath(a, b);
 
-            List<List<TestResults>> results = new List<List<TestResults>>();
-            //// get all types that inherit PathFinder
-            var pathFinders = typeof(PathFinder).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(PathFinder)));
-            foreach (Type t in pathFinders)
-            {
-                // run TestPathFinder on each type
-                PathFinder pf = (PathFinder)Activator.CreateInstance(t, graph);
-                results.Add(TestPathFinder(pf));
-            }
+            //List<List<TestResults>> results = new List<List<TestResults>>();
+            ////// get all types that inherit PathFinder
+            //var pathFinders = typeof(PathFinder).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(PathFinder)));
+            //foreach (Type t in pathFinders)
+            //{
+            //    // run TestPathFinder on each type
+            //    PathFinder pf = (PathFinder)Activator.CreateInstance(t, graph);
+            //    results.Add(TestPathFinder(pf));
+            //}
+            
 
-            ParseResults(results);
-            // TestPathFinder(new AStarApproximateBucketPathFinder(graph));
+            graph.Verticies.ForEach(vertex => vertex.UseId = true);
+
+            //var pathfinder = new AStarApproximateBucketPathFinder(graph);
+            //float pathlength = 0.0f;
+            //var pfinder = new AStarMinHeapPathFinder(graph);
             //graph.ResetGraph();
+            //var path = pathfinder.FindShortestPath(b, a, ref pathlength);
+            //graph.ResetGraph();
+            //var path2 = pfinder.FindShortestPath(b, a, ref pathlength);
+            //ParseResults(results);
+             TestPathFinder(new AStarApproximateBucketPathFinder(graph));
+            ////graph.ResetGraph();
             // TestPathFinder(new DijkstraApproximateBucketPathFinder(graph));
             //    TestPathFinder(new AStarPathFinder(graph));
             //    TestPathFinder(new DijkstraMinHeapPathFinder(graph));
             //    TestPathFinder(new DijkstraPathFinder(graph));
         }
+
+
 
         private static void ParseResults(List<List<TestResults>> results)
         {

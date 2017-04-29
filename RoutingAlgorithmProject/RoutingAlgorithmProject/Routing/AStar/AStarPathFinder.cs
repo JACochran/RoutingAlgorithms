@@ -18,13 +18,11 @@ namespace RoutingAlgorithmProject.Routing
             {
                 List<Vertex> openList = new List<Vertex>();
                 HashSet<Vertex> closedList = new HashSet<Vertex>();
-                var nodeMap = new HashSet<Vertex>();
 
                 var startNode = FindClosestVertex(start);
                 var endNode = FindClosestVertex(end);
 
                 startNode.Update(0.0f, Graph.Edge.GetMinimumDistance(startNode.Coordinates, endNode.Coordinates), null);
-                nodeMap.Add(startNode);
                 var currentVertex = startNode;
                 while (currentVertex != null)
                 {
@@ -39,10 +37,6 @@ namespace RoutingAlgorithmProject.Routing
                     {
                         Vertex reachableVertex = null;
                         reachableVertex = exit.Key;
-                        if (!nodeMap.Contains(reachableVertex))
-                        {
-                            nodeMap.Add(reachableVertex);
-                        }
 
                         // If the closed list already searched this vertex, skip it
                         if (!closedList.Contains(reachableVertex))
