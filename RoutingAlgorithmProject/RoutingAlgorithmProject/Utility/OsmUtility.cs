@@ -77,9 +77,9 @@ namespace RoutingAlgorithmProject.Utility
 
 
 
-
+            float pathLength = 0;
             var dpf = new DijkstraApproximateBucketPathFinder(graph);
-            var path = dpf.FindShortestPath(new Coordinates(0.1f, 0.1f), new Coordinates(0.9f, 0.9f));
+            var path = dpf.FindShortestPath(new Coordinates(0.1f, 0.1f), new Coordinates(0.9f, 0.9f), ref pathLength);
         }
     }
 

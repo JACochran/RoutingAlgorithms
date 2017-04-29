@@ -13,7 +13,7 @@ namespace RoutingAlgorithmProject.Routing
         {
         }
 
-        public override List<Vertex> FindShortestPath(Coordinates start, Coordinates end)
+        public override List<Vertex> FindShortestPath(Coordinates start, Coordinates end, ref float pathLength)
         {
             Vertex startVertex = FindClosestVertex(start);
             Vertex destinationVertex = FindClosestVertex(end);
@@ -36,7 +36,7 @@ namespace RoutingAlgorithmProject.Routing
             {
                 Vertex node = q.Dequeue(); 
                 if (node.Equals(destinationVertex))
-                    return GetPathResult(destinationVertex);
+                    return GetPathResult(destinationVertex, ref pathLength);
                 foreach (var neighbor in node.Neighbors)
                 {
                     float newDistance = neighbor.Value.Weight + node.CostFromStart;

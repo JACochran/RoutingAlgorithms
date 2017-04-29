@@ -1,6 +1,7 @@
 ﻿using Esri.ArcGISRuntime.Geometry;
 using RoutingAlgorithmProject.Graph;
 using System.Collections.Generic;
+using System;
 
 namespace RoutingAlgorithmProject.Routing
 {
@@ -19,7 +20,7 @@ namespace RoutingAlgorithmProject.Routing
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns> A list of edges from start to end</returns>
-        public abstract List<Graph.Vertex> FindShortestPath(Coordinates start, Coordinates end);
+        public abstract List<Graph.Vertex> FindShortestPath(Coordinates start, Coordinates end, ref float pathLength);
 
         /// <summary>
         /// Finds the cloest vertex in the graph to a point
@@ -62,16 +63,23 @@ namespace RoutingAlgorithmProject.Routing
             return e;
         }
 
-        protected List<Vertex> GetPathResult(Vertex destination)
+        protected List<Vertex> GetPathResult(Vertex destination, ref float pathLength)
         {
             List<Vertex> path = new List<Vertex>();
+            pathLength = 0;
             for (var vertex = destination; vertex != null; vertex = vertex.Previous)
             {
+                if(vertex.Previous != null)
+                    pathLength += Edge.GetMinimumDistance(vertex.Coordinates, vertex.Previous.Coordinates);
                 path.Insert(0,vertex);
             }
             return path;
         }
 
+        internal void ResetGraph()
+        {
+            graph.ResetGraph();
+        }
     }
 
 

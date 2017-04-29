@@ -32,7 +32,7 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
                 node.FIFOnext = entry;
                 entry.FIFOprev = node;
             }
-            node.inQueue = true;
+            node.InQueue = true;
             size++;
             IsValid();
         }
@@ -53,7 +53,7 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
                     entry = node.FIFOnext;
                 }
                 size--;
-                node.inQueue = false;
+                node.InQueue = false;
                 node.QueueIndex = -1;
                 node.FIFOnext = null;
                 node.FIFOprev = null;
@@ -69,7 +69,7 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
 
         public void Remove(Vertex v)
         {
-            v.inQueue = false;
+            v.InQueue = false;
             v.QueueIndex = -1;
             if (v.FIFOnext == v)
             {

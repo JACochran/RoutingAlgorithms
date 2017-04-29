@@ -26,7 +26,8 @@ namespace RoutingAlgorithmProject.Graph
             this.neighbors = new Dictionary<Vertex, Edge>();
             this.CostFromStart = float.MaxValue;
             this.EstimatedCostToEnd = float.MaxValue;
-            myID = ID++;
+            this.myID = ID++;
+            this.inQueue = false;
         }
 
         /// <summary>
@@ -84,7 +85,7 @@ namespace RoutingAlgorithmProject.Graph
 
         public override string ToString()
         {
-            return coords.ToString();
+            return "[" + myID.ToString() + "]" + coords.ToString();
         }
 
         public void Update(float costFromStart,
@@ -118,7 +119,18 @@ namespace RoutingAlgorithmProject.Graph
             return cost.CompareTo(vertex2.EstimatedCostToEnd + vertex2.CostFromStart);
         }
 
-        public bool inQueue = false;
+        private  bool inQueue;
+        public Boolean InQueue
+        {
+            get{
+                return inQueue;
+            }
+            set{
+                inQueue = value;
+            }
+        }
+
+
         public Vertex FIFOnext;
         public Vertex FIFOprev;
 

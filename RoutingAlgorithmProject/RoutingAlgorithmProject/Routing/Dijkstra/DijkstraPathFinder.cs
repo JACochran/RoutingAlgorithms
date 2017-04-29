@@ -11,7 +11,7 @@ namespace RoutingAlgorithmProject.Routing
         {
         }
         
-        public override List<Vertex> FindShortestPath(Coordinates start, Coordinates end)
+        public override List<Vertex> FindShortestPath(Coordinates start, Coordinates end, ref float pathLength)
         {
             Vertex startVertex = FindClosestVertex(start);
             Vertex destinationVertex = FindClosestVertex(end);
@@ -31,7 +31,7 @@ namespace RoutingAlgorithmProject.Routing
             {
                 Vertex u = MinDist(q);
                 if (u.Equals(destinationVertex))
-                    return GetPathResult(destinationVertex);
+                    return GetPathResult(destinationVertex, ref pathLength);
                 q.Remove(u);
                 foreach (var neighbor in u.Neighbors)
                 {

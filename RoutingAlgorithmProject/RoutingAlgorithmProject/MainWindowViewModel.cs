@@ -37,10 +37,18 @@ namespace RoutingAlgorithmProject
             return StartLocation != null && EndLocation != null;
         }
 
+
+
         private void DijikstraCommandExecuted(MapView mapView)
         {
             var dpf = new DijkstraPathFinder(DCGraph);
-            var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
+            //var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
+
+            Coordinates a = new Coordinates(38.89394f, -76.97941f);
+            Coordinates b = new Coordinates(38.89585f, -76.97469f);
+
+            float pathLength = 0;
+            var path = dpf.FindShortestPath(a, b, ref pathLength);
             if (path != null && path.Count > 0)
             {
                 DisplayPath(path, mapView);
@@ -53,8 +61,13 @@ namespace RoutingAlgorithmProject
 
         private void AStarCommandExecuted(MapView mapView)
         {
-            var dpf = new AStarPathFinder(DCGraph);
-            var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
+            Coordinates a = new Coordinates(38.89394f, -76.97941f);
+            Coordinates b = new Coordinates(38.89585f, -76.97469f);
+
+            var dpf = new AStarApproximateBucketPathFinder(DCGraph);
+            // var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
+            float pathlength = 0;
+            var path = dpf.FindShortestPath(a, b, ref pathlength);
             if (path != null && path.Count > 0)
             {
                 DisplayPath(path, mapView);
@@ -67,22 +80,25 @@ namespace RoutingAlgorithmProject
 
         private void DisplayPath(List<Vertex> path, MapView mapView)
         {
-             
-           var location = path.ToPolyline(StartLocation, EndLocation);
+
+            var location = path.ToPolyline(StartLocation, EndLocation);
             //get the graphics layer
             var graphicsLayer = mapView.Map.Layers["MyGraphics"] as GraphicsLayer;
             if (graphicsLayer != null)
             {
                 //update current graphic otherwise create a new one
-                var routeGraphic = CurrentRoute ?? new Graphic(){
-                                                                    Symbol = new SimpleLineSymbol()
-                                                                    {
-                                                                        Color = Colors.Blue, Width = 2.0, Style = SimpleLineStyle.Dash
-                                                                    }
-                                                                 };
+                var routeGraphic = CurrentRoute ?? new Graphic()
+                {
+                    Symbol = new SimpleLineSymbol()
+                    {
+                        Color = Colors.Blue,
+                        Width = 2.0,
+                        Style = SimpleLineStyle.Dash
+                    }
+                };
                 routeGraphic.Geometry = location;
                 //remove the old route
-                if(graphicsLayer.Graphics.Contains(routeGraphic))
+                if (graphicsLayer.Graphics.Contains(routeGraphic))
                 {
                     graphicsLayer.Graphics.Remove(routeGraphic);
                 }
@@ -91,7 +107,7 @@ namespace RoutingAlgorithmProject
                 CurrentRoute = routeGraphic;
             }
             //zoom to route location
-            mapView.SetViewAsync(location, new System.TimeSpan(0,0,1), new System.Windows.Thickness(100));
+            mapView.SetViewAsync(location, new System.TimeSpan(0, 0, 1), new System.Windows.Thickness(100));
         }
 
         private Graphic _currentRoute;

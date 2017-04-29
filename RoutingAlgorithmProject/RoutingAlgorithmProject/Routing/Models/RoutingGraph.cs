@@ -75,6 +75,7 @@ namespace RoutingAlgorithmProject.Graph
                 v.QueueIndex = -1;
                 v.FIFOnext = null;
                 v.FIFOprev = null;
+                v.InQueue = false;
             }
         }
 

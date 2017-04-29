@@ -12,7 +12,7 @@ namespace RoutingAlgorithmProject.Routing
         public DijkstraApproximateBucketPathFinder(RoutingGraph graph) : base(graph)
         {
         }
-            public override List<Vertex> FindShortestPath(Coordinates start, Coordinates end)
+            public override List<Vertex> FindShortestPath(Coordinates start, Coordinates end, ref float pathLength)
         {
             Vertex startVertex = FindClosestVertex(start);
             Vertex destinationVertex = FindClosestVertex(end);
@@ -35,15 +35,19 @@ namespace RoutingAlgorithmProject.Routing
             {
                 Vertex node = q.Dequeue();
                 if (node.Equals(destinationVertex))
-                    return GetPathResult(destinationVertex);
+                    return GetPathResult(destinationVertex, ref pathLength);
                 foreach (var neighbor in node.Neighbors)
                 {
                     float newDistance = neighbor.Value.Weight + node.CostFromStart;
-                    if (q.Contains(neighbor.Key) && newDistance < neighbor.Key.CostFromStart)
+                    if(newDistance < neighbor.Key.CostFromStart)
                     {
                         neighbor.Key.CostFromStart = newDistance;
-                        neighbor.Key.Previous = node;
-                        q.UpdatePriority(neighbor.Key, newDistance);
+
+                        if (q.Contains(neighbor.Key))
+                        {
+                            neighbor.Key.Previous = node;
+                            q.UpdatePriority(neighbor.Key, newDistance);
+                        }
                     }
                 }
             }

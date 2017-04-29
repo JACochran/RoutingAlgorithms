@@ -18,22 +18,32 @@ namespace RoutingAlgorithmProject.Utility
         internal static void TestPathFinders(RoutingGraph graph)
         {
             //OsmUtility.TestGraph();
-            PathFinder lkj =  new AStarApproximateBucketPathFinder(graph);
-            lkj.FindShortestPath(new Coordinates(38.89394f, -76.97941f), new Coordinates(38.89462f, -76.97774f));
-            // get all types that inherit PathFinder
+
+            var a = new Coordinates(38.89394f, -76.97941f);
+            var b = new Coordinates(38.89585f, -76.97469f);
+
+            //PathFinder lkj =  new AStarMinHeapPathFinder(graph);
+            //var a1 = lkj.FindShortestPath(a, b);
+            //graph.ResetGraph();
+            //PathFinder fff = new DijkstraApproximateBucketPathFinder(graph);
+            //var a2 = fff.FindShortestPath(a, b);
+
+
+            //// get all types that inherit PathFinder
             var pathFinders = typeof(PathFinder).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(PathFinder)));
             foreach (Type t in pathFinders)
             {
                 // run TestPathFinder on each type
                 PathFinder pf = (PathFinder)Activator.CreateInstance(t, graph);
                 TestPathFinder(pf);
-                graph.ResetGraph();
             }
 
             //TestPathFinder(new AStarMinHeapPathFinder(graph));
-            //TestPathFinder(new AStarPathFinder(graph));
-            //TestPathFinder(new DijkstraMinHeapPathFinder(graph));
-            //TestPathFinder(new DijkstraPathFinder(graph));
+            //graph.ResetGraph();
+        //    TestPathFinder(new DijkstraApproximateBucketPathFinder(graph));
+        //    TestPathFinder(new AStarPathFinder(graph));
+        //    TestPathFinder(new DijkstraMinHeapPathFinder(graph));
+        //    TestPathFinder(new DijkstraPathFinder(graph));
         }
 
         static void runTest(Object stateInfo)
@@ -61,17 +71,19 @@ namespace RoutingAlgorithmProject.Utility
                     int successfullPathsFound = 0;
                     foreach (var startDestinationPair in testPoints)
                     {
+                        float pathLength = 0;
                         var sw = new Stopwatch();
                         sw.Start();
-                        var path = pf.FindShortestPath(startDestinationPair.Start, startDestinationPair.Destination);
+                        var path = pf.FindShortestPath(startDestinationPair.Start, startDestinationPair.Destination, ref pathLength);
                         sw.Stop();
+                        pf.ResetGraph();
                         string msg = null;
                         double elapsedTime = sw.Elapsed.TotalSeconds;
                         if (path != null && path.Count > 0)
                         {
                             totalRunTime += elapsedTime;
                             successfullPathsFound++;
-                            msg = startDestinationPair.ToString() + "Completed in " + elapsedTime.ToString() + " seconds." + " with path length = " + path.Count;
+                            msg = startDestinationPair.ToString() + "Completed in " + elapsedTime.ToString() + " seconds." + " with path length = " + pathLength + " vertex count = " + path.Count;
                         }
                         else
                         {

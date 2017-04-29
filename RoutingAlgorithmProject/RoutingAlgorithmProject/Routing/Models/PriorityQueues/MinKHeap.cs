@@ -28,6 +28,9 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
 
         public bool Contains(T node)
         {
+            if (node.QueueIndex < 0)
+                return false;
+
             return (_nodes[node.QueueIndex] == node);
         }
 

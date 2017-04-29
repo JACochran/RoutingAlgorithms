@@ -13,7 +13,7 @@ namespace RoutingAlgorithmProject.Routing
         {
         }
 
-        public override List<Vertex> FindShortestPath(Coordinates start, Coordinates end)
+        public override List<Vertex> FindShortestPath(Coordinates start, Coordinates end, ref float pathLength)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace RoutingAlgorithmProject.Routing
                     //// If current vertex is the target then we are done
                     if (currentVertex.Equals(endNode))
                     {
-                        return GetPathResult(endNode);
+                        return GetPathResult(endNode, ref pathLength);
                     }
 
 
