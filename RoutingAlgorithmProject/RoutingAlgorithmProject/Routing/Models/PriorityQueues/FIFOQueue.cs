@@ -19,7 +19,7 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
 
         public void Enqueue(Vertex node)
         {
-            if(entry == null)
+            if (entry == null)
             {
                 entry = node;
                 entry.FIFOnext = entry;
@@ -34,37 +34,28 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
             }
             node.InQueue = true;
             size++;
-            IsValid();
         }
 
         public Vertex Dequeue()
         {
-            try
+            Vertex node = entry;
+            if (node.FIFOnext != node && node.Priority != float.MaxValue)
             {
-                Vertex node = entry;
-                if (node.FIFOnext != node && node.Priority!= float.MaxValue)
-                { 
-                    // find min node
-                    float min = entry.Priority;
-                    var curr = entry.FIFOnext;
-                    while (curr != entry)
+                // find min node
+                float min = entry.Priority;
+                var curr = entry.FIFOnext;
+                while (curr != entry)
+                {
+                    if (curr.Priority < min)
                     {
-                        if (curr.Priority < min)
-                        {
-                            min = curr.Priority;
-                            node = curr;
-                        }
-                        curr = curr.FIFOnext;
+                        min = curr.Priority;
+                        node = curr;
                     }
+                    curr = curr.FIFOnext;
                 }
-                Remove(node);
-                IsValid();
-                return node;
-            }catch(Exception ex)
-            {
-                var x = 1;
             }
-            IsValid();
+            Remove(node);
+            return node;
             return null;
         }
 
@@ -75,18 +66,19 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
             if (v.FIFOnext == v)
             {
                 entry = null;
-            }else{
+            }
+            else
+            {
                 v.FIFOprev.FIFOnext = v.FIFOnext;
                 v.FIFOnext.FIFOprev = v.FIFOprev;
-                if(entry == v)
+                if (entry == v)
                 {
                     entry = v.FIFOnext;
-                } 
+                }
             }
             size--;
             v.FIFOnext = null;
             v.FIFOprev = null;
-            IsValid();
         }
 
         internal bool findNode<T>(T node) where T : Vertex
@@ -109,7 +101,6 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
                     return true;
                 curr = curr.FIFOnext;
             }
-            IsValid();
             return false;
         }
 
@@ -131,11 +122,11 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
 
         private bool checkQueueState()
         {
-            
+
             if (entry == null)
                 return size == 0;
 
-            if(entry.FIFOnext == entry || entry.FIFOprev == entry)
+            if (entry.FIFOnext == entry || entry.FIFOprev == entry)
             {
                 return size == 1;
             }
@@ -152,5 +143,5 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
         }
     }
 
-    
+
 }

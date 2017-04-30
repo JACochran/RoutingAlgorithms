@@ -12,14 +12,15 @@ namespace RoutingAlgorithmProject.Utility
     public static class OsmUtility
     {
 
-        public static Graph.RoutingGraph ReadOsmData(String path) 
+        public static Graph.RoutingGraph ReadOsmData(string path, string name) 
         {
-            RoutingGraph graph = new RoutingGraph();
+            RoutingGraph graph = new RoutingGraph(name);
             {
                 using (var fileStreamSource = File.OpenRead(path))
                 {
                     var source = new PBFOsmStreamSource(fileStreamSource);
-                    var nodesAndWays = from osmGeo in source
+                    var filtered = name.Equals("VA")? source.FilterBox(-77.8f, 39.4f, -77f, 38.67f) : source;
+                    var nodesAndWays = from osmGeo in filtered
                                        where osmGeo.Type == OsmSharp.OsmGeoType.Node || (osmGeo.Type == OsmSharp.OsmGeoType.Way && osmGeo.Tags != null && osmGeo.Tags.ContainsKey("highway"))
                                        select osmGeo;
                     var completed = nodesAndWays.ToComplete();
@@ -53,7 +54,7 @@ namespace RoutingAlgorithmProject.Utility
 
         public static void TestGraph()
         {
-            Graph.RoutingGraph graph = new Graph.RoutingGraph();
+            Graph.RoutingGraph graph = new Graph.RoutingGraph("test");
             Graph.Vertex a = graph.AddVertex(new Coordinates(0, 0));
             Graph.Vertex b = graph.AddVertex(new Coordinates(0, 1));
             Graph.Vertex c = graph.AddVertex(new Coordinates(0.5f, 0.5f));

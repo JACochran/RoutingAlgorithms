@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RoutingAlgorithmProject.Routing;
+using System.IO;
 
 namespace RoutingAlgorithmProject.Utility
 {
@@ -15,88 +16,96 @@ namespace RoutingAlgorithmProject.Utility
         /// runs path shortest path algorithm on each implementation
         /// </summary>
         /// <param name="graph"></param>
-        internal static void TestPathFinders(RoutingGraph graph)
+        internal static void TestPathFinders(RoutingGraph graph, string testPointsPath)
         {
-            //OsmUtility.TestGraph();
-
-            //(38.90147, -76.97354)->)
-            //(38.90147,-76.97354) ->(38.91833,-76.99895)
-            var a = new Coordinates(38.90147f, -76.97354f);
-            var b = new Coordinates(38.91833f, -76.99895f);
-
-            //PathFinder lkj =  new AStarMinHeapPathFinder(graph);
-            //var a1 = lkj.FindShortestPath(a, b);
-            //graph.ResetGraph();
-            //PathFinder fff = new DijkstraApproximateBucketPathFinder(graph);
-            //var a2 = fff.FindShortestPath(a, b);
-
-            //List<List<TestResults>> results = new List<List<TestResults>>();
-            ////// get all types that inherit PathFinder
-            //var pathFinders = typeof(PathFinder).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(PathFinder)));
-            //foreach (Type t in pathFinders)
-            //{
-            //    // run TestPathFinder on each type
-            //    PathFinder pf = (PathFinder)Activator.CreateInstance(t, graph);
-            //    results.Add(TestPathFinder(pf));
-            //}
-            
-
-            graph.Verticies.ForEach(vertex => vertex.UseId = true);
-
-            //var pathfinder = new AStarApproximateBucketPathFinder(graph);
-            //float pathlength = 0.0f;
-            //var pfinder = new AStarMinHeapPathFinder(graph);
-            //graph.ResetGraph();
-            //var path = pathfinder.FindShortestPath(b, a, ref pathlength);
-            //graph.ResetGraph();
-            //var path2 = pfinder.FindShortestPath(b, a, ref pathlength);
-            //ParseResults(results);
-             TestPathFinder(new AStarApproximateBucketPathFinder(graph));
-            ////graph.ResetGraph();
-            // TestPathFinder(new DijkstraApproximateBucketPathFinder(graph));
-            //    TestPathFinder(new AStarPathFinder(graph));
-            //    TestPathFinder(new DijkstraMinHeapPathFinder(graph));
-            //    TestPathFinder(new DijkstraPathFinder(graph));
+            //graph.Verticies.ForEach(vertex => vertex.UseId = true);
+            GraphTestResults results = new GraphTestResults(graph.Name);
+            //// get all types that inherit PathFinder
+            var pathFinders = typeof(PathFinder).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(PathFinder)));
+            foreach (Type t in pathFinders)
+            {
+                if(t != typeof(DijkstraPathFinder) && t != typeof(AStarPathFinder))
+                {
+                    // run TestPathFinder on each type
+                    PathFinder pf = (PathFinder)Activator.CreateInstance(t, graph);
+                    results.AddAlgorithmTestResult(TestPathFinder(pf, testPointsPath));
+                }
+            }
+            ParseResults(results, graph);
         }
 
-
-
-        private static void ParseResults(List<List<TestResults>> results)
+        private static void ParseResults(GraphTestResults results, RoutingGraph graph)
         {
             string outputPath = System.IO.Path.Combine("output", DateTime.Now.ToString("yyyyMMdd_hhmmss") + "TotalResults.txt");
             if (!System.IO.Directory.Exists("output"))
                 System.IO.Directory.CreateDirectory("output");
             using (System.IO.TextWriter tw = new System.IO.StreamWriter(outputPath, false))
             {
-                tw.WriteLine(String.Format("{0,-40} {1,-20} {2,-20}", "PathFinder", "Avg Runtime", "Avg # of nodes"));
-                foreach(var list in results)
-                {
-                    tw.WriteLine(GetResultString(list));  
-                }
+                WriteRoadNetworkCharacteristics(tw, graph);
+                WriteRuntimes(tw, results);
+                WriteIntervalRuntimes(tw, results);
+                
             }
         }
 
-        private static string GetResultString(List<TestResults> list)
+        private static void WriteIntervalRuntimes(TextWriter tw, GraphTestResults results)
         {
-            double totalTime = 0;
-            float totalNodes = 0;
-            foreach(var r in list)
+            writeLineBreak(tw);
+            string formatString = "{0,-20}\t{1,-20} ";
+            tw.WriteLine(String.Format(formatString, "Interval", "Runtime"));
+            writeLineBreak(tw);
+            foreach (var algorithmTestResult in results.GetAlgorithmTestResults())
             {
-                totalNodes += r.NumberOfNodes;
-                totalTime += r.Time;
+                tw.WriteLine(algorithmTestResult.AlgorithmName);
+                for (int i = 0; i < AlgorithmTestResults.NUMBEROFINTERVALS; i++)
+                {
+                    int start = (int)algorithmTestResult.GetIntervalLength() * i;
+                    int end = (int)algorithmTestResult.GetIntervalLength() * i + 1;
+                    string intervalString = "[" + i + "] (" + start + " - " + end + ")";
+                    tw.WriteLine(String.Format(formatString, intervalString, algorithmTestResult.AverageIntervalRuntimes[i].ToString("N4")));
+                }
+                writeLineBreak(tw);
             }
-            double avgRuntime = totalTime / list.Count;
-            double avgNodes = totalNodes / list.Count;
-            return String.Format("{0,-40} {1,-20} {2,-20}", list.First().PathFinderType.Name, avgRuntime, avgNodes);
         }
 
-        static void runTest(Object stateInfo)
+        private static void WriteRuntimes(TextWriter tw, GraphTestResults results)
         {
-            PathFinder pf = (PathFinder)stateInfo;
-            TestPathFinder(pf);
+            Dictionary<string, double> avgRuntimes = new Dictionary<string, double>();
+            writeLineBreak(tw);
+            string formatString = "{0,-20} {1,-20} {2,-20}";
+            tw.WriteLine(String.Format(formatString, "Algorithm", "DC", "VA"));
+            foreach (var algorithmTestResult in results.GetAlgorithmTestResults())
+            {
+                double avgRunTime = algorithmTestResult.GetAverageRuntime();
+                tw.WriteLine(String.Format(formatString, algorithmTestResult.AlgorithmName, avgRunTime.ToString("N5"), 0.0));
+                avgRuntimes[algorithmTestResult.AlgorithmName] = avgRunTime;
+            }
+            writeLineBreak(tw);
+            tw.WriteLine("Ratio of execution times");
+            writeLineBreak(tw);
+           // double aslDikl = (avgRuntimes["ASL"] / avgRuntimes["DIKL"]) * 100;
+            double ashDikh = (avgRuntimes["ASH"] / avgRuntimes["DIKH"]);
+            double asbaDikba = (avgRuntimes["ASBA"] / avgRuntimes["DIKBA"]);
+          //  tw.WriteLine(String.Format(formatString, "ASL/DIKL", aslDikl, 0.0));
+            tw.WriteLine(String.Format(formatString, "ASH/DIKH", ashDikh.ToString("p"), 0.0));
+            tw.WriteLine(String.Format(formatString, "ASBA/DIKBA", asbaDikba.ToString("p"), 0.0));
+            writeLineBreak(tw);
         }
 
+        private static void writeLineBreak(TextWriter tw)
+        {
+            tw.WriteLine("--------------------------------------------------------------------------------");
+        }
 
+        private static void WriteRoadNetworkCharacteristics(TextWriter tw, RoutingGraph graph)
+        {
+            tw.WriteLine("Road network characteristics.");
+            writeLineBreak(tw);
+            string formatString = "{0,-8} {1,-12} {2,-12} {3, -20}";
+            tw.WriteLine(String.Format(formatString, "Name", "# of nodes", "# of arcs", "Arc/node ratio"));
+            double edgeRatio = (double)graph.EdgeCount / graph.Verticies.Count;
+            tw.WriteLine(String.Format(formatString, graph.Name, graph.Verticies.Count, graph.EdgeCount, edgeRatio.ToString("N5")));
+        }
 
         /// <summary>
         /// reads from a file then finds a path between every point in the file
@@ -104,10 +113,10 @@ namespace RoutingAlgorithmProject.Utility
         /// Creates output file for each implementation with the average time for each path
         /// </summary>
         /// <param name="pf"></param>
-        private static List<TestResults> TestPathFinder(PathFinder pf)
+        private static AlgorithmTestResults TestPathFinder(PathFinder pf, string testPointsPath)
         {
-            List<TestResults> resultsList = new List<TestResults>();
-            List<StartDestinationPair> testPoints = ReadPointFile(@"..\..\Resources\dcTestPoints.csv");
+            AlgorithmTestResults resultsList = new AlgorithmTestResults(pf.GetAbbreivatedName());
+            List<StartDestinationPair> testPoints = ReadPointFile(testPointsPath);
             string outputPath = System.IO.Path.Combine("output", DateTime.Now.ToString("yyyyMMdd_hhmmss") + pf.GetType().Name + ".txt");
             if (!System.IO.Directory.Exists("output"))
                 System.IO.Directory.CreateDirectory("output");
@@ -137,7 +146,7 @@ namespace RoutingAlgorithmProject.Utility
                     }
                     tw.WriteLine(pf.GetType().Name + " " + msg);
                     if(path!=null)
-                        resultsList.Add(new TestResults(elapsedTime, path.Count, pf.GetType()));
+                        resultsList.AddTestResult(new TestResults(elapsedTime, path.Count));
                 }
                 tw.WriteLine("Average Runtime(sec) = " + totalRunTime / successfullPathsFound + " Failed Paths = " + (testPoints.Count - successfullPathsFound));
             }
@@ -196,23 +205,8 @@ namespace RoutingAlgorithmProject.Utility
             {
                 return Start.ToString() + "->" + Destination.ToString();
             }
-
-
         }
 
-        public class TestResults
-        {
-            public readonly double Time;
-            public readonly int NumberOfNodes;
-            public readonly Type PathFinderType;
-
-            public TestResults(double time, int nodes, Type pf)
-            {
-                this.Time = time;
-                this.NumberOfNodes = nodes;
-                this.PathFinderType = pf;
-            }
-
-        }
+        
     }
 }

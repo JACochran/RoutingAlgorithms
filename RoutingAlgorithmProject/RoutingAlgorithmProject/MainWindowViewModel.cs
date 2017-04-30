@@ -17,13 +17,13 @@ namespace RoutingAlgorithmProject
     {
         public MainWindowViewModel()
         {
-            DCGraph = OsmUtility.ReadOsmData(@"..\..\Resources\district-of-columbia-latest.osm.pbf");
+           // DCGraph = OsmUtility.ReadOsmData(@"..\..\Resources\district-of-columbia-latest.osm.pbf", "DC");
             var runTest = true;
             if (runTest)
             {
-                ShortestPathTester.TestPathFinders(DCGraph);
-                //var VAGraph = OsmUtility.ReadOsmData(@"..\..\Resources\Virginia.osm.pbf");
-                //ShortestPathTester.TestPathFinders(VAGraph);
+                var VAGraph = OsmUtility.ReadOsmData(@"..\..\Resources\virginia-latest.osm.pbf", "VA");
+                ShortestPathTester.TestPathFinders(VAGraph, @"..\..\Resources\vaTestPoints.csv");
+                ShortestPathTester.TestPathFinders(DCGraph, @"..\..\Resources\dcTestPoints.csv");
             }
             IsMovingStartPoint = true;
             FindRouteAStarCommand = new RelayCommand<MapView>(AStarCommandExecuted, CanRouteExecute);

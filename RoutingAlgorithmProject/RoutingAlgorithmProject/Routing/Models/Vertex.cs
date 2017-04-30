@@ -88,7 +88,7 @@ namespace RoutingAlgorithmProject.Graph
         {
             if(UseId)
             {
-                return myID;
+                return myID.GetHashCode();
             }
             return coords.GetHashCode();
         }

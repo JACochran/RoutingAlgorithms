@@ -46,6 +46,10 @@ namespace RoutingAlgorithmProject.Routing
             return null;
         }
 
+        public override string GetAbbreivatedName()
+        {
+            return "DIKL";
+        }
 
         private Vertex MinDist(HashSet<Vertex> q)
         {

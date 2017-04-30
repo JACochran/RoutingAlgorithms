@@ -92,5 +92,9 @@ namespace RoutingAlgorithmProject.Routing
             return null;    // No path between the start and end nodes
         }
 
+        public override string GetAbbreivatedName()
+        {
+            return "ASH";
+        }
     }
 }

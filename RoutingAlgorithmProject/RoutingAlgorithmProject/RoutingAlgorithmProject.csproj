@@ -135,6 +135,7 @@
     <Compile Include="Utility\OsmUtility.cs" />
     <Compile Include="Routing\Models\Vertex.cs" />
     <Compile Include="Utility\ShortestPathTester.cs" />
+    <Compile Include="Utility\TestResults.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -7,11 +7,29 @@ namespace RoutingAlgorithmProject.Graph
     public class RoutingGraph 
     {
         private Dictionary<Coordinates, Vertex> vertexMap;
+        private string _name;
+        private int _edges;
 
-        public RoutingGraph()
+        public RoutingGraph(string name)
         {
             this.vertexMap = new Dictionary<Coordinates, Vertex>();
+            this._name = name;
         }
+
+        public string Name{
+            get
+            {
+                return _name;
+            }
+        }
+
+        public int EdgeCount
+        {
+            get{
+                return _edges;
+            }
+        }
+
 
         // <summary>
         /// if a vertex does not exist at location coords, add to the dictionary
@@ -38,6 +56,7 @@ namespace RoutingAlgorithmProject.Graph
         {
             e.From.AddEdge(e.To, e);
             e.To.AddEdge(e.From, e);
+            _edges++;
         }
 
         /// <summary>

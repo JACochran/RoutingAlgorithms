@@ -22,6 +22,8 @@ namespace RoutingAlgorithmProject.Routing
         /// <returns> A list of edges from start to end</returns>
         public abstract List<Graph.Vertex> FindShortestPath(Coordinates start, Coordinates end, ref float pathLength);
 
+        public abstract string GetAbbreivatedName();
+
         /// <summary>
         /// Finds the cloest vertex in the graph to a point
         /// </summary>

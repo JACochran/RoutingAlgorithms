@@ -51,6 +51,10 @@ namespace RoutingAlgorithmProject.Routing
             }
             return null;
         }
-              
+
+        public override string GetAbbreivatedName()
+        {
+            return "DIKBA";
+        }
     }
 }
