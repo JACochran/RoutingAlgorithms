@@ -19,8 +19,6 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
 
         public void Enqueue(Vertex node)
         {
-            if(size<10)
-                IsValid();
             if (entry == null)
             {
                 entry = node;
@@ -36,8 +34,6 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
             }
             node.InQueue = true;
             size++;
-            if (size < 10)
-                IsValid();
         }
 
         public Vertex Dequeue()
@@ -68,18 +64,6 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
 
         public void Remove(Vertex v)
         {
-            if (v.myID == 508005)
-            {
-                var lkjdsfdsf = 1;
-            }
-            if (size < 10)
-            {
-                if (!Contains(v))
-                {
-                    var lkj = 1;
-                }
-                IsValid();
-            }
             v.InQueue = false;
             v.QueueIndex = -1;
             if (v.FIFOnext == v)
@@ -98,14 +82,6 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
             size--;
             v.FIFOnext = null;
             v.FIFOprev = null;
-            if (size < 10)
-            {
-                IsValid();
-                if (Contains(v))
-                {
-                    var lkj = 1;
-                }
-            }
         }
 
         public bool Contains(Vertex node)

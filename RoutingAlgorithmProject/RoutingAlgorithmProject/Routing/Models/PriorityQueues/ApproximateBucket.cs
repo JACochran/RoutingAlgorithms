@@ -49,10 +49,6 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
 
         public void Enqueue(T node, float priority)
         {
-            if (node.myID == 508005)
-            {
-                var lkjdsfdsf = 1;
-            }
             node.Priority = priority;
             _numNodes++;
             var bucketIndex = GetBucketIndex(priority);
@@ -106,24 +102,7 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
 
         private void Remove(T node)
         {
-            //if (node.myID == 508005)
-            //{
-            //    var lkjdsfdsf = 1;
-            //}
-            //if (!buckets[node.QueueIndex].Contains(node))
-            //{
-            //    for (int i = 0; i < buckets.Length; i++)
-            //    {
-            //        if (buckets[i].Contains(node))
-            //        {
-            //            var lkj = 1;
-            //        }
-            //    }
-            //}
-            //else
-            //{
-                buckets[node.QueueIndex].Remove(node);
-            //}
+            buckets[node.QueueIndex].Remove(node);
 
             _numNodes--;
         }

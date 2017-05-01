@@ -28,10 +28,6 @@ namespace RoutingAlgorithmProject.Graph
             this.EstimatedCostToEnd = float.MaxValue;
             this.myID = ID++;
             this.inQueue = false;
-            if (this.myID == 508005)
-            {
-                var lkjdsfdsf = 1;
-            }
         }
 
         /// <summary>

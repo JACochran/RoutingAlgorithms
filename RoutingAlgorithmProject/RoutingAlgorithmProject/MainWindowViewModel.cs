@@ -17,12 +17,12 @@ namespace RoutingAlgorithmProject
     {
         public MainWindowViewModel()
         {
-            //DCGraph = OsmUtility.ReadOsmData(@"..\..\Resources\district-of-columbia-latest.osm.pbf", @"..\..\Resources\dcTestPoints.csv", "DC");
+            DCGraph = OsmUtility.ReadOsmData(@"..\..\Resources\district-of-columbia-latest.osm.pbf", @"..\..\Resources\dcTestPoints.csv", "DC");
             var runTest = true;
             if (runTest)
             {
                 var VAGraph = OsmUtility.ReadOsmData(@"..\..\Resources\virginia-latest.osm.pbf", @"..\..\Resources\vaTestPoints.csv", "VA");
-                RoutingGraph[] graphs = { VAGraph };
+                RoutingGraph[] graphs = { VAGraph, DCGraph };
                 ShortestPathTester.TestPathFinders(graphs);
             }
             IsMovingStartPoint = true;

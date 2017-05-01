@@ -16,17 +16,10 @@ namespace RoutingAlgorithmProject.Routing
 
         public override List<Vertex> FindShortestPath(Vertex startNode, Vertex endNode, ref float pathLength)
         {
-            try
-            {
-                Models.PriorityQueues.MinKHeap<Vertex> openList = new Models.PriorityQueues.MinKHeap<Vertex>(this.graph.Verticies.Count);
+                Models.PriorityQueues.MinKHeap<Vertex> openList = new Models.PriorityQueues.MinKHeap<Vertex>(graph.Verticies.Count);
                 HashSet<Vertex> closedList = new HashSet<Vertex>();
 
-               // var nodeMap = new HashSet<Vertex>();
-
-               
-
                 startNode.Update(0.0f, Edge.GetMinimumDistance(startNode.Coordinates, endNode.Coordinates), null);
-               // nodeMap.Add(startNode);
                 var currentVertex = startNode;
                 while (currentVertex != null)
                 {
@@ -70,7 +63,6 @@ namespace RoutingAlgorithmProject.Routing
                                     openList.UpdatePriority(reachableVertex, estimatedCostFromEnd + costFromStart);
                             }
                         }
-
                     }
 
                     if (openList.Count > 0)
@@ -82,12 +74,6 @@ namespace RoutingAlgorithmProject.Routing
                         currentVertex = null;
                     }
                 }
-
-            }
-            catch (Exception ex)
-            {
-
-            }
             return null;    // No path between the start and end nodes
         }
 

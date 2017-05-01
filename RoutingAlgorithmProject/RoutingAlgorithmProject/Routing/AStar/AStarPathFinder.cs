@@ -14,70 +14,62 @@ namespace RoutingAlgorithmProject.Routing
 
         public override List<Vertex> FindShortestPath(Vertex startNode, Vertex endNode, ref float pathLength)
         {
-            try
+            List<Vertex> openList = new List<Vertex>();
+            HashSet<Vertex> closedList = new HashSet<Vertex>();
+
+            startNode.Update(0.0f, Edge.GetMinimumDistance(startNode.Coordinates, endNode.Coordinates), null);
+            var currentVertex = startNode;
+            while (currentVertex != null)
             {
-                List<Vertex> openList = new List<Vertex>();
-                HashSet<Vertex> closedList = new HashSet<Vertex>();
-                
-                startNode.Update(0.0f, Edge.GetMinimumDistance(startNode.Coordinates, endNode.Coordinates), null);
-                var currentVertex = startNode;
-                while (currentVertex != null)
+                closedList.Add(currentVertex); // Put it in "done" pile
+                                               // If current vertex is the target then we are done
+                if (currentVertex.Coordinates.Equals(endNode.Coordinates))
                 {
-                    closedList.Add(currentVertex); // Put it in "done" pile
-                    // If current vertex is the target then we are done
-                    if (currentVertex.Coordinates.Equals(endNode.Coordinates))
-                    {
-                        return GetPathResult(endNode, ref pathLength);
-                    }
-
-                    foreach (var exit in currentVertex.Neighbors) // For each node adjacent to the current node
-                    {
-                        Vertex reachableVertex = null;
-                        reachableVertex = exit.Key;
-
-                        // If the closed list already searched this vertex, skip it
-                        if (!closedList.Contains(reachableVertex))
-                        {
-                            float edgeCost = exit.Value.Weight;
-
-                            if (edgeCost <= 0.0)    // Are positive values that are extremely close to 0 going to be a problem?
-                            {
-                                throw new ArgumentException("The A* algorithm is only valid for edge costs greater than 0");
-                            }
-
-                            float costFromStart = currentVertex.CostFromStart + edgeCost;
-
-                            bool isShorterPath = costFromStart < reachableVertex.CostFromStart;
-
-                            if (!openList.Contains(reachableVertex) || isShorterPath)
-                            {
-                                float estimatedCostFromEnd = exit.Key.Coordinates.Equals(endNode.Coordinates) ? 0.0f
-                                                                                                               : Edge.GetMinimumDistance(reachableVertex.Coordinates, endNode.Coordinates);
-
-                                reachableVertex.Update(costFromStart,estimatedCostFromEnd,currentVertex);
-
-                                if(!openList.Contains(reachableVertex))
-                                    openList.Add(reachableVertex);
-                            }
-                        }
-
-                    }
-
-                    if (openList.Count > 0)
-                    {
-                        openList.Sort();
-                        currentVertex = openList[0];
-                        openList.RemoveAt(0);
-                    }
-                    else
-                    {
-                        currentVertex = null;
-                    }
+                    return GetPathResult(endNode, ref pathLength);
                 }
 
-            }catch(Exception ex)
-            {
+                foreach (var exit in currentVertex.Neighbors) // For each node adjacent to the current node
+                {
+                    Vertex reachableVertex = null;
+                    reachableVertex = exit.Key;
 
+                    // If the closed list already searched this vertex, skip it
+                    if (!closedList.Contains(reachableVertex))
+                    {
+                        float edgeCost = exit.Value.Weight;
+
+                        if (edgeCost <= 0.0)    // Are positive values that are extremely close to 0 going to be a problem?
+                        {
+                            throw new ArgumentException("The A* algorithm is only valid for edge costs greater than 0");
+                        }
+
+                        float costFromStart = currentVertex.CostFromStart + edgeCost;
+
+                        bool isShorterPath = costFromStart < reachableVertex.CostFromStart;
+
+                        if (!openList.Contains(reachableVertex) || isShorterPath)
+                        {
+                            float estimatedCostFromEnd = exit.Key.Coordinates.Equals(endNode.Coordinates) ? 0.0f
+                                                                                                           : Edge.GetMinimumDistance(reachableVertex.Coordinates, endNode.Coordinates);
+
+                            reachableVertex.Update(costFromStart, estimatedCostFromEnd, currentVertex);
+
+                            if (!openList.Contains(reachableVertex))
+                                openList.Add(reachableVertex);
+                        }
+                    }
+
+                }
+                if (openList.Count > 0)
+                {
+                    openList.Sort();
+                    currentVertex = openList[0];
+                    openList.RemoveAt(0);
+                }
+                else
+                {
+                    currentVertex = null;
+                }
             }
             return null;    // No path between the start and end nodes
         }

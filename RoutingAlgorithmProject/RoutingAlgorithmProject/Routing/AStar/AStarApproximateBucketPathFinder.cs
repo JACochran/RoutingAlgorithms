@@ -12,13 +12,10 @@ namespace RoutingAlgorithmProject.Routing
 
         public override List<Vertex> FindShortestPath(Vertex startNode, Vertex endNode, ref float pathLength)
         {
-            try
-            {
                 Models.PriorityQueues.ApproximateBucketQueue<Vertex> openList = new Models.PriorityQueues.ApproximateBucketQueue<Vertex>();
                 HashSet<Vertex> closedList = new HashSet<Vertex>();
 
                 startNode.Update(0.0f, Edge.GetMinimumDistance(startNode.Coordinates, endNode.Coordinates), null);
-                // nodeMap.Add(startNode);
                 var currentVertex = startNode;
                 while (currentVertex != null)
                 {
@@ -28,13 +25,6 @@ namespace RoutingAlgorithmProject.Routing
                     {
                         return GetPathResult(endNode, ref pathLength);
                     }
-                    //int hmm = 0;
-                    //var vs = this.graph.Verticies;
-                    //foreach (var v in vs)
-                    //{
-                    //    if (v.myID == 508005)
-                    //        hmm++;
-                    //}
 
                     foreach (var exit in currentVertex.Neighbors) // For each node adjacent to the current node
                     {
@@ -48,11 +38,6 @@ namespace RoutingAlgorithmProject.Routing
                             if (edgeCost <= 0.0)    // Are positive values that are extremely close to 0 going to be a problem?
                             {
                                 throw new ArgumentException("The A* algorithm is only valid for edge costs greater than 0");
-                            }
-
-                            if (reachableVertex.myID == 508005)
-                            {
-                                var lkjdsfdsf = 1;
                             }
 
                             float costFromStart = currentVertex.CostFromStart + edgeCost;
@@ -84,12 +69,6 @@ namespace RoutingAlgorithmProject.Routing
                         currentVertex = null;
                     }
                 }
-
-            }
-            catch (Exception ex)
-            {
-
-            }
             return null;    // No path between the start and end nodes
         }
 

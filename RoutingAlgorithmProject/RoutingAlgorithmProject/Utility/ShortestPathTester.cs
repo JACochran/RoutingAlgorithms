@@ -20,7 +20,6 @@ namespace RoutingAlgorithmProject.Utility
         {
             GraphTestResults[] results = new GraphTestResults[graphs.Length];
             //// get all types that inherit PathFinder
-            //var pathFinders = typeof(PathFinder).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(PathFinder)));
             for(int i=0; i<graphs.Length;i++)
             {
                 results[i] = new GraphTestResults(graphs[i].Name);
