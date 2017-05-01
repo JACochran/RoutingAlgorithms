@@ -74,8 +74,18 @@ namespace RoutingAlgorithmProject.Graph
 
         public static float GetMinimumDistance(Coordinates v1, Coordinates v2)
         {
+            var dLat = v1.Latitude - v2.Latitude;  // deg2rad below
+            var dLon = v1.Longitude - v2.Longitude;
+            float result = dLat * dLat + dLon * dLon;
+            if (result < 0)
+            {
+                return -1;
+            }
+            else
+                return (float)(Math.Sqrt(result)* 1000000);
+
             //return v1.DistanceBetween(v2);
-            return (float)GeometryEngine.GeodesicDistance(new MapPoint(start.Longitude, start.Latitude, SpatialReferences.Wgs84), new MapPoint(end.Longitude, end.Latitude, SpatialReferences.Wgs84), LinearUnits.Meters);
+            //return (float)GeometryEngine.GeodesicDistance(new MapPoint(start.Longitude, start.Latitude, SpatialReferences.Wgs84), new MapPoint(end.Longitude, end.Latitude, SpatialReferences.Wgs84), LinearUnits.Meters);
         }
 
         public override string ToString()

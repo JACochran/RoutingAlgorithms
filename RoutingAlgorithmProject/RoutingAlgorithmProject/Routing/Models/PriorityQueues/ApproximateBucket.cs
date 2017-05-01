@@ -13,15 +13,15 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
     {
         public static int MaxDistance = 1000000;
         private static int numberOfBuckets = 32768;// (int)Math.Sqrt(MaxDistance) + 1;
-        private static int distPerBucket = (int) MaxDistance / numberOfBuckets;
+        private static int distPerBucket = (int)MaxDistance / numberOfBuckets;
         private FIFOQueue[] buckets;
         private int _numNodes;
         private int minBucketIndex;
 
         public ApproximateBucketQueue()
         {
-            buckets = new FIFOQueue[numberOfBuckets+1];
-            for (int i = 0; i < numberOfBuckets+1; i++)
+            buckets = new FIFOQueue[numberOfBuckets + 1];
+            for (int i = 0; i < numberOfBuckets + 1; i++)
             {
                 buckets[i] = new FIFOQueue();
             }
@@ -49,21 +49,19 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
 
         public void Enqueue(T node, float priority)
         {
-            try
+            if (node.myID == 508005)
             {
-                node.Priority = priority;
-                _numNodes++;
-                var bucketIndex = GetBucketIndex(priority);
-                if(bucketIndex < minBucketIndex)
-                {
-                    minBucketIndex = bucketIndex;
-                }
-                buckets[bucketIndex].Enqueue(node);
-                node.QueueIndex = bucketIndex;
-            }catch (Exception ex)
-            {
-                var lkj = 1;
+                var lkjdsfdsf = 1;
             }
+            node.Priority = priority;
+            _numNodes++;
+            var bucketIndex = GetBucketIndex(priority);
+            if (bucketIndex < minBucketIndex)
+            {
+                minBucketIndex = bucketIndex;
+            }
+            buckets[bucketIndex].Enqueue(node);
+            node.QueueIndex = bucketIndex;
         }
 
         public T Dequeue()
@@ -71,9 +69,9 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
             _numNodes--;
             T node = (T)buckets[minBucketIndex].Dequeue();
 
-            while(minBucketIndex < buckets.Length)
+            while (minBucketIndex < buckets.Length)
             {
-                if(buckets[minBucketIndex].Count != 0)
+                if (buckets[minBucketIndex].Count != 0)
                 {
                     break;
                 }
@@ -108,7 +106,25 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
 
         private void Remove(T node)
         {
-            buckets[node.QueueIndex].Remove(node);
+            //if (node.myID == 508005)
+            //{
+            //    var lkjdsfdsf = 1;
+            //}
+            //if (!buckets[node.QueueIndex].Contains(node))
+            //{
+            //    for (int i = 0; i < buckets.Length; i++)
+            //    {
+            //        if (buckets[i].Contains(node))
+            //        {
+            //            var lkj = 1;
+            //        }
+            //    }
+            //}
+            //else
+            //{
+                buckets[node.QueueIndex].Remove(node);
+            //}
+
             _numNodes--;
         }
 

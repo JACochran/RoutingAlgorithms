@@ -28,6 +28,10 @@ namespace RoutingAlgorithmProject.Graph
             this.EstimatedCostToEnd = float.MaxValue;
             this.myID = ID++;
             this.inQueue = false;
+            if (this.myID == 508005)
+            {
+                var lkjdsfdsf = 1;
+            }
         }
 
         /// <summary>
@@ -133,9 +137,17 @@ namespace RoutingAlgorithmProject.Graph
         public Boolean InQueue
         {
             get{
+                if (this.myID == 508005)
+                {
+                    var lkjdsfdsf = 1;
+                }
                 return inQueue;
             }
             set{
+                if (this.myID == 508005)
+                {
+                    var lkjdsfdsf = 1;
+                }
                 inQueue = value;
             }
         }

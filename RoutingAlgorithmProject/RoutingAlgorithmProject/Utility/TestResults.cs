@@ -25,6 +25,8 @@ namespace RoutingAlgorithmProject.Utility
         public readonly string AlgorithmName;
 
         private List<TestResults> TestResults;
+        public List<TestResults> failures;
+
 
         private double totalRunTime = 0;
         public int MinPathLength = int.MaxValue;
@@ -37,15 +39,23 @@ namespace RoutingAlgorithmProject.Utility
         {
             this.AlgorithmName = name;
             TestResults = new List<Utility.TestResults>();
+            failures= new List<Utility.TestResults>();
             AverageIntervalRuntimes = new double[30];
         }
 
         public void AddTestResult(TestResults tr)
         {
-            TestResults.Add(tr);
-            MinPathLength = Math.Min(MinPathLength, tr.NumberOfNodes);
-            MaxPathLength = Math.Max(MaxPathLength, tr.NumberOfNodes);
-            totalRunTime += tr.Time;
+            if (tr.NumberOfNodes > 0)
+            {
+                TestResults.Add(tr);
+                MinPathLength = Math.Min(MinPathLength, tr.NumberOfNodes);
+                MaxPathLength = Math.Max(MaxPathLength, tr.NumberOfNodes);
+                totalRunTime += tr.Time;
+            }
+            else
+            {
+                failures.Add(tr);
+            }
         }
 
         public List<TestResults> GetTestResults()

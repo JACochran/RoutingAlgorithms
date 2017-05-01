@@ -62,17 +62,17 @@ namespace RoutingAlgorithmProject.Graph
             return "(" + this.Latitude.ToString() + "," + this.Longitude.ToString() + ") ";
         }
 
-        public long DistanceBetween(Coordinates to)
+        public float DistanceBetween(Coordinates to)
         {
             var dLat = this.latitude - to.latitude;  // deg2rad below
             var dLon = this.longitude - to.longitude;
-            long result = dLat * dLat + dLon * dLon;
+            float result = dLat * dLat + dLon * dLon;
             if (result < 0)
             {
                 return -1;
             }
             else
-                return result;
+                return (float)Math.Sqrt(result);
         }
     }
 }

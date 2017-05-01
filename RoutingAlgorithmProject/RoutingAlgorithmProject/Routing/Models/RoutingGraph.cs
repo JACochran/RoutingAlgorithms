@@ -64,6 +64,14 @@ namespace RoutingAlgorithmProject.Graph
         /// <param name="e"></param>
         public void AddEdge(Edge e)
         {
+            if (!vertexMap.ContainsKey(e.To.Coordinates))
+            {
+                vertexMap.Add(e.To.Coordinates, e.To);
+            }
+            if (!vertexMap.ContainsKey(e.From.Coordinates))
+            {
+                vertexMap.Add(e.From.Coordinates, e.From);
+            }
             e.From.AddEdge(e.To, e);
             e.To.AddEdge(e.From, e);
             _edges++;

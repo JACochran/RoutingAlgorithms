@@ -18,9 +18,9 @@ namespace RoutingAlgorithmProject.Utility
         /// <param name="graph"></param>
         internal static void TestPathFinders(RoutingGraph[] graphs)
         {
-            GraphTestResults[] results = new GraphTestResults[2];
+            GraphTestResults[] results = new GraphTestResults[graphs.Length];
             //// get all types that inherit PathFinder
-            var pathFinders = typeof(PathFinder).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(PathFinder)));
+            //var pathFinders = typeof(PathFinder).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(PathFinder)));
             for(int i=0; i<graphs.Length;i++)
             {
                 results[i] = new GraphTestResults(graphs[i].Name);
@@ -30,10 +30,12 @@ namespace RoutingAlgorithmProject.Utility
                 PathFinder ASH = new AStarMinHeapPathFinder(graphs[i]);
                 PathFinder DIKBA = new DijkstraApproximateBucketPathFinder(graphs[i]);
                 PathFinder DIKH = new DijkstraMinHeapPathFinder(graphs[i]);
+
                 results[i].AddAlgorithmTestResult(TestPathFinder(ASBA));
                 results[i].AddAlgorithmTestResult(TestPathFinder(ASH));
                 results[i].AddAlgorithmTestResult(TestPathFinder(DIKBA));
                 results[i].AddAlgorithmTestResult(TestPathFinder(DIKH));
+                
             }
             ParseResults(results);
         }
@@ -166,6 +168,10 @@ namespace RoutingAlgorithmProject.Utility
                     tw.WriteLine(pf.GetType().Name + " " + msg);
                     if(path!=null)
                         resultsList.AddTestResult(new TestResults(elapsedTime, path.Count));
+                    else
+                    {
+                        resultsList.AddTestResult(new TestResults(elapsedTime, -1));
+                    }
                 }
                 tw.WriteLine("Average Runtime(sec) = " + totalRunTime / successfullPathsFound + " Failed Paths = " + (testPoints.Count - successfullPathsFound));
             }

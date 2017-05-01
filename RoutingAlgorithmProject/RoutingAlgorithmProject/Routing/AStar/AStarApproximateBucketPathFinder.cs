@@ -28,13 +28,18 @@ namespace RoutingAlgorithmProject.Routing
                     {
                         return GetPathResult(endNode, ref pathLength);
                     }
-
-
+                    //int hmm = 0;
+                    //var vs = this.graph.Verticies;
+                    //foreach (var v in vs)
+                    //{
+                    //    if (v.myID == 508005)
+                    //        hmm++;
+                    //}
 
                     foreach (var exit in currentVertex.Neighbors) // For each node adjacent to the current node
                     {
                         Vertex reachableVertex = exit.Key;
-
+                        
                         // If the closed list already searched this vertex, skip it
                         if (!closedList.Contains(reachableVertex))
                         {
@@ -43,6 +48,11 @@ namespace RoutingAlgorithmProject.Routing
                             if (edgeCost <= 0.0)    // Are positive values that are extremely close to 0 going to be a problem?
                             {
                                 throw new ArgumentException("The A* algorithm is only valid for edge costs greater than 0");
+                            }
+
+                            if (reachableVertex.myID == 508005)
+                            {
+                                var lkjdsfdsf = 1;
                             }
 
                             float costFromStart = currentVertex.CostFromStart + edgeCost;
