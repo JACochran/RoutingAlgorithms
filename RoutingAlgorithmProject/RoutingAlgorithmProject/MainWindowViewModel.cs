@@ -17,13 +17,13 @@ namespace RoutingAlgorithmProject
     {
         public MainWindowViewModel()
         {
-           // DCGraph = OsmUtility.ReadOsmData(@"..\..\Resources\district-of-columbia-latest.osm.pbf", "DC");
+            DCGraph = OsmUtility.ReadOsmData(@"..\..\Resources\district-of-columbia-latest.osm.pbf", @"..\..\Resources\dcTestPoints.csv", "DC");
             var runTest = true;
             if (runTest)
             {
-                var VAGraph = OsmUtility.ReadOsmData(@"..\..\Resources\virginia-latest.osm.pbf", "VA");
-                ShortestPathTester.TestPathFinders(VAGraph, @"..\..\Resources\vaTestPoints.csv");
-                ShortestPathTester.TestPathFinders(DCGraph, @"..\..\Resources\dcTestPoints.csv");
+                var VAGraph = OsmUtility.ReadOsmData(@"..\..\Resources\virginia-latest.osm.pbf", @"..\..\Resources\vaTestPoints.csv", "VA");
+                RoutingGraph[] graphs = { DCGraph, VAGraph };
+                ShortestPathTester.TestPathFinders(graphs);
             }
             IsMovingStartPoint = true;
             FindRouteAStarCommand = new RelayCommand<MapView>(AStarCommandExecuted, CanRouteExecute);
@@ -47,35 +47,35 @@ namespace RoutingAlgorithmProject
             Coordinates a = new Coordinates(38.93764f, -76.99521f);
             Coordinates b = new Coordinates(38.89585f, -76.97469f);
 
-            float pathLength = 0;
-            var path = dpf.FindShortestPath(b, a, ref pathLength);
-            if (path != null && path.Count > 0)
-            {
-                DisplayPath(path, mapView);
-            }
-            else
-            {
-                MessageBox.Show("No Route Found!");
-            }
+            //float pathLength = 0;
+            //var path = dpf.FindShortestPath(b, a, ref pathLength);
+            //if (path != null && path.Count > 0)
+            //{
+            //    DisplayPath(path, mapView);
+            //}
+            //else
+            //{
+            //    MessageBox.Show("No Route Found!");
+            //}
         }
 
         private void AStarCommandExecuted(MapView mapView)
         {
-            Coordinates a = new Coordinates(38.89394f, -76.97941f);
-            Coordinates b = new Coordinates(38.89585f, -76.97469f);
+            //Coordinates a = new Coordinates(38.89394f, -76.97941f);
+            //Coordinates b = new Coordinates(38.89585f, -76.97469f);
 
-            var dpf = new AStarApproximateBucketPathFinder(DCGraph);
-            // var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
-            float pathlength = 0;
-            var path = dpf.FindShortestPath(a, b, ref pathlength);
-            if (path != null && path.Count > 0)
-            {
-                DisplayPath(path, mapView);
-            }
-            else
-            {
-                MessageBox.Show("No Route Found!");
-            }
+            //var dpf = new AStarApproximateBucketPathFinder(DCGraph);
+            //// var path = dpf.FindShortestPath(StartLocation.ToCoordinates(), EndLocation.ToCoordinates());
+            //float pathlength = 0;
+            //var path = dpf.FindShortestPath(a, b, ref pathlength);
+            //if (path != null && path.Count > 0)
+            //{
+            //    DisplayPath(path, mapView);
+            //}
+            //else
+            //{
+            //    MessageBox.Show("No Route Found!");
+            //}
         }
 
         private void DisplayPath(List<Vertex> path, MapView mapView)

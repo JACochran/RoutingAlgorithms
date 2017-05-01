@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RoutingAlgorithmProject.Graph;
 
 namespace RoutingAlgorithmProject.Utility
 {
@@ -84,8 +85,21 @@ namespace RoutingAlgorithmProject.Utility
     {
         private List<AlgorithmTestResults> AlgorithmTestResults;
         public readonly string GraphName;
+        private RoutingGraph _graph;
 
-     
+
+        public RoutingGraph Graph
+        {
+            get
+            {
+                return _graph;
+            }
+            set
+            {
+                _graph = value;
+            }
+        }
+
         public GraphTestResults(string name)
         {
             this.GraphName = name;

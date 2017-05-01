@@ -12,9 +12,9 @@ namespace RoutingAlgorithmProject.Utility
     public static class OsmUtility
     {
 
-        public static Graph.RoutingGraph ReadOsmData(string path, string name) 
+        public static Graph.RoutingGraph ReadOsmData(string path, string testPointsPath, string name) 
         {
-            RoutingGraph graph = new RoutingGraph(name);
+            RoutingGraph graph = new RoutingGraph(name, testPointsPath);
             {
                 using (var fileStreamSource = File.OpenRead(path))
                 {
@@ -52,36 +52,36 @@ namespace RoutingAlgorithmProject.Utility
             return graph;
         }
 
-        public static void TestGraph()
-        {
-            Graph.RoutingGraph graph = new Graph.RoutingGraph("test");
-            Graph.Vertex a = graph.AddVertex(new Coordinates(0, 0));
-            Graph.Vertex b = graph.AddVertex(new Coordinates(0, 1));
-            Graph.Vertex c = graph.AddVertex(new Coordinates(0.5f, 0.5f));
-            Graph.Vertex d = graph.AddVertex(new Coordinates(1, 1));
-            Graph.Vertex e = graph.AddVertex(new Coordinates(0.2f, 0.5f));
-            Graph.Vertex f = graph.AddVertex(new Coordinates(0.3f, 0.7f));
-            Graph.Vertex g = graph.AddVertex(new Coordinates(0.6f, 0.7f));
+        //public static void TestGraph()
+        //{
+        //    Graph.RoutingGraph graph = new Graph.RoutingGraph("test");
+        //    Graph.Vertex a = graph.AddVertex(new Coordinates(0, 0));
+        //    Graph.Vertex b = graph.AddVertex(new Coordinates(0, 1));
+        //    Graph.Vertex c = graph.AddVertex(new Coordinates(0.5f, 0.5f));
+        //    Graph.Vertex d = graph.AddVertex(new Coordinates(1, 1));
+        //    Graph.Vertex e = graph.AddVertex(new Coordinates(0.2f, 0.5f));
+        //    Graph.Vertex f = graph.AddVertex(new Coordinates(0.3f, 0.7f));
+        //    Graph.Vertex g = graph.AddVertex(new Coordinates(0.6f, 0.7f));
 
-            graph.AddEdge(new Graph.Edge(a, b));
-            graph.AddEdge(new Graph.Edge(a, c));
-            graph.AddEdge(new Graph.Edge(a, e));
-            graph.AddEdge(new Graph.Edge(b, d));
-            graph.AddEdge(new Graph.Edge(b, e));
-            graph.AddEdge(new Graph.Edge(b, g));
-            graph.AddEdge(new Graph.Edge(c, d));
-            graph.AddEdge(new Graph.Edge(c, e));
-            graph.AddEdge(new Graph.Edge(c, g));
-            graph.AddEdge(new Graph.Edge(d, g));
-            graph.AddEdge(new Graph.Edge(e, f));
-            graph.AddEdge(new Graph.Edge(f, g));
+        //    graph.AddEdge(new Graph.Edge(a, b));
+        //    graph.AddEdge(new Graph.Edge(a, c));
+        //    graph.AddEdge(new Graph.Edge(a, e));
+        //    graph.AddEdge(new Graph.Edge(b, d));
+        //    graph.AddEdge(new Graph.Edge(b, e));
+        //    graph.AddEdge(new Graph.Edge(b, g));
+        //    graph.AddEdge(new Graph.Edge(c, d));
+        //    graph.AddEdge(new Graph.Edge(c, e));
+        //    graph.AddEdge(new Graph.Edge(c, g));
+        //    graph.AddEdge(new Graph.Edge(d, g));
+        //    graph.AddEdge(new Graph.Edge(e, f));
+        //    graph.AddEdge(new Graph.Edge(f, g));
 
 
 
-            float pathLength = 0;
-            var dpf = new DijkstraApproximateBucketPathFinder(graph);
-            var path = dpf.FindShortestPath(new Coordinates(0.1f, 0.1f), new Coordinates(0.9f, 0.9f), ref pathLength);
-        }
+        //    float pathLength = 0;
+        //    var dpf = new DijkstraApproximateBucketPathFinder(graph);
+        //    //var path = dpf.FindShortestPath(new Coordinates(0.1f, 0.1f), new Coordinates(0.9f, 0.9f), ref pathLength);
+        //}
     }
 
 }

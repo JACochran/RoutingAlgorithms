@@ -13,10 +13,9 @@ namespace RoutingAlgorithmProject.Routing
         {
         }
 
-        public override List<Vertex> FindShortestPath(Coordinates start, Coordinates end, ref float pathLength)
+        public override List<Vertex> FindShortestPath(Vertex startNode, Vertex endNode, ref float pathLength)
         {
-            Vertex startVertex = FindClosestVertex(start);
-            Vertex destinationVertex = FindClosestVertex(end);
+      
             List<Vertex> vertexList = this.graph.Verticies;
             int size = vertexList.Count();
             //Dictionary<Vertex, float> dist = new Dictionary<Vertex, float>();
@@ -25,7 +24,7 @@ namespace RoutingAlgorithmProject.Routing
             {
                 Vertex node = vertexList[i];
                 float distance = 0;
-                if (!vertexList[i].Equals(startVertex))
+                if (!vertexList[i].Equals(startNode))
                    distance = Int32.MaxValue;
                 node.CostFromStart = distance;
                 vertexList[i].Previous = null;
@@ -35,8 +34,8 @@ namespace RoutingAlgorithmProject.Routing
             while (q.Count > 0)
             {
                 Vertex node = q.Dequeue(); 
-                if (node.Equals(destinationVertex))
-                    return GetPathResult(destinationVertex, ref pathLength);
+                if (node.Equals(endNode))
+                    return GetPathResult(endNode, ref pathLength);
                 foreach (var neighbor in node.Neighbors)
                 {
                     float newDistance = neighbor.Value.Weight + node.CostFromStart;

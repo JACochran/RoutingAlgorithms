@@ -29,7 +29,7 @@ namespace RoutingAlgorithmProject.Graph
             {
                 return weight;
             }
-        } 
+        }
 
         public Vertex From
         {
@@ -72,8 +72,9 @@ namespace RoutingAlgorithmProject.Graph
         //    return (float)(deg * (Math.PI / 180));
         //}
 
-        public static float GetMinimumDistance(Coordinates start, Coordinates end)
+        public static float GetMinimumDistance(Coordinates v1, Coordinates v2)
         {
+            //return v1.DistanceBetween(v2);
             return (float)GeometryEngine.GeodesicDistance(new MapPoint(start.Longitude, start.Latitude, SpatialReferences.Wgs84), new MapPoint(end.Longitude, end.Latitude, SpatialReferences.Wgs84), LinearUnits.Meters);
         }
 

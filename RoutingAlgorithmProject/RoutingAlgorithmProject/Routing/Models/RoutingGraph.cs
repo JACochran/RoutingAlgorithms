@@ -9,17 +9,27 @@ namespace RoutingAlgorithmProject.Graph
         private Dictionary<Coordinates, Vertex> vertexMap;
         private string _name;
         private int _edges;
+        private string _testPointsPath;
 
-        public RoutingGraph(string name)
+        public RoutingGraph(string name, string testPointsPath)
         {
             this.vertexMap = new Dictionary<Coordinates, Vertex>();
             this._name = name;
+            this._testPointsPath = testPointsPath;
         }
 
         public string Name{
             get
             {
                 return _name;
+            }
+        }
+
+        public string TestPointsPath
+        {
+            get
+            {
+                return _testPointsPath;
             }
         }
 

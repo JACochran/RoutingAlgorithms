@@ -56,7 +56,6 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
             }
             Remove(node);
             return node;
-            return null;
         }
 
         public void Remove(Vertex v)

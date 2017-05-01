@@ -11,15 +11,14 @@ namespace RoutingAlgorithmProject.Routing
         {
         }
         
-        public override List<Vertex> FindShortestPath(Coordinates start, Coordinates end, ref float pathLength)
+        public override List<Vertex> FindShortestPath(Vertex startNode, Vertex endNode, ref float pathLength)
         {
-            Vertex startVertex = FindClosestVertex(start);
-            Vertex destinationVertex = FindClosestVertex(end);
+            
             List<Vertex> vertexList = this.graph.Verticies;
             HashSet<Vertex> q = new HashSet<Vertex>();
             for (int i = 0; i < vertexList.Count(); i++)
             {
-                if (vertexList[i].Equals(startVertex))
+                if (vertexList[i].Equals(startNode))
                     vertexList[i].CostFromStart = 0;
                 else
                     vertexList[i].CostFromStart = Int32.MaxValue;
@@ -30,8 +29,8 @@ namespace RoutingAlgorithmProject.Routing
             while (q.Count > 0)
             {
                 Vertex u = MinDist(q);
-                if (u.Equals(destinationVertex))
-                    return GetPathResult(destinationVertex, ref pathLength);
+                if (u.Equals(endNode))
+                    return GetPathResult(endNode, ref pathLength);
                 q.Remove(u);
                 foreach (var neighbor in u.Neighbors)
                 {

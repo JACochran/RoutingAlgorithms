@@ -14,13 +14,22 @@ namespace RoutingAlgorithmProject.Routing
             this.graph = graph;
         }
         
+        public RoutingGraph Graph
+        {
+            get
+            {
+                return this.graph;
+            }
+
+        }
+
         /// <summary>
         /// Finds the shortest path between two coordinates on a graph
         /// </summary>
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns> A list of edges from start to end</returns>
-        public abstract List<Graph.Vertex> FindShortestPath(Coordinates start, Coordinates end, ref float pathLength);
+        public abstract List<Graph.Vertex> FindShortestPath(Vertex startNode, Vertex endNode, ref float pathLength);
 
         public abstract string GetAbbreivatedName();
 
@@ -29,13 +38,13 @@ namespace RoutingAlgorithmProject.Routing
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        protected Vertex FindClosestVertex(Coordinates point)
+        public Vertex FindClosestVertex(Coordinates point)
         {
             Vertex closest = null;
             var minDistance = float.MaxValue;
             foreach(var vertex in graph.Verticies)
             {
-                var distance = Graph.Edge.GetMinimumDistance(point, vertex.Coordinates);
+                var distance = Edge.GetMinimumDistance(point, vertex.Coordinates);
                 if (distance < minDistance)
                 {
                     minDistance = distance;

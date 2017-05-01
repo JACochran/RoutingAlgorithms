@@ -10,19 +10,14 @@ namespace RoutingAlgorithmProject.Routing
         {
         }
 
-        public override List<Vertex> FindShortestPath(Coordinates start, Coordinates end, ref float pathLength)
+        public override List<Vertex> FindShortestPath(Vertex startNode, Vertex endNode, ref float pathLength)
         {
             try
             {
                 Models.PriorityQueues.ApproximateBucketQueue<Vertex> openList = new Models.PriorityQueues.ApproximateBucketQueue<Vertex>();
                 HashSet<Vertex> closedList = new HashSet<Vertex>();
 
-                // var nodeMap = new HashSet<Vertex>();
-
-                var startNode = FindClosestVertex(start);
-                var endNode = FindClosestVertex(end);
-
-                startNode.Update(0.0f, Graph.Edge.GetMinimumDistance(startNode.Coordinates, endNode.Coordinates), null);
+                startNode.Update(0.0f, Edge.GetMinimumDistance(startNode.Coordinates, endNode.Coordinates), null);
                 // nodeMap.Add(startNode);
                 var currentVertex = startNode;
                 while (currentVertex != null)
@@ -57,7 +52,7 @@ namespace RoutingAlgorithmProject.Routing
                             if (!openList.Contains(reachableVertex) || isShorterPath)
                             {
                                 float estimatedCostFromEnd = exit.Key.Coordinates.Equals(endNode.Coordinates) ? 0.0f
-                                                                                                               : Graph.Edge.GetMinimumDistance(reachableVertex.Coordinates, endNode.Coordinates);
+                                                                                                               : Edge.GetMinimumDistance(reachableVertex.Coordinates, endNode.Coordinates);
 
                                 reachableVertex.Update(costFromStart, estimatedCostFromEnd, currentVertex);
 
