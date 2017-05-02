@@ -20,6 +20,7 @@
             <Button Content="Find Route Using A*"  Command="{Binding FindRouteAStarCommand}" CommandParameter="{Binding ElementName=MyMapView}"/>
             <Button Content="Find Route Using Dijikstras" Command="{Binding FindRouteDijikstraCommand}"  CommandParameter="{Binding ElementName=MyMapView}"/>
             <ToggleButton Content="{Binding MovingPointText}"  IsChecked="{Binding IsMovingStartPoint}"></ToggleButton>
+            <ToggleButton x:Name="DisplayGraphButton" Content="DisplayGraph" Command="{Binding DisplayGraphCommand}"  CommandParameter="{Binding ElementName=MyMapView}" IsChecked="{Binding IsDisplayMapChecked}"/>
 
         </StackPanel>
         <esri:MapView Grid.Row="1" x:Name="MyMapView"  MapViewTapped="MyMapView_MapViewTapped">
@@ -33,6 +34,10 @@
                 </esri:Map.InitialViewpoint>
                 <esri:Map.Layers>
                     <esri:ArcGISDynamicMapServiceLayer ServiceUri="http://services.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer"/>
+
+                    <!--<esri:FeatureLayer ="..\..\Resources\WashingtonDCNodesLayer.kml"></esri:FeatureLayer>
+                    <esri:FeatureLayer SourceUri="..\..\Resources\WashingtonDCRoadsLayer.kml"></esri:FeatureLayer>-->
+                    <esri:GraphicsLayer ID="GraphGraphics"/>
                     <esri:GraphicsLayer ID="MyGraphics"/>
                 </esri:Map.Layers>
             </esri:Map>

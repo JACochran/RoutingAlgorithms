@@ -178,6 +178,10 @@
     <None Include="Resources\district-of-columbia-latest.sqlite" />
     <None Include="Resources\north-america-latest.osm.pbf" />
     <None Include="Resources\Virginia.osm.pbf" />
+    <None Include="Resources\WashingtonDCNodesLayer.kml" />
+    <None Include="Resources\WashingtonDCNodesLayer.shp" />
+    <None Include="Resources\WashingtonDCRoadsLayer.kml" />
+    <None Include="Resources\WashingtonDCRoadsLayer.shp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -1,4 +1,5 @@
-﻿using Esri.ArcGISRuntime.Geometry;
+﻿using Esri.ArcGISRuntime.Data;
+using Esri.ArcGISRuntime.Geometry;
 using Esri.ArcGISRuntime.Layers;
 using Esri.ArcGISRuntime.Symbology;
 using System.Windows;
@@ -13,9 +14,25 @@ namespace RoutingAlgorithmProject
     {
         public MainWindow()
         {
-            InitializeComponent();      
+          
+            InitializeComponent();
+            //MyMapView.LayerLoaded += MyMapView_Initialized;
         }
-        
+
+        private void MyMapView_Initialized(object sender, System.EventArgs e)
+        {
+            //var points = new FeatureLayer(ShapefileTable.OpenAsync(@"..\..\Resources\WashingtonDCNodesLayer.shp").Result);
+
+            //points.Opacity = 0.5;
+            //var roads = new FeatureLayer(ShapefileTable.OpenAsync(@"..\..\Resources\WashingtonDCRoadsLayer.shp").Result);
+            //roads.Opacity = 0.5;
+            //MyMapView.LayerLoaded -= MyMapView_Initialized;
+            
+            //MyMapView.Map.Layers.Add(points);
+            //MyMapView.Map.Layers.Add(roads);
+            //MyMapView.Map.Layers.Move(2,4);
+        }
+
         public Graphic StartPointGraphic { get; set; }
 
         public Graphic EndPointGraphic { get; set; }
@@ -64,7 +81,7 @@ namespace RoutingAlgorithmProject
             return new Graphic(){
                                    Symbol = new SimpleMarkerSymbol(){
                                                                         Color =  useStartPointGraphic ? Colors.Green : Colors.Red,
-                                                                        Style = SimpleMarkerStyle.Circle,
+                                                                        Style = SimpleMarkerStyle.X,
                                                                         Size = 16
                                                                     }
                                 };
