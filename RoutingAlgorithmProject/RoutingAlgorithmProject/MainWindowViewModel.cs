@@ -75,6 +75,7 @@ namespace RoutingAlgorithmProject
             {
                 MessageBox.Show("No Route Found!");
             }
+            DCGraph.ResetGraph();
         }
         
         private void AStarCommandExecuted(MapView mapView)
@@ -92,6 +93,7 @@ namespace RoutingAlgorithmProject
             {
                 MessageBox.Show("No Route Found!");
             }
+            DCGraph.ResetGraph();
         }
 
         private void DisplayGraph(MapView mapView, RoutingGraph graph)

@@ -140,37 +140,38 @@ namespace RoutingAlgorithmProject.Utility
             {
                 double totalRunTime = 0;
                 int successfullPathsFound = 0;
-                foreach (var startDestinationPair in testPoints)
-                {
-                    float pathLength = 0;
-                    var sw = new Stopwatch();
+               
+                    foreach (var startDestinationPair in testPoints)
+                    {
+                        float pathLength = 0;
+                        var sw = new Stopwatch();
 
-                    Vertex startVertex = pf.FindClosestVertex(startDestinationPair.Start);
-                    Vertex destinationVertex = pf.FindClosestVertex(startDestinationPair.Destination);
+                        Vertex startVertex = pf.FindClosestVertex(startDestinationPair.Start);
+                        Vertex destinationVertex = pf.FindClosestVertex(startDestinationPair.Destination);
 
-                    sw.Start();
-                    var path = pf.FindShortestPath(startVertex, destinationVertex, ref pathLength);
-                    sw.Stop();
-                    pf.ResetGraph();
-                    string msg = null;
-                    double elapsedTime = sw.Elapsed.TotalSeconds;
-                    if (path != null && path.Count > 0)
-                    {
-                        totalRunTime += elapsedTime;
-                        successfullPathsFound++;
-                        msg = startDestinationPair.ToString() + "Completed in " + elapsedTime.ToString() + " seconds." + " with path length = " + pathLength + " vertex count = " + path.Count;
-                    }
-                    else
-                    {
-                        msg = startDestinationPair.ToString() + "Failed to find path in " + elapsedTime.ToString() + " seconds.";
-                    }
-                    tw.WriteLine(pf.GetType().Name + " " + msg);
-                    if(path!=null)
-                        resultsList.AddTestResult(new TestResults(elapsedTime, path.Count));
-                    else
-                    {
-                        resultsList.AddTestResult(new TestResults(elapsedTime, -1));
-                    }
+                        sw.Start();
+                        var path = pf.FindShortestPath(startVertex, destinationVertex, ref pathLength);
+                        sw.Stop();
+                        pf.ResetGraph();
+                        string msg = null;
+                        double elapsedTime = sw.Elapsed.TotalSeconds;
+                        if (path != null && path.Count > 0)
+                        {
+                            totalRunTime += elapsedTime;
+                            successfullPathsFound++;
+                            msg = startDestinationPair.ToString() + "Completed in " + elapsedTime.ToString() + " seconds." + " with path length = " + pathLength + " vertex count = " + path.Count;
+                        }
+                        else
+                        {
+                            msg = startDestinationPair.ToString() + "Failed to find path in " + elapsedTime.ToString() + " seconds.";
+                        }
+                        tw.WriteLine(pf.GetType().Name + " " + msg);
+                        if (path != null)
+                            resultsList.AddTestResult(new TestResults(elapsedTime, path.Count));
+                        else
+                        {
+                            resultsList.AddTestResult(new TestResults(elapsedTime, -1));
+                        }
                 }
                 tw.WriteLine("Average Runtime(sec) = " + totalRunTime / successfullPathsFound + " Failed Paths = " + (testPoints.Count - successfullPathsFound));
             }

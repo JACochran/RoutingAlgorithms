@@ -51,10 +51,6 @@ namespace RoutingAlgorithmProject.Routing.Models.PriorityQueues
                         min = curr.Priority;
                         node = curr;
                     }
-                    if(curr.FIFOnext == null)
-                    {
-                        var lkj = 1;
-                    }
                     curr = curr.FIFOnext;
                 }
             }
