@@ -15,14 +15,51 @@
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0">
-            <TextBlock Text="Welcome to our Routing Application" HorizontalAlignment="Center" FontSize="22"/>
-            <Button Content="Find Route Using A*"  Command="{Binding FindRouteAStarCommand}" CommandParameter="{Binding ElementName=MyMapView}"/>
-            <Button Content="Find Route Using Dijikstras" Command="{Binding FindRouteDijikstraCommand}"  CommandParameter="{Binding ElementName=MyMapView}"/>
-            <ToggleButton Content="{Binding MovingPointText}"  IsChecked="{Binding IsMovingStartPoint}"></ToggleButton>
-            <ToggleButton x:Name="DisplayGraphButton" Content="DisplayGraph" Command="{Binding DisplayGraphCommand}"  CommandParameter="{Binding ElementName=MyMapView}" IsChecked="{Binding IsDisplayMapChecked}"/>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Welcome to our Routing Application" HorizontalAlignment="Center" FontSize="22"/>
+                <Button Content="Find All Routes" Command="{Binding FindAllRoutesCommand}"  CommandParameter="{Binding ElementName=MyMapView}"/>
+                <ToggleButton Content="{Binding MovingPointText}"  IsChecked="{Binding IsMovingStartPoint}"></ToggleButton>
+                <ToggleButton x:Name="DisplayGraphButton" Content="DisplayGraph" Command="{Binding DisplayGraphCommand}"  CommandParameter="{Binding ElementName=MyMapView}" IsChecked="{Binding IsDisplayMapChecked}"/>
+            </StackPanel>
+           
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
 
-        </StackPanel>
+                    <RowDefinition Height="15"></RowDefinition>
+                    <!--Astar-->
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <!--dijkstra-->
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="0" Grid.Row="1"  Text=" A* Approximate Buckets"></TextBlock>
+                <TextBlock Grid.Column="0" Grid.Row="2"  Text=" A* K-Array-Heap"></TextBlock>
+                <TextBlock Grid.Column="0" Grid.Row="3"  Text=" A* List"></TextBlock>
+                <TextBlock Grid.Column="0" Grid.Row="4"  Text=" Dijkstra Approximate Buckets"></TextBlock>
+                <TextBlock Grid.Column="0" Grid.Row="5"  Text=" Dijkstra K-Array-Heap"></TextBlock>
+                <TextBlock Grid.Column="0" Grid.Row="6"  Text=" Dijkstra List"></TextBlock>
+
+                <TextBlock Grid.Column="1" Grid.Row="1"  Text="{Binding AStarApproximateBucketRunningTime}"></TextBlock>
+                <TextBlock Grid.Column="1" Grid.Row="2"  Text="{Binding AStarKArrayHeapRunningTime}"></TextBlock>
+                <TextBlock Grid.Column="1" Grid.Row="3"  Text="{Binding AStarListRunningTime}"></TextBlock>
+                <TextBlock Grid.Column="1" Grid.Row="4"  Text="{Binding DijkstraApproximateBucketRunningTime}"></TextBlock>
+                <TextBlock Grid.Column="1" Grid.Row="5"  Text="{Binding DijkstraKArrayHeapRunningTime}"></TextBlock>
+                <TextBlock Grid.Column="1" Grid.Row="6"  Text="{Binding DijkstraListRunningTime}"></TextBlock>
+            </Grid>
+
+        </Grid>
         <esri:MapView Grid.Row="1" x:Name="MyMapView"  MapViewTapped="MyMapView_MapViewTapped">
 
             <esri:Map>

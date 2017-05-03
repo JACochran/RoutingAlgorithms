@@ -13,6 +13,8 @@ using System.Windows;
 using System.IO;
 using Esri.ArcGISRuntime.Data;
 using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace RoutingAlgorithmProject
 {
@@ -29,10 +31,105 @@ namespace RoutingAlgorithmProject
             //    ShortestPathTester.TestPathFinders(graphs);
             //}
             IsMovingStartPoint = true;
-            FindRouteAStarCommand = new RelayCommand<MapView>(AStarCommandExecuted, CanRouteExecute);
-            FindRouteDijikstraCommand = new RelayCommand<MapView>(DijikstraCommandExecuted, CanRouteExecute);
+            FindAllRoutesCommand = new RelayCommand<MapView>(FindAllRoutesCommandExecuted, CanRouteExecute);
             DisplayGraphCommand = new RelayCommand<MapView>(DisplayGraphExected);
         }
+
+        private RoutingGraph GetDCGraph()
+        {
+            return OsmUtility.ReadOsmData(@"..\..\Resources\district-of-columbia-latest.osm.pbf", @"..\..\Resources\dcTestPoints.csv", "DC");
+        }
+
+        private string _aStarApproximateBucketRunningTime;
+
+        public string AStarApproximateBucketRunningTime
+        {
+            get
+            {
+                return _aStarApproximateBucketRunningTime;
+            }
+            set
+            {
+                _aStarApproximateBucketRunningTime = value;
+                RaisePropertyChanged(() => AStarApproximateBucketRunningTime);
+            }
+        }
+
+        private string _DijkstraListRunningTime;
+
+        public string DijkstraListRunningTime
+        {
+            get
+            {
+                return _DijkstraListRunningTime;
+            }
+            set
+            {
+                _DijkstraListRunningTime = value;
+                RaisePropertyChanged(() => DijkstraListRunningTime);
+            }
+        }
+
+        private string _DijkstraKArrayHeapRunningTime;
+
+        public string DijkstraKArrayHeapRunningTime
+        {
+            get
+            {
+                return _DijkstraKArrayHeapRunningTime;
+            }
+            set
+            {
+                _DijkstraKArrayHeapRunningTime = value;
+                RaisePropertyChanged(() => DijkstraKArrayHeapRunningTime);
+            }
+        }
+
+        private string _DijkstraApproximateBucketRunningTime;
+
+        public string DijkstraApproximateBucketRunningTime
+        {
+            get
+            {
+                return _DijkstraApproximateBucketRunningTime;
+            }
+            set
+            {
+                _DijkstraApproximateBucketRunningTime = value;
+                RaisePropertyChanged(() => DijkstraApproximateBucketRunningTime);
+            }
+        }
+
+        private string _AStarListRunningTime;
+
+        public string AStarListRunningTime
+        {
+            get
+            {
+                return _AStarListRunningTime;
+            }
+            set
+            {
+                _AStarListRunningTime = value;
+                RaisePropertyChanged(() => AStarListRunningTime);
+            }
+        }
+
+        private string _AStarKArrayHeapRunningTime;
+
+        public string AStarKArrayHeapRunningTime
+        {
+            get
+            {
+                return _AStarKArrayHeapRunningTime;
+            }
+            set
+            {
+                _AStarKArrayHeapRunningTime = value;
+                RaisePropertyChanged(() => AStarKArrayHeapRunningTime);
+            }
+        }
+
 
         public bool IsDisplayMapChecked { get; set; }
 
@@ -59,14 +156,67 @@ namespace RoutingAlgorithmProject
 
 
 
-        private void DijikstraCommandExecuted(MapView mapView)
+        private void FindAllRoutesCommandExecuted(MapView mapView)
         {
-            var dpf = new DijkstraApproximateBucketPathFinder(DCGraph);
+            DCGraph.ResetGraph();
+            //Remove old route graphics
+            RemoveRouteGraphics(mapView);
+            var dijkstraApproxBucket = new DijkstraApproximateBucketPathFinder(DCGraph);
 
+            var startVertex = dijkstraApproxBucket.FindClosestVertex(StartLocation.ToCoordinates());
+            var endVertex = dijkstraApproxBucket.FindClosestVertex(EndLocation.ToCoordinates());
+            var dijkstaKArrayHeap = new DijkstraMinHeapPathFinder(DCGraph);
+            var dikstraList = new DijkstraPathFinder(DCGraph);
+
+            var astarList = new AStarPathFinder(DCGraph);
+            var astarApproxBucket = new AStarApproximateBucketPathFinder(DCGraph);
+            var astarKarrayHeap = new AStarMinHeapPathFinder(DCGraph);
+
+           
+            AStarKArrayHeapRunningTime = GetRunningTime(astarKarrayHeap, startVertex, endVertex, mapView);
+            DCGraph.ResetGraph();
+            AStarApproximateBucketRunningTime = GetRunningTime(astarApproxBucket, startVertex, endVertex, mapView);
+            DCGraph.ResetGraph();
+            AStarListRunningTime = GetRunningTime(astarList, startVertex, endVertex, mapView);
+            DCGraph.ResetGraph();
+
+            DijkstraApproximateBucketRunningTime = GetRunningTime(dijkstraApproxBucket, startVertex, endVertex, mapView);
+            DCGraph.ResetGraph();
+            DijkstraListRunningTime = GetRunningTime(dikstraList, startVertex, endVertex, mapView);
+            DCGraph.ResetGraph();
+            DijkstraKArrayHeapRunningTime = GetRunningTime(dijkstaKArrayHeap, startVertex, endVertex, mapView);
+            DCGraph.ResetGraph();
+        }
+
+        private void RemoveRouteGraphics(MapView mapView)
+        {
+            var graphicsLayer = mapView.Map.Layers["MyGraphics"] as GraphicsLayer;
+            if(graphicsLayer != null)
+            {
+                var graphicsToRemove = new List<Graphic>();
+                foreach(var graphic in graphicsLayer.Graphics)
+                {
+                    if(graphic.Symbol is SimpleLineSymbol)
+                    {
+                        graphicsToRemove.Add(graphic);
+                    }
+                }
+
+                foreach(var oldGraphic in graphicsToRemove)
+                {
+                    graphicsLayer.Graphics.Remove(oldGraphic);
+                }
+            }
+        }
+
+        private string GetRunningTime(PathFinder pathFinder, Vertex startVertex, Vertex endVertex, MapView mapView)
+        {
+            var sw = new Stopwatch();
             float pathLength = 0;
-            var path = dpf.FindShortestPath(dpf.FindClosestVertex(StartLocation.ToCoordinates()), 
-                                            dpf.FindClosestVertex(EndLocation.ToCoordinates()),
-                                            ref pathLength);
+            sw.Start();
+            var path = pathFinder.FindShortestPath(startVertex, endVertex, ref pathLength);
+            sw.Stop();
+            double elapsedTime = sw.Elapsed.TotalSeconds;
             if (path != null && path.Count > 0)
             {
                 DisplayPath(path, mapView);
@@ -75,9 +225,11 @@ namespace RoutingAlgorithmProject
             {
                 MessageBox.Show("No Route Found!");
             }
-            DCGraph.ResetGraph();
+
+            return $"Time Elapsed: {elapsedTime}";
+
         }
-        
+
         private void AStarCommandExecuted(MapView mapView)
         {            
             var dpf = new AStarApproximateBucketPathFinder(DCGraph);
@@ -143,14 +295,14 @@ namespace RoutingAlgorithmProject
             if (graphicsLayer != null)
             {
                 //update current graphic otherwise create a new one
-                var routeGraphic = CurrentRoute ?? new Graphic()
+                var routeGraphic = new Graphic()
                 {
                     Symbol = new SimpleLineSymbol()
-                    {
-                        Color = Colors.Blue,
-                        Width = 2.0,
-                        Style = SimpleLineStyle.Dash
-                    }
+                                                   {
+                                                       Color = Colors.Blue,
+                                                       Width = 2.0,
+                                                       Style = SimpleLineStyle.Dash
+                                                   }
                 };
                 routeGraphic.Geometry = location;
                 //remove the old route
@@ -216,8 +368,7 @@ namespace RoutingAlgorithmProject
                 _startLocation = value;
                 RaisePropertyChanged(() => StartLocation);
                 IsMovingStartPoint = !IsMovingStartPoint;
-                FindRouteAStarCommand.RaiseCanExecuteChanged();
-                FindRouteDijikstraCommand.RaiseCanExecuteChanged();
+                FindAllRoutesCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -231,13 +382,11 @@ namespace RoutingAlgorithmProject
             {
                 _endLoaction = value;
                 RaisePropertyChanged(() => EndLocation);
-                FindRouteAStarCommand.RaiseCanExecuteChanged();
-                FindRouteDijikstraCommand.RaiseCanExecuteChanged();
+                FindAllRoutesCommand.RaiseCanExecuteChanged();
             }
         }
-
-        public RelayCommand<MapView> FindRouteAStarCommand { get; private set; }
-        public RelayCommand<MapView> FindRouteDijikstraCommand { get; private set; }
+        
+        public RelayCommand<MapView> FindAllRoutesCommand { get; private set; }
         public RelayCommand<MapView> DisplayGraphCommand { get; private set; }
     }
 }
