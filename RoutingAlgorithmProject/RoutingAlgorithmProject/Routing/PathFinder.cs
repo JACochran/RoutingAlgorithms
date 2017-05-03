@@ -91,6 +91,14 @@ namespace RoutingAlgorithmProject.Routing
         {
             graph.ResetGraph();
         }
+
+        /// <summary>
+        /// Finds vertex with minimum CostFromStart
+        /// </summary>
+        /// <param name="list">List of vertices</param>
+        /// <returns> distance from start vertex </returns>
+        protected abstract Vertex MinDist(List<Vertex> list);
+        
     }
 
 

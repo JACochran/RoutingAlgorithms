@@ -14,64 +14,58 @@ namespace RoutingAlgorithmProject.Routing
 
         public override List<Vertex> FindShortestPath(Vertex startNode, Vertex endNode, ref float pathLength)
         {
-            List<Vertex> openList = new List<Vertex>();
-            HashSet<Vertex> closedList = new HashSet<Vertex>();
-
-            startNode.Update(0.0f, Edge.GetMinimumDistance(startNode.Coordinates, endNode.Coordinates), null);
-            var currentVertex = startNode;
-            while (currentVertex != null)
+            HashSet<Vertex> closedList = new HashSet<Vertex>();         // set of nodes that have been evaluated
+            List<Vertex> openList = new List<Vertex>();                 // list of nodes to evaluate
+            startNode.CostFromStart = 0;                                // set start node g(x) = 0
+            startNode.EstimatedCostToEnd = Edge.GetMinimumDistance(startNode.Coordinates, endNode.Coordinates); // set h(x) 
+            openList.Add(startNode);                                    // add start node to open list
+            while (openList.Count > 0)                                  // loop until openList is empty
             {
-                closedList.Add(currentVertex); // Put it in "done" pile
-                                               // If current vertex is the target then we are done
-                if (currentVertex.Coordinates.Equals(endNode.Coordinates))
+                Vertex currentNode = MinDist(openList);                 // find cloest node in open list
+                if (currentNode.Equals(endNode))                        // if node is destination node return path
+                    return GetPathResult(endNode, ref pathLength);      // remove node from open list
+                openList.Remove(currentNode);                           
+                closedList.Add(currentNode);                            // add node to evaluated list
+                foreach (var neighbor in currentNode.Neighbors)         // check each adjacent node
                 {
-                    return GetPathResult(endNode, ref pathLength);
-                }
-
-                foreach (var exit in currentVertex.Neighbors) // For each node adjacent to the current node
-                {
-                    Vertex reachableVertex = null;
-                    reachableVertex = exit.Key;
-
-                    // If the closed list already searched this vertex, skip it
-                    if (!closedList.Contains(reachableVertex))
+                    if (!closedList.Contains(neighbor.Key))             // skip node if it has already been evaluated
                     {
-                        float edgeCost = exit.Value.Weight;
-
-                        if (edgeCost <= 0.0)    // Are positive values that are extremely close to 0 going to be a problem?
+                        float newCostFromStart = currentNode.CostFromStart + neighbor.Value.Weight;    // find new g(x)
+                        if (!openList.Contains(neighbor.Key))           // if neighbor is not in open list then add it
+                            openList.Add(neighbor.Key);
+                        if(newCostFromStart < neighbor.Key.CostFromStart)   // if new g(x) < old g(x)
                         {
-                            throw new ArgumentException("The A* algorithm is only valid for edge costs greater than 0");
-                        }
-
-                        float costFromStart = currentVertex.CostFromStart + edgeCost;
-
-                        bool isShorterPath = costFromStart < reachableVertex.CostFromStart;
-
-                        if (!openList.Contains(reachableVertex) || isShorterPath)
-                        {
-                            float estimatedCostFromEnd = exit.Key.Coordinates.Equals(endNode.Coordinates) ? 0.0f
-                                                                                                           : Edge.GetMinimumDistance(reachableVertex.Coordinates, endNode.Coordinates);
-
-                            reachableVertex.Update(costFromStart, estimatedCostFromEnd, currentVertex);
-
-                            if (!openList.Contains(reachableVertex))
-                                openList.Add(reachableVertex);
+                            // get new h(x)
+                            float estimatedCostToEnd = Edge.GetMinimumDistance(neighbor.Key.Coordinates, endNode.Coordinates);
+                            neighbor.Key.CostFromStart = newCostFromStart;          // update g(x)
+                            neighbor.Key.EstimatedCostToEnd = estimatedCostToEnd;   // update h(x)
+                            neighbor.Key.Previous = currentNode;                    // set previous to current node
                         }
                     }
-
-                }
-                if (openList.Count > 0)
-                {
-                    openList.Sort();
-                    currentVertex = openList[0];
-                    openList.RemoveAt(0);
-                }
-                else
-                {
-                    currentVertex = null;
                 }
             }
             return null;    // No path between the start and end nodes
+        }
+
+        /// <summary>
+        /// Finds vertex with minimum CostFromStart
+        /// </summary>
+        /// <param name="list">List of vertices</param>
+        /// <returns> distance from start vertex </returns>
+        protected override Vertex MinDist(List<Vertex> list)
+        {
+            Graph.Vertex closest = null;
+            float minDistance = float.MaxValue;
+            foreach (var vertex in list)    // loop through each vertex in list
+            {
+                float fScore = vertex.CostFromStart + vertex.EstimatedCostToEnd;
+                if (fScore < minDistance) // compare to minimum distance found
+                {
+                    minDistance = fScore; // update minimum distance
+                    closest = vertex;                   // update closest vertex
+                }
+            }
+            return closest;                             // return closest vertex in list
         }
 
         public override string GetAbbreivatedName()
