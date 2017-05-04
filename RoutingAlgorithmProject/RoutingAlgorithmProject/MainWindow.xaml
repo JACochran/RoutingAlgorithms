@@ -6,60 +6,91 @@
         xmlns:local="clr-namespace:RoutingAlgorithmProject"
         xmlns:esri="http://schemas.esri.com/arcgis/runtime/2013"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525" WindowState="Maximized">
+        Title="MainWindow" Height="350" Width="525" WindowState="Maximized" Background="#373737">
     <Window.DataContext>
         <local:MainWindowViewModel/>
     </Window.DataContext>
+
+    <Window.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="#373737" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border CornerRadius="4" Background="{TemplateBinding Background}">
+                            <Grid>
+                                <Path x:Name="PathIcon" Width="15" Height="25" Stretch="Fill" Fill="#4C87B3" HorizontalAlignment="Left" Margin="17,0,0,0" Data="F1 M 30.0833,22.1667L 50.6665,37.6043L 50.6665,38.7918L 30.0833,53.8333L 30.0833,22.1667 Z "/>
+                                <ContentPresenter x:Name="MyContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" />
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#E59400" />
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter TargetName="PathIcon" Property="Fill" Value="Black" />
+                            </Trigger>
+
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="OrangeRed" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type ToggleButton}">
+            <Setter Property="Background" Value="#373737" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border CornerRadius="4" Background="{TemplateBinding Background}">
+                            <Grid>
+                                <Path x:Name="PathIcon" Width="15" Height="25" Stretch="Fill" Fill="#4C87B3" HorizontalAlignment="Left" Margin="17,0,0,0" Data="F1 M 30.0833,22.1667L 50.6665,37.6043L 50.6665,38.7918L 30.0833,53.8333L 30.0833,22.1667 Z "/>
+                                <ContentPresenter x:Name="MyContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0" />
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#E59400" />
+                                <Setter Property="Foreground" Value="White" />
+                                <Setter TargetName="PathIcon" Property="Fill" Value="Black" />
+                            </Trigger>
+
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" Value="OrangeRed" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="Background" Value="#373737" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0">
-                <TextBlock Text="Welcome to our Routing Application" HorizontalAlignment="Center" FontSize="22"/>
-                <Button Content="Find All Routes" Command="{Binding FindAllRoutesCommand}"  CommandParameter="{Binding ElementName=MyMapView}"/>
-                <ToggleButton Content="{Binding MovingPointText}"  IsChecked="{Binding IsMovingStartPoint}"></ToggleButton>
-                <ToggleButton x:Name="DisplayGraphButton" Content="DisplayGraph" Command="{Binding DisplayGraphCommand}"  CommandParameter="{Binding ElementName=MyMapView}" IsChecked="{Binding IsDisplayMapChecked}"/>
-            </StackPanel>
-           
-            <Grid Grid.Column="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-
-                    <RowDefinition Height="15"></RowDefinition>
-                    <!--Astar-->
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <!--dijkstra-->
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Column="0" Grid.Row="1"  Text=" A* Approximate Buckets"></TextBlock>
-                <TextBlock Grid.Column="0" Grid.Row="2"  Text=" A* K-Array-Heap"></TextBlock>
-                <TextBlock Grid.Column="0" Grid.Row="3"  Text=" A* List"></TextBlock>
-                <TextBlock Grid.Column="0" Grid.Row="4"  Text=" Dijkstra Approximate Buckets"></TextBlock>
-                <TextBlock Grid.Column="0" Grid.Row="5"  Text=" Dijkstra K-Array-Heap"></TextBlock>
-                <TextBlock Grid.Column="0" Grid.Row="6"  Text=" Dijkstra List"></TextBlock>
-
-                <TextBlock Grid.Column="1" Grid.Row="1"  Text="{Binding AStarApproximateBucketRunningTime}"></TextBlock>
-                <TextBlock Grid.Column="1" Grid.Row="2"  Text="{Binding AStarKArrayHeapRunningTime}"></TextBlock>
-                <TextBlock Grid.Column="1" Grid.Row="3"  Text="{Binding AStarListRunningTime}"></TextBlock>
-                <TextBlock Grid.Column="1" Grid.Row="4"  Text="{Binding DijkstraApproximateBucketRunningTime}"></TextBlock>
-                <TextBlock Grid.Column="1" Grid.Row="5"  Text="{Binding DijkstraKArrayHeapRunningTime}"></TextBlock>
-                <TextBlock Grid.Column="1" Grid.Row="6"  Text="{Binding DijkstraListRunningTime}"></TextBlock>
-            </Grid>
-
-        </Grid>
+        <TextBlock Grid.Row="0" Text="Welcome to our Routing Application" HorizontalAlignment="Center" FontSize="22"/>
         <esri:MapView Grid.Row="1" x:Name="MyMapView"  MapViewTapped="MyMapView_MapViewTapped">
 
             <esri:Map>
@@ -78,7 +109,58 @@
                     <esri:GraphicsLayer ID="MyGraphics"/>
                 </esri:Map.Layers>
             </esri:Map>
-
         </esri:MapView>
+
+       
+
+        <Grid Grid.Row="1" HorizontalAlignment="Left" Margin="0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <Button Content="Find All Routes" Margin="0,3" Command="{Binding FindAllRoutesCommand}"  CommandParameter="{Binding ElementName=MyMapView}"/>
+                <ToggleButton Content="{Binding MovingPointText}" Margin="0,3" IsChecked="{Binding IsMovingStartPoint}"></ToggleButton>
+                <ToggleButton x:Name="DisplayGraphButton" Margin="0,3" Content="DisplayGraph" Command="{Binding DisplayGraphCommand}"  CommandParameter="{Binding ElementName=MyMapView}" IsChecked="{Binding IsDisplayMapChecked}"/>
+            </StackPanel>
+
+            <Border CornerRadius="30,30,30,30"   Grid.Row="1" Background="#373737" Height="Auto" Margin="0,10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <!--Astar-->
+                        <RowDefinition Height="20"></RowDefinition>
+                        <RowDefinition Height="20"></RowDefinition>
+                        <RowDefinition Height="20"></RowDefinition>
+                        <!--dijkstra-->
+                        <RowDefinition Height="20"></RowDefinition>
+                        <RowDefinition Height="20"></RowDefinition>
+                        <RowDefinition Height="20"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Column="0" Grid.Row="0"  Text=" A* Approximate Buckets"></TextBlock>
+                    <TextBlock Grid.Column="0" Grid.Row="1"  Text=" A* K-Array-Heap"></TextBlock>
+                    <TextBlock Grid.Column="0" Grid.Row="2"  Text=" A* List"></TextBlock>
+                    
+                    <TextBlock Grid.Column="0" Grid.Row="3"  Text=" Dijkstra Approximate Buckets"></TextBlock>
+                    <TextBlock Grid.Column="0" Grid.Row="4"  Text=" Dijkstra K-Array-Heap"></TextBlock>
+                    <TextBlock Grid.Column="0" Grid.Row="5"  Text=" Dijkstra List"></TextBlock>
+
+                    <TextBlock Grid.Column="1" Grid.Row="0"  Text="{Binding AStarApproximateBucketRunningTime}"></TextBlock>
+                    <TextBlock Grid.Column="1" Grid.Row="1"  Text="{Binding AStarKArrayHeapRunningTime}"></TextBlock>
+                    <TextBlock Grid.Column="1" Grid.Row="2"  Text="{Binding AStarListRunningTime}"></TextBlock>
+                    
+                    <TextBlock Grid.Column="1" Grid.Row="3"  Text="{Binding DijkstraApproximateBucketRunningTime}"></TextBlock>
+                    <TextBlock Grid.Column="1" Grid.Row="4"  Text="{Binding DijkstraKArrayHeapRunningTime}"></TextBlock>
+                    <TextBlock Grid.Column="1" Grid.Row="5"  Text="{Binding DijkstraListRunningTime}"></TextBlock>
+                </Grid>
+            </Border>
+                    </Grid>
+            
+
+       
+
     </Grid>
 </Window>

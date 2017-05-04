@@ -57,7 +57,6 @@ namespace RoutingAlgorithmProject.Routing
                                     openList.UpdatePriority(reachableVertex, estimatedCostFromEnd + costFromStart);
                             }
                         }
-
                     }
 
                     if (openList.Count > 0)
